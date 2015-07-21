@@ -1,0 +1,58 @@
+{
+  "name": "YoungCorn",
+  "version": "2.0.0-alpha1",
+  "description": "YoungCorn is the GUI App for Pickles 2.",
+  "main": "index.html",
+  "scripts": {
+    "start": "nw",
+    "build": "node ./build.js"
+  },
+  "author": "Tomoya Koyanagi",
+  "license": "BSD",
+  "dependencies": {
+    "desktop-utils": "0.0.1",
+    "express": "^4.13.0",
+    "font-manager": "^0.1.0",
+    "glob": "^5.0.10",
+    "mkdirp": "0.*",
+    "phpjs": "^1.3.2",
+    "rmdir": "^1.1.0",
+    "socket.io": "^1.3.5"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "gulp-autoprefixer": "^2.3.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-sass": "^2.0.1",
+    "gulp-uglify": "^1.2.0",
+    "node-webkit-builder": "1.0.*",
+    "nw": "^0.12.2",
+    "zip-folder": "^1.0.0"
+  },
+  "window": {
+    "title": "YoungCorn",
+    "toolbar": true,
+    "frame": true,
+    "width": 1024,
+    "height": 520,
+    "fullscreen": false,
+    "icon": "src/common/build/icon.png",
+    "position": "mouse"
+  },
+  "platformOverrides": {
+    "win": {
+      "window": {
+        "toolbar": false
+      }
+    },
+    "osx": {
+      "window": {
+        "toolbar": false
+      }
+    }
+  },
+  "baobabConfig": {
+    "defaultPort": 60603
+  }
+}

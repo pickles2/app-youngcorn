@@ -1,1 +1,0 @@
-module.exports=new function(){this.run=function(n,t,o){o.getFontDb(function(t){t[n.postscriptName].star=!1,o.setFontDb(t,function(){o.saveFontDb(function(n){console.log(n)})})})}};

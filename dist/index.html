@@ -5,79 +5,27 @@
 		<title>YoungCorn - The GUI App for Pickles 2.</title>
 
 		<!-- jQuery -->
-		<script src="bower_components/jquery/dist/jquery.js"></script>
+		<script src="/bower_components/jquery/dist/jquery.js"></script>
 
 		<!-- Bootstrap -->
-		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
-		<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+		<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
+		<script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
 
 		<!-- Twig -->
-		<script src="bower_components/twig.js/twig.js"></script>
+		<script src="/bower_components/twig.js/twig.js"></script>
 
 		<!-- socket.io -->
 		<script src="/socket.io/socket.io.js" type="text/javascript"></script>
 
 		<!-- common -->
-		<link rel="stylesheet" href="common/styles/common.css" />
-		<script src="common/scripts/main.js"></script>
+		<link rel="stylesheet" href="/common/styles/common.css" />
+		<script src="/common/scripts/main.js"></script>
 
-		<script type="text/template" id="template-fontlist-listitem">
-			<li data-postscriptname="{{font.originalData.postscriptName}}">
-				<div class="font-list__display" style="font-family:{{font.originalData.family}};">{{sampleText}}</div>
-				<ul class="font-list__family">
-					<li><strong>{{font.originalData.family}}</strong> / {{font.originalData.postscriptName}}</li>
-					<li><a href="javascript:;" class="font-list__btn-detail"><span class="glyphicon glyphicon-play-circle"></span></a></li>
-					<li><a href="javascript:;" class="font-list__btn-star star{% if font.star %} star__active{% endif %}"><span class="glyphicon glyphicon-star"></span></a></li>
-				</ul>
-				<div class="font-list__property" style="display:none;">
-					<dl class="dl-horizontal small">
-						<dt>style</dt>
-							<dd>{{font.originalData.style}}</dd>
-						<dt>weight</dt>
-							<dd>{{font.originalData.weight}}</dd>
-						<dt>width</dt>
-							<dd>{{font.originalData.width}}</dd>
-						<dt>family</dt>
-							<dd>{{font.originalData.family}}</dd>
-						<dt>postscriptName</dt>
-							<dd>{{font.originalData.postscriptName}}</dd>
-						<dt>path</dt>
-							<dd>{{font.originalData.path}}</dd>
-					</dl>
-					<div class="font-list__memo">
-						<div class="input-group" style="margin-bottom:5px;">
-							<span class="input-group-addon">URL</span>
-							<input type="text" class="form-control" placeholder="http://" name="url" value="{{font.url}}" />
-							<span class="input-group-addon">License</span>
-							<input type="text" class="form-control" placeholder="" name="license" value="{{font.license}}" />
-						</div>
-						<div class="input-group">
-							<span class="input-group-addon">comment</span>
-							<input type="text" class="form-control" placeholder="" name="comment" value="{{font.comment}}" />
-						</div>
-					</div>
-				</div>
-			</li>
-		</script>
 	</head>
 	<body>
 		<header class="t-header">
 			<div class="container">
 				<h1>YoungCorn <small>The GUI App for Pickles 2.</small></h1>
-				<form action="javascript:;" method="get" id="mainform">
-					<div class="input-group input-group-lg" style="margin-bottom:5px;">
-						<span class="input-group-addon">Sample Text</span>
-						<input type="text" class="form-control" name="sampleText" value="What a beautiful FONT world! / 美しき日本語フォントの世界 / 1234567890" placeholder="sample text" />
-					</div>
-					<div class="input-group input-group-lg">
-						<span class="input-group-addon">Keywords</span>
-						<input type="text" class="form-control" name="keywords" value="" placeholder="keywords" />
-						<span class="input-group-addon"><label><input type="checkbox" name="starOnly" value="1" /> Star Only</label></span>
-						<span class="input-group-btn">
-							<button class="btn btn-primary" type="submit">MAKE YOUR FONT LIST</button>
-						</span>
-					</div>
-				</form>
 			</div>
 		</header>
 		<div class="container">

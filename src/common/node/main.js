@@ -2,9 +2,10 @@
  * main.js
  */
 module.exports = new (function(){
+	var packageJson = require(__dirname+'/../../../package.json');
 	var fs = require('fs');
 	var desktopUtils = require('desktop-utils');
-	var appName = 'youngcorn';
+	var appName = packageJson.name;
 	var fontDb = {};
 
 	/**
@@ -32,18 +33,18 @@ module.exports = new (function(){
 	this.open = desktopUtils.open;
 
 	/**
-	 * フォントDB(JSON)の内容を取得する
+	 * DB(JSON)の内容を取得する
 	 */
-	this.getFontDb = function(cb){
+	this.getDb = function(cb){
 		cb = cb || function(){};
 		cb(fontDb);
 		return this;
 	}
 
 	/**
-	 * フォントDB(JSON)の内容をセットする
+	 * DB(JSON)の内容をセットする
 	 */
-	this.setFontDb = function(db, cb){
+	this.setDb = function(db, cb){
 		cb = cb || function(){};
 		fontDb = db;
 		cb(true);
@@ -51,9 +52,9 @@ module.exports = new (function(){
 	}
 
 	/**
-	 * フォントDB(JSON)の内容を読み込む
+	 * DB(JSON)の内容を読み込む
 	 */
-	this.loadFontDb = function(cb){
+	this.loadDb = function(cb){
 		cb = cb || function(){};
 		if(!this.initDataDir()){
 			cb(false);
@@ -71,9 +72,9 @@ module.exports = new (function(){
 	}
 
 	/**
-	 * フォントDB(JSON)の内容を保存する
+	 * DB(JSON)の内容を保存する
 	 */
-	this.saveFontDb = function(cb){
+	this.saveDb = function(cb){
 		cb = cb || function(){};
 		if(!this.initDataDir()){
 			cb(false);

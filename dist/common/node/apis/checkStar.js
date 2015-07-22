@@ -1,1 +1,1 @@
-module.exports=new function(){this.run=function(n,t,o){o.getFontDb(function(t){t[n.postscriptName].star=!0,o.setFontDb(t,function(){o.saveFontDb(function(n){console.log(n)})})})}};
+module.exports=new function(){this.run=function(n,t,o){o.getDb(function(t){t[n.postscriptName].star=!0,o.setDb(t,function(){o.saveDb(function(n){console.log(n)})})})}};

@@ -4,15 +4,34 @@ var autoprefixer = require("gulp-autoprefixer");//CSSにベンダープレフィ
 var uglify = require("gulp-uglify");//JavaScriptファイルの圧縮ツール
 var concat = require('gulp-concat');//ファイルの結合ツール
 var plumber = require("gulp-plumber");//コンパイルエラーが起きても watch を抜けないようになる
+var rename = require("gulp-rename");//ファイル名の置き換えを行う
+var twig = require("gulp-twig");//Twigテンプレートエンジン
 var packageJson = require(__dirname+'/package.json');
+var _tasks = [
+	'.html',
+	'.html.twig',
+	'.css',
+	'.css.scss',
+	'main.js',
+	'.js'
+];
 
 
-// src 中の *.scss を処理
-gulp.task('.scss', function(){
-	gulp.src("src/**/*.scss")
+// src 中の *.css.scss を処理
+gulp.task('.css.scss', function(){
+	gulp.src("src/**/*.css.scss")
 		.pipe(plumber())
 		.pipe(sass())
 		.pipe(autoprefixer())
+		.pipe(rename({extname: ''}))
+		.pipe(gulp.dest("./dist"))
+	;
+});
+
+// src 中の *.css を処理
+gulp.task('.css', function(){
+	gulp.src("src/**/*.css")
+		.pipe(plumber())
 		.pipe(gulp.dest("./dist"))
 	;
 });
@@ -44,9 +63,21 @@ gulp.task(".html", function() {
 	;
 });
 
+// *.html.twig を処理
+gulp.task(".html.twig", function() {
+	gulp.src(["src/**/*.html.twig"])
+		.pipe(plumber())
+		.pipe(twig({
+			data: {packageJson: packageJson}
+		}))
+		.pipe(rename({extname: ''}))
+		.pipe(gulp.dest("./dist"))
+	;
+});
+
 // src 中のすべての拡張子を監視して処理
 gulp.task("watch", function() {
-	gulp.watch(["src/**/*"],[".scss", "main.js",".js",".html"]);
+	gulp.watch(["src/**/*"], _tasks);
 
 	var port = packageJson.baobabConfig.defaultPort;
 	var svr = require('child_process').spawn('node',['./index_files/server.js','port='+port]);
@@ -61,9 +92,4 @@ gulp.task("watch", function() {
 });
 
 // src 中のすべての拡張子を処理(default)
-gulp.task("default", [
-	'.html',
-	'.scss',
-	'main.js',
-	'.js'
-]);
+gulp.task("default", _tasks);

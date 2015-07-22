@@ -1,7 +1,7 @@
 {
   "name": "YoungCorn",
   "version": "2.0.0-alpha1",
-  "description": "YoungCorn is the GUI App for Pickles 2.",
+  "description": "The GUI App for Pickles 2.",
   "main": "index.html",
   "scripts": {
     "start": "nw",
@@ -27,7 +27,9 @@
     "gulp-autoprefixer": "^2.3.1",
     "gulp-concat": "^2.6.0",
     "gulp-plumber": "^1.0.1",
+    "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.0.1",
+    "gulp-twig": "^0.3.0",
     "gulp-uglify": "^1.2.0",
     "node-webkit-builder": "1.0.*",
     "nw": "^0.12.2",

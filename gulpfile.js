@@ -80,14 +80,10 @@ gulp.task("watch", function() {
 	gulp.watch(["src/**/*"], _tasks);
 
 	var port = packageJson.baobabConfig.defaultPort;
-	var svr = require('child_process').spawn('node',['./index_files/server.js','port='+port]);
-	svr.stdout.on('data', function(data){
-		console.log(data.toString());
+	var svrCtrl = require(__dirname+'/index_files/_svrCtrl.js');
+	svrCtrl.boot(function(){
+		require('child_process').spawn('open',[svrCtrl.getUrl()]);
 	});
-	svr.stderr.on('data', function(data){
-		console.log(data.toString());
-	});
-	require('child_process').spawn('open',['http://127.0.0.1:'+port+'/']);
 
 });
 

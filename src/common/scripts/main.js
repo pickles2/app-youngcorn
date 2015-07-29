@@ -20,8 +20,10 @@ window.main = new (function($){
 	})();
 	this.apis = new (function(){})();
 
-	function init(){
+	function init(callback){
+		callback = callback || function(){};
 		window.focus();
+		$(window).resize(windowResized);
 
 		socket = io.connect('http://'+window.location.host);
 		socket.on('command', function (cmd) {
@@ -32,13 +34,23 @@ window.main = new (function($){
 				window.main.apis[cmd.api].run(cmd, socket, window.main);
 			}
 		});
+
+		callback();
 	}
 
 	function windowResized(){
+		console.log('window resized');
 	}
 
-	$(window).load(function(){
-		init();
-	});
+	/**
+	 * initialize
+	 * @param  {Function} callback Callback function.
+	 * @return {Object}            return this;
+	 */
+	this.init = function(callback){
+		callback = callback || function(){};
+		init(callback);
+		return this;
+	}
 
 })(jQuery);

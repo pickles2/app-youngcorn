@@ -17,12 +17,12 @@
 	/**
 	 * システムコマンドを実行する(exec)
 	 */
-	exports.exec = function(cmd, fnc, opts){
+	exports.exec = function(cmd, callback, opts){
 		opts = opts||{};
 		if( opts.cd ){
 			process.chdir( opts.cd );
 		}
-		var proc = require('child_process').exec(cmd, fnc);
+		var proc = require('child_process').exec(cmd, callback);
 		if( opts.cd ){
 			process.chdir( _pathCurrentDir );
 		}
@@ -32,15 +32,13 @@
 	/**
 	 * システムコマンドを実行する(spawn)
 	 */
-	exports.spawn = function(cmd, cliOpts, opts){
+	exports.spawn = function(cmds, opts){
 		opts = opts||{};
 		if( opts.cd ){
 			process.chdir( opts.cd );
 		}
-		// console.log( opts.cd );
-		// console.log( process.cwd() );
 
-		var proc = require('child_process').spawn(cmd, cliOpts);
+		var proc = require('child_process').spawn(cmds.slice(0,1)[0], cmds.slice(1));
 		if( opts.success ){ proc.stdout.on('data', opts.success); }
 		if( opts.error ){ proc.stderr.on('data', opts.error); }
 		if( opts.complete ){ proc.on('close', opts.complete); }
@@ -48,9 +46,56 @@
 		if( opts.cd ){
 			process.chdir( _pathCurrentDir );
 		}
-		// console.log( process.cwd() );
-
 		return proc;
+	}
+
+	/**
+	 * 直列処理
+	 */
+	exports.iterate = function(ary, fnc, fncComplete){
+		new (function( ary, fnc, fncComplete ){
+			this.idx = -1;
+			this.idxs = [];
+			for( var i in ary ){
+				this.idxs.push(i);
+			}
+			this.ary = ary||[];
+			this.fnc = fnc||function(){};
+			this.fncComplete = fncComplete||function(){};
+
+			this.next = function(){
+				if( this.idx+1 >= this.idxs.length ){
+					this.fncComplete();
+					return this;
+				}
+				this.idx ++;
+				this.fnc( this, this.ary[this.idxs[this.idx]], this.idxs[this.idx] );
+				return this;
+			}
+			this.next();
+		})(ary, fnc, fncComplete);
+	}
+
+	/**
+	 * 関数の直列処理
+	 */
+	exports.iterateFnc = function(aryFuncs){
+		function iterator( aryFuncs ){
+			aryFuncs = aryFuncs||[];
+
+			var idx = 0;
+			var funcs = aryFuncs;
+
+			this.start = function(arg){
+				arg = arg||{};
+				if(funcs.length <= idx){return this;}
+				(funcs[idx++])(this, arg);
+				return this;
+			}
+
+			this.next = this.start;
+		}
+		return new iterator(aryFuncs);
 	}
 
 	/**
@@ -130,11 +175,11 @@
 
 	/**
 	 * パス情報から、拡張子を除いたファイル名を取得する。
-	 * 
+	 *
 	 * @param string $path 対象のパス
 	 * @return string 拡張子が除かれたパス
 	 */
-	exports.trim_extension = function( $path ){
+	exports.trimExtension = function( $path ){
 		var $pathinfo = this.parsePath( $path );
 		var $RTN = $path.replace( new RegExp('\\.'+this.escapeRegExp( $pathinfo.ext )+'$') , '' );
 		return $RTN;
@@ -291,10 +336,10 @@
 
 	/**
 	 * ディレクトリを削除する。
-	 * 
+	 *
 	 * このメソッドはディレクトリを削除します。
 	 * 中身のない、空のディレクトリ以外は削除できません。
-	 * 
+	 *
 	 * @param string $path 対象ディレクトリのパス
 	 * @return bool 成功時に `true`、失敗時に `false` を返します。
 	 */
@@ -304,9 +349,9 @@
 
 	/**
 	 * ディレクトリを再帰的に削除する。
-	 * 
+	 *
 	 * このメソッドはディレクトリを中身ごと再帰的に削除します。
-	 * 
+	 *
 	 * @param string $path 対象ディレクトリのパス
 	 * @return bool 成功時に `true`、失敗時に `false` を返します。
 	 */
@@ -353,200 +398,11 @@
 
 
 	/**
-	 * 絶対パスを得る。
-	 * 
-	 * パス情報を受け取り、スラッシュから始まるサーバー内部絶対パスに変換して返します。
-	 * 
-	 * このメソッドは、PHPの `realpath()` と異なり、存在しないパスも絶対パスに変換します。
-	 * 
-	 * @param string $path 対象のパス
-	 * @param string $cd カレントディレクトリパス。実在する有効なディレクトリのパス、または絶対パスの表現で指定される必要があります。省略時、カレントディレクトリを自動採用します。
-	 * @return string 絶対パス
-	 */
-	exports.get_realpath = function( $path, $cd ){
-		var $is_dir = false;
-		if( $path.match( new RegExp('(\\/|\\\\)+$') ) ){
-			$is_dir = true;
-		}
-		$path = this.localize_path($path);
-		if( $cd === null || $cd === undefined ){ $cd = '.'; }
-		$cd = this.localize_path($cd);
-		var $preg_dirsep = this.escapeRegExp( DIRECTORY_SEPARATOR );
-
-		if( this.isDirectory($cd) ){
-			$cd = _fs.realpathSync($cd);
-		}else if( !$cd.match(new RegExp('^((?:[A-Za-z]\\:'+$preg_dirsep+')|'+$preg_dirsep+'{1,2})(.*?)$') ) ){
-			$cd = false;
-		}
-		if( $cd === false ){
-			return false;
-		}
-
-		var $prefix = '';
-		var $localpath = $path;
-		if( $path.match( new RegExp('^((?:[A-Za-z]\\:'+$preg_dirsep+')|'+$preg_dirsep+'{1,2})(.*?)$') ) ){
-			// もともと絶対パスの指定か調べる
-			$prefix = RegExp.$1;
-			$localpath = RegExp.$2;
-
-			$prefix = $prefix.replace( new RegExp(''+$preg_dirsep+'$'), '');
-			$cd = null; // 元の指定が絶対パスだったら、カレントディレクトリは関係ないので捨てる。
-		}
-
-		$path = (typeof($cd)===typeof('')?$cd:'')+DIRECTORY_SEPARATOR+'.'+DIRECTORY_SEPARATOR+$localpath;
-
-		if( this.isFile( $prefix.$path ) ){
-			$rtn = _fs.realpathSync( $prefix.$path );
-			if( $is_dir && $rtn != _fs.realpathSync('/') ){
-				$rtn += DIRECTORY_SEPARATOR;
-			}
-			return $rtn;
-		}
-
-		var $paths = $path.split( DIRECTORY_SEPARATOR );
-		$path = '';
-		for( var $idx in $paths ){
-			var $row = $paths[$idx];
-			if( $row == '' || $row == '.' ){
-				continue;
-			}
-			if( $row == '..' ){
-				$path = this.dirname($path);
-				if($path == DIRECTORY_SEPARATOR){
-					$path = '';
-				}
-				continue;
-			}
-			if(!($idx===0 && DIRECTORY_SEPARATOR == '\\' && $row.match(new RegExp('^[a-zA-Z]\:$','s')))){
-				$path += DIRECTORY_SEPARATOR;
-			}
-			$path += $row;
-		}
-
-		var $rtn = $prefix+$path;
-		if( $is_dir ){
-			$rtn += DIRECTORY_SEPARATOR;
-		}
-		return $rtn;
-	}// get_realpath()
-
-
-	/**
-	 * 相対パスを得る。
-	 * 
-	 * パス情報を受け取り、ドットスラッシュから始まる相対絶対パスに変換して返します。
-	 * 
-	 * @param string $path 対象のパス
-	 * @param string $cd カレントディレクトリパス。実在する有効なディレクトリのパス、または絶対パスの表現で指定される必要があります。省略時、カレントディレクトリを自動採用します。
-	 * @return string 相対パス
-	 */
-	exports.get_relatedpath = function( $path, $cd ){
-		var $is_dir = false;
-		if( $path.match( new RegExp('(\/|\\\\)+$','s') ) ){
-			$is_dir = true;
-		}
-		if( typeof($cd) === typeof('') && $cd.length ){
-			$cd = _fs.realpathSync('.');
-		}else if( this.isDirectory($cd) ){
-			$cd = _fs.realpathSync($cd);
-		}else if( this.isFile($cd) ){
-			$cd = _fs.realpathSync(this.dirname($cd));
-		}
-		var $normalize = function( $tmp_path ){
-			var $tmp_path = this.localize_path( $tmp_path );
-			var $preg_dirsep = this.escapeRegExp( DIRECTORY_SEPARATOR );
-			if( DIRECTORY_SEPARATOR == '\\' ){
-				$tmp_path = preg_replace( '/^[a-zA-Z]\:/s', '', $tmp_path );
-			}
-			$tmp_path = preg_replace( '/^('+$preg_dirsep+')+/s', '', $tmp_path );
-			$tmp_path = preg_replace( '/('+$preg_dirsep+')+$/s', '', $tmp_path );
-			if( strlen($tmp_path) ){
-				$tmp_path = explode( DIRECTORY_SEPARATOR, $tmp_path );
-			}else{
-				$tmp_path = [];
-			}
-
-			return $tmp_path;
-		};
-
-		$cd = $normalize($cd);
-		$path = $normalize($path);
-
-		var $rtn = [];
-		while( 1 ){
-			if( !count($cd) || !count($path) ){
-				break;
-			}
-			if( $cd[0] === $path[0] ){
-				array_shift( $cd );
-				array_shift( $path );
-				continue;
-			}
-			break;
-		}
-		if( $cd.length ){
-			for(var idx in $cd){
-				var $dirname = $cd[idx];
-				$rtn.push('..');
-			}
-		}else{
-			$rtn.push('.');
-		}
-		$rtn = array_merge( $rtn, $path );
-		$rtn = implode( DIRECTORY_SEPARATOR, $rtn );
-
-		if( $is_dir ){
-			$rtn += DIRECTORY_SEPARATOR;
-		}
-		return $rtn;
-	}// get_relatedpath()
-
-	/**
-	 * パスをOSの標準的な表現に変換する。
-	 *  
-	 * 受け取ったパスを、OSの標準的な表現に変換します。
-	 * - スラッシュとバックスラッシュの違いを吸収し、`DIRECTORY_SEPARATOR` に置き換えます。
-	 * 
-	 * @param string $path ローカライズするパス
-	 * @return string ローカライズされたパス
-	 */
-	exports.localize_path = function($path){
-		if( typeof($path) !== typeof('') ){return $path;}
-		// $path = this.convert_filesystem_encoding( $path );//文字コードを揃える
-		$path = $path.replace( new RegExp('\\/|\\\\'), '/' );//一旦スラッシュに置き換える。
-		if( this.is_unix() ){
-			// Windows以外だった場合に、ボリュームラベルを受け取ったら削除する
-			$path = $path.replace( new RegExp('^[A-Z]\\:\\/'), '/' );//Windowsのボリュームラベルを削除
-		}
-		$path = $path.replace( new RegExp('\\/+'), '/' );//重複するスラッシュを1つにまとめる
-		$path = $path.replace( new RegExp('\\/|\\\\'), DIRECTORY_SEPARATOR );
-		return $path;
-	}
-
-	/**
-	 * パスを正規化する。
-	 * 
-	 * 受け取ったパスを、スラッシュ区切りの表現に正規化します。
-	 * 
-	 * @param string $path 正規化するパス
-	 * @return string 正規化されたパス
-	 */
-	exports.normalize_path = function($path){
-		if( typeof($path) !== typeof('') ){return $path;}
-		// $path = this.convert_encoding( $path );//文字コードを揃える
-		$path = $path.replace( new RegExp('\\/|\\\\'), '/' );//一旦スラッシュに置き換える。
-		// ボリュームラベルを受け取ったら削除する
-		$path = $path.replace( new RegExp('^[A-Z]\\:\\/'), '/' );//Windowsのボリュームラベルを削除
-		$path = $path.replace( new RegExp('\\/+'), '/' );//重複するスラッシュを1つにまとめる
-		return $path;
-	}
-
-	/**
 	 * サーバがUNIXパスか調べる。
-	 * 
+	 *
 	 * @return bool UNIXパスなら `true`、それ以外なら `false` を返します。
 	 */
-	exports.is_unix = function(){
+	exports.isUnix = function(){
 		if( DIRECTORY_SEPARATOR == '/' ){
 			return true;
 		}
@@ -555,65 +411,16 @@
 
 	/**
 	 * サーバがWindowsパスか調べる。
-	 * 
+	 *
 	 * @return bool Windowsパスなら `true`、それ以外なら `false` を返します。
 	 */
-	exports.is_windows = function(){
+	exports.isWindows = function(){
 		if( DIRECTORY_SEPARATOR == '\\' ){
 			return true;
 		}
 		return false;
 	}//is_windows()
 
-
-	/**
-	 * 直列処理
-	 */
-	exports.iterate = function(ary, fnc, fncComplete){
-		new (function( ary, fnc ){
-			this.idx = -1;
-			this.idxs = [];
-			for( var i in ary ){
-				this.idxs.push(i);
-			}
-			this.ary = ary||[];
-			this.fnc = fnc||function(){};
-			this.fncComplete = fncComplete||function(){};
-
-			this.next = function(){
-				if( this.idx+1 >= this.idxs.length ){
-					this.fncComplete();
-					return this;
-				}
-				this.idx ++;
-				this.fnc( this, this.ary[this.idxs[this.idx]], this.idxs[this.idx] );
-				return this;
-			}
-			this.next();
-		})(ary, fnc);
-	}
-
-	/**
-	 * 関数の直列処理
-	 */
-	exports.iterateFnc = function(aryFuncs){
-		function iterator( aryFuncs ){
-			aryFuncs = aryFuncs||[];
-
-			var idx = 0;
-			var funcs = aryFuncs;
-
-			this.start = function(arg){
-				arg = arg||{};
-				if(funcs.length <= idx){return this;}
-				(funcs[idx++])(this, arg);
-				return this;
-			}
-
-			this.next = this.start;
-		}
-		return new iterator(aryFuncs);
-	}
 
 	/**
 	 * URIパラメータをパースする
@@ -652,10 +459,6 @@
 		});
 
 		return marked(src);
-
-		// var markdown = require( "markdown" ).markdown;
-		// var rtn = markdown.toHTML( src );
-		// return rtn;
 	}
 
 	/**

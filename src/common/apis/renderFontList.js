@@ -1,7 +1,7 @@
 /**
  * API: renderFontList
  */
-window.main.apis.renderFontList = new (function(){
+module.exports = new (function(){
 
 	this.run = function(cmd, socket, main){
 		// console.log(cmd);

@@ -4,28 +4,11 @@
 		<meta charset="utf-8" />
 		<title>{{ packageJson.name }} - {{ packageJson.description }}</title>
 
-		<!-- jQuery -->
-		<script src="/bower_components/jquery/dist/jquery.js"></script>
-
 		<!-- Bootstrap -->
 		<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
-		<script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
-
-		<!-- Twig -->
-		<script src="/bower_components/twig.js/twig.js"></script>
-
-		<!-- socket.io -->
-		<script src="/socket.io/socket.io.js" type="text/javascript"></script>
 
 		<!-- common -->
 		<link rel="stylesheet" href="/common/styles/common.css" />
-		<script src="/common/scripts/main.js"></script>
-
-		<script>
-			$(window.main.init(function(){
-				console.log('Started!');
-			}));
-		</script>
 	</head>
 	<body>
 		<header class="t-header">
@@ -36,5 +19,27 @@
 		<div class="container">
 			<div class="contents"></div>
 		</div>
+
+
+		<!-- jQuery -->
+		<script src="/bower_components/jquery/dist/jquery.js"></script>
+
+		<!-- Bootstrap -->
+		<script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+
+		<!-- Twig -->
+		<script src="/bower_components/twig.js/twig.js"></script>
+
+		<!-- socket.io -->
+		<script src="/socket.io/socket.io.js" type="text/javascript"></script>
+
+		<!-- common -->
+		<script src="/common/main.js"></script>
+
+		<script>
+			$(window.main.init(function(){
+				console.log('Started!');
+			}));
+		</script>
 	</body>
 </html>

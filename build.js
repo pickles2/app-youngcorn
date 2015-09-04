@@ -1,5 +1,5 @@
 var _utils = require('./index_files/_utils.node.js');
-var NwBuilder = require('node-webkit-builder');
+var NwBuilder = require('nw-builder');
 var zipFolder = require('zip-folder');
 var rmdir_r = require('rmdir');
 var packageJson = require('./package.json');
@@ -135,4 +135,3 @@ _utils.iterateFnc([
     itMainProcess.next();
   }
 ]).start({});
-

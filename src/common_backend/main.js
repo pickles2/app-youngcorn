@@ -2,7 +2,7 @@
  * main.js
  */
 module.exports = new (function(){
-	var packageJson = require(__dirname+'/../../../package.json');
+	var packageJson = require(__dirname+'/../../package.json');
 	var fs = require('fs');
 	var desktopUtils = require('desktop-utils');
 	var appName = packageJson.name;

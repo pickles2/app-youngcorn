@@ -1,3 +1,6 @@
+/**
+ * main.js
+ */
 new (function($, window){
 	window.main = this;
 	var _this = this;
@@ -5,6 +8,7 @@ new (function($, window){
 	var _utils = require('./index_files/_utils.node.js');
 	var _svrCtrl = require('./index_files/_svrCtrl.js');
 	var _nw_gui = require('nw.gui');
+	var it79 = require('iterate79');
 	var php = require('phpjs');
 	var path = require('path');
 	var packageJson = require('./package.json');
@@ -43,6 +47,7 @@ new (function($, window){
 				.attr({'src':url})
 			;
 			$('body')
+				.css({'overflow':'hidden'})
 				.html($mainFrame)
 			;
 			windowResize();
@@ -55,7 +60,7 @@ new (function($, window){
 		$mainFrame
 			.css({
 				'width':'100%',
-				'height':$(window).innerHeight()-4
+				'height':$(window).innerHeight() - 0
 			})
 		;
 	}

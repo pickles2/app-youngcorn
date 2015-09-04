@@ -3,7 +3,7 @@ var path = require('path');
 var express = require('express'),
 	app = express();
 var server = require('http').Server(app);
-var main = require(__dirname+'/../dist/common/node/main.js');
+var main = require(__dirname+'/../dist/common_backend/main.js');
 var packageJson = require(__dirname+'/../package.json');
 
 // オプションを整理
@@ -40,14 +40,11 @@ io.on('connection', function (socket) {
 		cmd.api = cmd.api || '';
 		var commandName = cmd.api.replace(new RegExp('[^a-zA-Z0-9\\_\\-]+','g'), '');
 
-		if( fs.existsSync(__dirname+'/../dist/common/node/apis/'+cmd.api+'.js') ){
+		if( fs.existsSync(__dirname+'/../dist/common_backend/apis/'+cmd.api+'.js') ){
 			console.log( cmd );
-			var api = require(__dirname+'/../dist/common/node/apis/'+cmd.api+'.js');
+			var api = require(__dirname+'/../dist/common_backend/apis/'+cmd.api+'.js');
 			api.run(cmd, socket, main);
 		}
 		return;
 	});
 });
-
-
-

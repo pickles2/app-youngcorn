@@ -6,6 +6,7 @@ var concat = require('gulp-concat');//ファイルの結合ツール
 var plumber = require("gulp-plumber");//コンパイルエラーが起きても watch を抜けないようになる
 var rename = require("gulp-rename");//ファイル名の置き換えを行う
 var twig = require("gulp-twig");//Twigテンプレートエンジン
+var browserify = require("gulp-browserify");//NodeJSのコードをブラウザ向けコードに変換
 var packageJson = require(__dirname+'/package.json');
 var _tasks = [
 	'.html',
@@ -36,11 +37,13 @@ gulp.task('.css', function(){
 	;
 });
 
-// main.js を処理
+// main.js (frontend) を処理
 gulp.task("main.js", function() {
-	gulp.src(["src/common/scripts/**/*.js"])
+	gulp.src(["src/common/main.js"])
+		.pipe(browserify({
+		}))
 		.pipe(plumber())
-		.pipe(concat('common/scripts/main.js'))
+		.pipe(concat('common/main.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest("./dist"))
 	;
@@ -48,7 +51,7 @@ gulp.task("main.js", function() {
 
 // *.js を処理
 gulp.task(".js", function() {
-	gulp.src(["src/**/*.js", "!src/common/scripts/**/*"])
+	gulp.src(["src/**/*.js", "!src/common/**/*"])
 		.pipe(plumber())
 		.pipe(uglify())
 		.pipe(gulp.dest("./dist"))

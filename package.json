@@ -14,6 +14,7 @@
     "desktop-utils": "0.0.1",
     "express": "^4.13.0",
     "glob": "^5.0.10",
+    "iterate79": "0.0.1",
     "marked": "^0.3.3",
     "mkdirp": "0.*",
     "node-php-bin": "0.0.1",
@@ -27,6 +28,7 @@
   "devDependencies": {
     "gulp": "^3.8.10",
     "gulp-autoprefixer": "^2.3.1",
+    "gulp-browserify": "^0.5.1",
     "gulp-concat": "^2.6.0",
     "gulp-plumber": "^1.0.1",
     "gulp-rename": "^1.2.2",
@@ -34,8 +36,8 @@
     "gulp-twig": "^0.3.0",
     "gulp-uglify": "^1.2.0",
     "mocha": "^2.1.0",
-    "node-webkit-builder": "1.0.*",
     "nw": "^0.12.2",
+    "nw-builder": "2.0.*",
     "phantomjs": "^1.9.17",
     "zip-folder": "^1.0.0"
   },

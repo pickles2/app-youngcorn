@@ -18,25 +18,6 @@ window.main = new (function($){
 		rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '');
 		return rtn;
 	})();
-	this.apis = new (function(){})();
-
-	function init(callback){
-		callback = callback || function(){};
-		window.focus();
-		$(window).resize(windowResized);
-
-		socket = io.connect('http://'+window.location.host);
-		socket.on('command', function (cmd) {
-			// console.log(cmd);
-			cmd = cmd || {};
-			cmd.api = cmd.api || '';
-			if( window.main.apis[cmd.api] ){
-				window.main.apis[cmd.api].run(cmd, socket, window.main);
-			}
-		});
-
-		callback();
-	}
 
 	function windowResized(){
 		console.log('window resized');
@@ -49,7 +30,23 @@ window.main = new (function($){
 	 */
 	this.init = function(callback){
 		callback = callback || function(){};
-		init(callback);
+		window.focus();
+		$(window).resize(windowResized);
+
+		this.apis = new (function(){})();
+		this.apis.renderFontList = require('./apis/renderFontList.js');
+
+		socket = io.connect('http://'+window.location.host);
+		socket.on('command', function (cmd) {
+			// console.log(cmd);
+			cmd = cmd || {};
+			cmd.api = cmd.api || '';
+			if( window.main.apis[cmd.api] ){
+				window.main.apis[cmd.api].run(cmd, socket, window.main);
+			}
+		});
+
+		setTimeout(function(){callback();}, 0);
 		return this;
 	}
 

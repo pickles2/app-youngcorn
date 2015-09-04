@@ -4,9 +4,9 @@
 new (function($, window){
 	window.main = this;
 	var _this = this;
+	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
 	window.focus();
-	var _utils = require('./index_files/_utils.node.js');
-	var _svrCtrl = require('./index_files/_svrCtrl.js');
+	var _svrCtrl = require('./framework/baobabFw/main.js').createSvrCtrl();
 	var _nw_gui = require('nw.gui');
 	var it79 = require('iterate79');
 	var php = require('phpjs');
@@ -14,17 +14,6 @@ new (function($, window){
 	var packageJson = require('./package.json');
 	var $mainFrame;
 	var serverProc;
-	var __dirname = (function() {
-		if (document.currentScript) {
-			return document.currentScript.src;
-		} else {
-			var scripts = document.getElementsByTagName('script'),
-			script = scripts[scripts.length-1];
-			if (script.src) {
-				return script.src;
-			}
-		}
-	})().replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '');
 
 	$(window).load(function(){
 
@@ -80,7 +69,7 @@ new (function($, window){
 	});
 	process.on( 'uncaughtException', function(e){
 		// alert('ERROR: Uncaught Exception');
-		console.log(e.message);
+		// console.log(e.message);
 		console.log('ERROR: Uncaught Exception');
 	} );
 

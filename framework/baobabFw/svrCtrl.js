@@ -3,13 +3,13 @@
  */
 (function(exports){
 
+	var fs = require('fs');
 	var php = require('phpjs');
-	var _utils = require(__dirname+'/../index_files/_utils.node.js');
-	var packageJson = require(__dirname+'/../package.json');
+	var packageJson = require(__dirname+'/../../package.json');
 	var port = packageJson.baobabConfig.defaultPort;
 	var svr;
 	var _this = exports;
-    var serverProc;
+	var serverProc;
 
 	/**
 	 * server start
@@ -19,15 +19,15 @@
 		console.log('sever port: '+(port+retry));
 		cb = cb || function(){};
 
-		var script_path = './index_files/server.js';
-		if(!_utils.isFile(script_path)){
+		var script_path = __dirname+'/server.js';
+		if( !fs.existsSync(script_path) ){
 			console.log('ERROR: server script is NOT defined.');
 			process.exit();
 		}
 
 		serverProc = require('child_process')
 			.spawn(
-				__dirname+'/../index_files/node/node'+(process.platform=='win32'?'.exe':''),
+				__dirname+'/node/node'+(process.platform=='win32'?'.exe':''),
 				[
 					script_path,
 					'port='+(port+retry)
@@ -47,7 +47,8 @@
 					console.log(message);
 					switch(message){
 						case 'server-standby':
-							cb('http://127.0.0.1:'+(port+retry));
+							port = port+retry;
+							cb('http://127.0.0.1:'+(port));
 							break;
 						default:
 							// $('body').append('<div>unknown message.</div>');
@@ -118,4 +119,4 @@
         return _this;
     }
 
-})(exports);
+})(module.exports);

@@ -31,7 +31,7 @@ new (function($, window){
 		})();
 
 		_svrCtrl.boot( function(url){
-			console.log('server standby!!!!');
+			console.log('server standby!!');
 			$mainFrame = $('<iframe>')
 				.attr({'src':url})
 			;

@@ -3,11 +3,9 @@ var path = require('path');
 var express = require('express'),
 	app = express();
 var server = require('http').Server(app);
-var main = require(__dirname+'/../../dist/common_backend/main.js');
-var packageJson = require(__dirname+'/../../package.json');
-
-// オプションを整理
+var conf = require(__dirname+'/../conf.js');
 var options = (function(){
+	// console.log(process.argv);
 	var rtn = {};
 	for( var idx = 0; process.argv.length > idx; idx ++ ){
 		if(process.argv[idx].match(new RegExp('^(.*?)\=(.*)$'))){
@@ -16,15 +14,19 @@ var options = (function(){
 	}
 	return rtn;
 })();
+// console.log(options);
 
-// console.log(process.argv);
+var main = require(conf.get().backendJs);
+
+
+
 var _port = options['port'];
-if(!_port){_port = packageJson.baobabConfig.defaultPort;}
+if(!_port){_port = conf.get().defaultPort;}
 if(!_port){_port = 8080;}
 console.log('port number is '+_port);
 
 // middleware
-app.use( express.static( __dirname+'/../../dist/' ) );
+app.use( express.static( conf.get().frontendDocumentRoot ) );
 
 // {$_port}番ポートでLISTEN状態にする
 server.listen( _port, function(){
@@ -33,6 +35,16 @@ server.listen( _port, function(){
 
 var io = require('socket.io')(server);
 io.on('connection', function (socket) {
+	var soc = new (function(socket){
+		_this = this;
+		_this.socket = socket;
+		this.callback = function(api, args){
+			args.api = api;
+			this.socket.emit('command', args);
+			return this;
+		}
+	})(socket);
+
 	// console.log('Socket Connected.');
 	socket.on('command', function (cmd) {
 		var rtn = {};
@@ -40,10 +52,10 @@ io.on('connection', function (socket) {
 		cmd.api = cmd.api || '';
 		var commandName = cmd.api.replace(new RegExp('[^a-zA-Z0-9\\_\\-]+','g'), '');
 
-		if( fs.existsSync(__dirname+'/../../dist/common_backend/apis/'+cmd.api+'.js') ){
+		if( fs.existsSync(conf.get().backendApis+'/'+cmd.api+'.js') ){
 			console.log( cmd );
-			var api = require(__dirname+'/../../dist/common_backend/apis/'+cmd.api+'.js');
-			api.run(cmd, socket, main);
+			var api = require(conf.get().backendApis+'/'+cmd.api+'.js');
+			api.run(cmd, soc, main);
 		}
 		return;
 	});

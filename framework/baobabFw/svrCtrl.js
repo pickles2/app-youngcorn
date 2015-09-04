@@ -5,8 +5,8 @@
 
 	var fs = require('fs');
 	var php = require('phpjs');
-	var packageJson = require(__dirname+'/../../package.json');
-	var port = packageJson.baobabConfig.defaultPort;
+	var conf = require(__dirname+'/conf.js');
+	var port = conf.get().defaultPort;
 	var svr;
 	var _this = exports;
 	var serverProc;
@@ -19,7 +19,7 @@
 		console.log('sever port: '+(port+retry));
 		cb = cb || function(){};
 
-		var script_path = __dirname+'/server.js';
+		var script_path = __dirname+'/cmd/server.js';
 		if( !fs.existsSync(script_path) ){
 			console.log('ERROR: server script is NOT defined.');
 			process.exit();

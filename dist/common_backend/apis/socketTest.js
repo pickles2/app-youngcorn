@@ -1,0 +1,1 @@
+module.exports=new function(){this.run=function(n,o,t){o.callback("showSocketTest",n)}};

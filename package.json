@@ -64,6 +64,9 @@
     }
   },
   "baobabConfig": {
-    "defaultPort": 60603
+    "defaultPort": 60603,
+    "frontendDocumentRoot": "./dist/",
+    "backendJs": "./dist/common_backend/main.js",
+    "backendApis": "./dist/common_backend/apis/"
   }
 }

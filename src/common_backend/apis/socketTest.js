@@ -1,10 +1,11 @@
 /**
- * API: checkStar
+ * API: socketTest
  */
 module.exports = new (function(){
 
 	this.run = function( cmd, socket, main ){
-		console.log('checkStar');
+		socket.callback('showSocketTest', cmd);
+		return;
 	}
 
 })();

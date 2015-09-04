@@ -3,6 +3,7 @@ var NwBuilder = require('nw-builder');
 var zipFolder = require('zip-folder');
 var rmdir_r = require('rmdir');
 var packageJson = require('./package.json');
+var conf = require('./framework/baobabFw/main.js').conf();
 var phpjs = require('phpjs');
 var date = new Date();
 var appName = packageJson.name;
@@ -46,7 +47,7 @@ _utils.iterateFnc([
             './package.json',
             './index.html',
             './index_files/**',
-            './dist/**'
+            conf.get().frontendDocumentRoot+'/**'
           ];
           for(var i in dep){
             rtn.push( './node_modules/'+i+'/**' );

@@ -1,3 +1,4 @@
+var conf = require('./framework/baobabFw/main.js').conf();
 var gulp = require('gulp');
 var sass = require('gulp-sass');//CSSコンパイラ
 var autoprefixer = require("gulp-autoprefixer");//CSSにベンダープレフィックスを付与してくれる
@@ -25,7 +26,7 @@ gulp.task('.css.scss', function(){
 		.pipe(sass())
 		.pipe(autoprefixer())
 		.pipe(rename({extname: ''}))
-		.pipe(gulp.dest("./dist"))
+		.pipe(gulp.dest( conf.get().frontendDocumentRoot ))
 	;
 });
 
@@ -33,7 +34,7 @@ gulp.task('.css.scss', function(){
 gulp.task('.css', function(){
 	gulp.src("src/**/*.css")
 		.pipe(plumber())
-		.pipe(gulp.dest("./dist"))
+		.pipe(gulp.dest( conf.get().frontendDocumentRoot ))
 	;
 });
 
@@ -45,7 +46,7 @@ gulp.task("main.js", function() {
 		.pipe(plumber())
 		.pipe(concat('common/main.js'))
 		.pipe(uglify())
-		.pipe(gulp.dest("./dist"))
+		.pipe(gulp.dest( conf.get().frontendDocumentRoot ))
 	;
 });
 
@@ -54,7 +55,7 @@ gulp.task(".js", function() {
 	gulp.src(["src/**/*.js", "!src/common/**/*"])
 		.pipe(plumber())
 		.pipe(uglify())
-		.pipe(gulp.dest("./dist"))
+		.pipe(gulp.dest( conf.get().frontendDocumentRoot ))
 	;
 });
 
@@ -62,7 +63,7 @@ gulp.task(".js", function() {
 gulp.task(".html", function() {
 	gulp.src(["src/**/*.html", "src/**/*.htm"])
 		.pipe(plumber())
-		.pipe(gulp.dest("./dist"))
+		.pipe(gulp.dest( conf.get().frontendDocumentRoot ))
 	;
 });
 
@@ -74,7 +75,7 @@ gulp.task(".html.twig", function() {
 			data: {packageJson: packageJson}
 		}))
 		.pipe(rename({extname: ''}))
-		.pipe(gulp.dest("./dist"))
+		.pipe(gulp.dest( conf.get().frontendDocumentRoot ))
 	;
 });
 

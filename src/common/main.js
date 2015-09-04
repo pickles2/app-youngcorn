@@ -8,15 +8,14 @@ window.main = new (function($){
 		.createSocket(
 			this,
 			io,
-			'http://'+window.location.host,
 			{
-				'renderFontList': require('./apis/renderFontList.js')
+				'showSocketTest': require('./apis/showSocketTest.js')
 			}
 		)
 	;
 
 	function windowResized(){
-		console.log('window resized');
+		// console.log('window resized');
 	}
 
 	/**
@@ -30,6 +29,14 @@ window.main = new (function($){
 		$(window).resize(windowResized);
 
 		setTimeout(function(){callback();}, 0);
+		return this;
+	}
+
+	/**
+	 * WebSocket疎通確認
+	 */
+	this.socketTest = function(){
+		socket.send('socketTest', {'message': 'socketTest from frontend.'});
 		return this;
 	}
 

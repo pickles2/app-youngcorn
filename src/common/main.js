@@ -36,7 +36,14 @@ window.main = new (function($){
 	 * WebSocket疎通確認
 	 */
 	this.socketTest = function(){
-		socket.send('socketTest', {'message': 'socketTest from frontend.'});
+		socket.send(
+			'socketTest',
+			{'message': 'socketTest from frontend.'} ,
+			function(data){
+				alert('callback function is called!');
+				console.log(data);
+			}
+		);
 		return this;
 	}
 

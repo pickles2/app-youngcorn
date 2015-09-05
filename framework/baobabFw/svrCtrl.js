@@ -44,20 +44,18 @@
 				data = php.trim(dataRow[idx]);
 				if (data.match(new RegExp('^message\\:\s*(.*)$'))) {
 					message = php.trim(RegExp.$1);
-					console.log(message);
 					switch(message){
 						case 'server-standby':
 							port = port+retry;
+							console.log(message + ' ('+port+')');
 							cb('http://127.0.0.1:'+(port));
 							break;
 						default:
-							// $('body').append('<div>unknown message.</div>');
-							console.log('unknown message.');
+							console.log(message);
 							break;
 					}
 				}else{
-					// $('body').append('<div>no message.</div>');
-					console.log('no message.');
+					console.log('not a message.');
 				}
 			}
 		});

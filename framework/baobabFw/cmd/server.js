@@ -35,28 +35,43 @@ server.listen( _port, function(){
 
 var io = require('socket.io')(server);
 io.on('connection', function (socket) {
-	var soc = new (function(socket){
+	return new (function(socket){
 		_this = this;
 		_this.socket = socket;
-		this.callback = function(api, args){
-			args.api = api;
+		_this.temporaryApis = require(__dirname+'/../temporaryApis.js');
+		this.send = function(api, data, callback){
+			var args = {
+				api: api ,
+				data: data ,
+				callback: _this.temporaryApis.addNewFunction(callback)
+			};
 			this.socket.emit('command', args);
 			return this;
 		}
+
+		// console.log('Socket Connected.');
+		_this.socket.on('command', function (cmd) {
+			var rtn = {};
+			cmd = cmd || {};
+			cmd.api = cmd.api || '';
+			cmd.data = cmd.data || {};
+			cmd.callback = cmd.callback || null;
+			var commandName = cmd.api.replace(new RegExp('[^a-zA-Z0-9\\_\\-]+','g'), '');
+			console.log( 'message: [backend] on command' );
+			console.log( 'message: api: '+cmd.api+'; callback: '+cmd.callback );
+
+			var api = _this.temporaryApis.getCallbackFunction(cmd.api);
+			var temporaryApiName = cmd.callback;
+			if( !api && fs.existsSync( conf.get().backendApis+'/'+cmd.api+'.js' ) ){
+				api = require( conf.get().backendApis+'/'+cmd.api+'.js' );
+			}
+			if(api){
+				api( cmd.data, function(data){
+					_this.temporaryApis.callRemoteFunction( _this, temporaryApiName, data );
+				}, main, _this );
+			}
+			return;
+		});
 	})(socket);
 
-	// console.log('Socket Connected.');
-	socket.on('command', function (cmd) {
-		var rtn = {};
-		cmd = cmd || {};
-		cmd.api = cmd.api || '';
-		var commandName = cmd.api.replace(new RegExp('[^a-zA-Z0-9\\_\\-]+','g'), '');
-
-		if( fs.existsSync(conf.get().backendApis+'/'+cmd.api+'.js') ){
-			console.log( cmd );
-			var api = require(conf.get().backendApis+'/'+cmd.api+'.js');
-			api.run(cmd, soc, main);
-		}
-		return;
-	});
 });

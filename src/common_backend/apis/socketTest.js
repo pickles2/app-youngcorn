@@ -1,11 +1,8 @@
 /**
  * API: socketTest
  */
-module.exports = new (function(){
-
-	this.run = function( cmd, socket, main ){
-		socket.callback('showSocketTest', cmd);
-		return;
-	}
-
-})();
+module.exports = function( data, callback, main, socket ){
+	socket.send('showSocketTest', data);
+	callback(data);
+	return;
+}

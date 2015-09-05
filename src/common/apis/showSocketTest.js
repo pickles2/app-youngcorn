@@ -1,12 +1,9 @@
 /**
  * API: renderFontList
  */
-module.exports = new (function(){
-
-	this.run = function(cmd, socket, main){
-		console.log(cmd);
-		alert(cmd.message);
-		return;
-	}
-
-})();
+module.exports = function( data, callback, main, socket ){
+	console.log(data);
+	alert(data.message);
+	callback(data);
+	return;
+}

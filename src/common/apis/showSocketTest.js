@@ -1,5 +1,5 @@
 /**
- * API: renderFontList
+ * API: showSocketTest
  */
 module.exports = function( data, callback, main, socket ){
 	console.log(data);

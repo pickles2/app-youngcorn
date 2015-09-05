@@ -11,6 +11,7 @@
   "author": "Tomoya Koyanagi",
   "license": "BSD",
   "dependencies": {
+    "baobab-fw": "git://github.com/tomk79/BaobabFW.git",
     "desktop-utils": "0.0.1",
     "express": "^4.13.0",
     "glob": "^5.0.10",

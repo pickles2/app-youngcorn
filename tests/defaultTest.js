@@ -4,7 +4,7 @@ var path = require('path');
 var fs = require('fs');
 var phpjs = require('phpjs');
 var packageJson = require(__dirname+'/../package.json');
-var svrCtrl = require(__dirname+'/../index_files/_svrCtrl.js');
+var svrCtrl = require('baobab-fw').createSvrCtrl();
 
 
 describe('アプリケーション(ExpressServer)を起動する', function() {

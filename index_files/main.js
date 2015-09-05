@@ -6,7 +6,7 @@ new (function($, window){
 	var _this = this;
 	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
 	window.focus();
-	var _svrCtrl = require('./framework/baobabFw/main.js').createSvrCtrl();
+	var _svrCtrl = require('baobab-fw').createSvrCtrl();
 	var _nw_gui = require('nw.gui');
 	var it79 = require('iterate79');
 	var php = require('phpjs');

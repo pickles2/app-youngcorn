@@ -1,4 +1,4 @@
-var conf = require('./framework/baobabFw/main.js').conf();
+var conf = require('baobab-fw').conf();
 var gulp = require('gulp');
 var sass = require('gulp-sass');//CSSコンパイラ
 var autoprefixer = require("gulp-autoprefixer");//CSSにベンダープレフィックスを付与してくれる
@@ -84,7 +84,7 @@ gulp.task("watch", function() {
 	gulp.watch(["src/**/*"], _tasks);
 
 	var port = packageJson.baobabConfig.defaultPort;
-	var svrCtrl = require(__dirname+'/framework/baobabFw/main.js').createSvrCtrl();
+	var svrCtrl = require('baobab-fw').createSvrCtrl();
 	svrCtrl.boot(function(){
 		require('child_process').spawn('open',[svrCtrl.getUrl()]);
 	});

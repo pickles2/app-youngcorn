@@ -1,0 +1,35 @@
+{% extends "../common/templates/default.html.twig" %}
+
+{% block title %}HOME{% endblock title %}
+
+{% block head %}
+<!-- local -->
+<link rel="stylesheet" href="./index_files/cont.css" />
+{% endblock head %}
+
+{% block main %}
+<p>プロジェクトを<a href="/">再選択</a>へ。</p>
+
+{% endblock main %}
+
+
+{% block foot %}
+<!-- local -->
+<script src="./index_files/cont.js"></script>
+<script>
+	$(main.init(function(){
+		main.it79.fnc({}, [
+			function(it1, data){
+				// プロジェクト一覧を取得
+				main.socket.send('getProjectAll', {}, function(projects){
+					data.projects = projects;
+					it1.next(data);
+				});
+			} ,
+			function(it1, data){
+				console.log('Started!');
+			}
+		]);
+	}));
+</script>
+{% endblock foot %}

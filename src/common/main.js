@@ -4,7 +4,7 @@
 window.main = new (function($){
 	var it79 = this.it79 = require('iterate79');
 	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
-	var socket = require('baobab-fw')
+	var socket = this.socket = require('baobab-fw')
 		.createSocket(
 			this,
 			io,
@@ -25,10 +25,22 @@ window.main = new (function($){
 	 */
 	this.init = function(callback){
 		callback = callback || function(){};
-		window.focus();
-		$(window).resize(windowResized);
 
-		setTimeout(function(){callback();}, 0);
+		it79.fnc(
+			{},
+			[
+				function(it1, data){
+					window.focus();
+					it1.next();
+				} ,
+				function(it1, data){
+					$(window).resize(windowResized);
+					setTimeout(function(){
+						callback();
+					}, 0);
+				}
+			]
+		);
 		return this;
 	}
 

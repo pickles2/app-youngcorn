@@ -18,10 +18,10 @@
     "iterate79": "0.0.1",
     "marked": "^0.3.3",
     "mkdirp": "0.*",
-    "node-php-bin": "0.0.1",
+    "node-php-bin": "^0.0.1",
     "phpjs": "^1.3.2",
     "px2agent": "^2.0.0",
-    "px2dt-localdata-access": "^2.0.0-alpha1",
+    "px2dt-localdata-access": "git://github.com/tomk79/node-px2dt-localdata-access.git",
     "rmdir": "^1.1.0",
     "socket.io": "^1.3.5",
     "twig": "^0.8.2"
@@ -37,7 +37,7 @@
     "gulp-twig": "^0.3.0",
     "gulp-uglify": "^1.2.0",
     "mocha": "^2.1.0",
-    "nw": "^0.12.2",
+    "nw": "^0.12.3",
     "nw-builder": "2.0.*",
     "phantomjs": "^1.9.17",
     "zip-folder": "^1.0.0"

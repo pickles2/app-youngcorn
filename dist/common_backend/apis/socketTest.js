@@ -1,1 +1,1 @@
-module.exports=function(e,o,s,t){t.send("showSocketTest",e),o(e)};
+module.exports=function(e,o,n,s){e.main=n,s.send("showSocketTest",e),o(e)};

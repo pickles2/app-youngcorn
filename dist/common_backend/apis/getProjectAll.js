@@ -1,0 +1,1 @@
+module.exports=function(t,o,e,n){e.px2dtLDA.getProjectAll(function(t){o(t)})};

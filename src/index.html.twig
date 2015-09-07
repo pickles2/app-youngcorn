@@ -1,49 +1,71 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8" />
-		<title>{{ packageJson.name }} - {{ packageJson.description }}</title>
+{% extends "./common/templates/default.html.twig" %}
 
-		<!-- Bootstrap -->
-		<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
+{% block title %}HOME{% endblock title %}
 
-		<!-- common -->
-		<link rel="stylesheet" href="/common/styles/common.css" />
-	</head>
-	<body>
-		<header class="t-header">
-			<div class="container">
-				<h1>{{ packageJson.name }} <small>{{ packageJson.description }}</small></h1>
-			</div>
-		</header>
-		<div class="container">
-			<div class="contents">
-				<p>ようこそ。YoungCorn へ。</p>
-				<p>YoungCorn は、Pickles2 の GUI制作環境です。</p>
-				<p><button onclick="main.socketTest();return false;">疎通テスト</button></p>
-			</div>
-		</div>
+{% block head %}
+<!-- local -->
+<link rel="stylesheet" href="/index_files/cont.css" />
+{% endblock head %}
+
+{% block main %}
+<p>ようこそ。YoungCorn へ。</p>
+<p>YoungCorn は、Pickles2 の GUI制作環境です。</p>
+<p><button onclick="main.socketTest();return false;">疎通テスト</button></p>
+
+<div class="cont_project_list">
+</div>
+
+{% endblock main %}
 
 
-		<!-- jQuery -->
-		<script src="/bower_components/jquery/dist/jquery.js"></script>
-
-		<!-- Bootstrap -->
-		<script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
-
-		<!-- Twig -->
-		<script src="/bower_components/twig.js/twig.js"></script>
-
-		<!-- socket.io -->
-		<script src="/socket.io/socket.io.js" type="text/javascript"></script>
-
-		<!-- common -->
-		<script src="/common/main.js"></script>
-
-		<script>
-			$(window.main.init(function(){
+{% block foot %}
+<!-- local -->
+<script src="/index_files/cont.js"></script>
+<script id="template-projectList" type="text/template">
+{% raw %}
+<li>
+	<h2><a href="/project/index.html?id={{id}}">{{data.name}}</a></h2>
+	<div>{{data.path}}</div>
+</li>
+{% endraw %}
+</script>
+<script>
+	$(main.init(function(){
+		main.it79.fnc({}, [
+			function(it1, data){
+				// プロジェクト一覧を取得
+				main.socket.send('getProjectAll', {}, function(projects){
+					data.projects = projects;
+					it1.next(data);
+				});
+			} ,
+			function(it1, data){
+				// プロジェクト一覧を描画
+				var tpl = $('#template-projectList').html();
+				var $ul = $('<ul>');
+				main.it79.ary(
+					data.projects,
+					function(it2, row, idx){
+						// console.log(row);
+						var html =
+							twig({data: tpl})
+							.render({id: idx, data: row})
+						;
+						$ul.append(html);
+						it2.next();
+					},
+					function(){
+						$('.cont_project_list').html('').append($ul);
+						it1.next();
+					}
+				);
+				console.log(data);
+				it1.next(data);
+			} ,
+			function(it1, data){
 				console.log('Started!');
-			}));
-		</script>
-	</body>
-</html>
+			}
+		]);
+	}));
+</script>
+{% endblock foot %}

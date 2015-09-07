@@ -12,7 +12,7 @@
 
 
 <!-- local -->
-<link rel="stylesheet" href="/index_files/cont.css" />
+<link rel="stylesheet" href="./index_files/cont.css" />
 
 	</head>
 	<body>
@@ -24,12 +24,7 @@
 		<div class="container">
 			<div class="contents">
 
-<p>ようこそ。YoungCorn へ。</p>
-<p>YoungCorn は、Pickles2 の GUI制作環境です。</p>
-<p><button onclick="main.socketTest();return false;">疎通テスト</button></p>
-
-<div class="cont_project_list">
-</div>
+<p>プロジェクトを<a href="/">再選択</a>へ。</p>
 
 
 			</div>
@@ -53,13 +48,7 @@
 
 
 <!-- local -->
-<script src="/index_files/cont.js"></script>
-<script id="template-projectList" type="text/template">
-<li>
-	<h2><a href="/project/index.html?id={{id}}">{{data.name}}</a></h2>
-	<div>{{data.path}}</div>
-</li>
-</script>
+<script src="./index_files/cont.js"></script>
 <script>
 	$(main.init(function(){
 		main.it79.fnc({}, [
@@ -69,29 +58,6 @@
 					data.projects = projects;
 					it1.next(data);
 				});
-			} ,
-			function(it1, data){
-				// プロジェクト一覧を描画
-				var tpl = $('#template-projectList').html();
-				var $ul = $('<ul>');
-				main.it79.ary(
-					data.projects,
-					function(it2, row, idx){
-						// console.log(row);
-						var html =
-							twig({data: tpl})
-							.render({id: idx, data: row})
-						;
-						$ul.append(html);
-						it2.next();
-					},
-					function(){
-						$('.cont_project_list').html('').append($ul);
-						it1.next();
-					}
-				);
-				console.log(data);
-				it1.next(data);
 			} ,
 			function(it1, data){
 				console.log('Started!');

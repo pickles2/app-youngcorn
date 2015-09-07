@@ -1,10 +1,10 @@
 /**
- * API: socketTest
+ * API: getProjectAll
  */
 module.exports = function( data, callback, main, socket ){
 	// console.log(main);
-	data.main = main;
-	socket.send('showSocketTest', data);
-	callback(data);
+	main.px2dtLDA.getProjectAll(function(projects){
+		callback(projects);
+	});
 	return;
 }

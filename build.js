@@ -47,7 +47,8 @@ _utils.iterateFnc([
             './package.json',
             './index.html',
             './index_files/**',
-            conf.get().frontendDocumentRoot+'/**'
+            './dist/**',
+            './backend/**'
           ];
           for(var i in dep){
             rtn.push( './node_modules/'+i+'/**' );

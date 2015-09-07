@@ -1,71 +1,82 @@
-{% extends "./common/templates/default.html.twig" %}
-
+{% extends "./common/templates/top.html.twig" %}
 {% block title %}HOME{% endblock title %}
 
+
+
 {% block head %}
-<!-- local -->
-<link rel="stylesheet" href="/index_files/cont.css" />
+	<!-- local -->
+	<link rel="stylesheet" href="./index_files/cont.css" />
 {% endblock head %}
 
+
+
 {% block main %}
-<p>ようこそ。YoungCorn へ。</p>
-<p>YoungCorn は、Pickles2 の GUI制作環境です。</p>
-<p><button onclick="main.socketTest();return false;">疎通テスト</button></p>
+	<p>ようこそ。YoungCorn へ。</p>
+	<p>YoungCorn は、Pickles2 の GUI制作環境です。</p>
+	<p><button class="btn btn-default" onclick="main.socketTest();return false;">疎通テスト</button></p>
 
-<div class="cont_project_list">
-</div>
-
+	<div class="cont_project_list">
+	</div>
 {% endblock main %}
 
 
+
+
 {% block foot %}
-<!-- local -->
-<script src="/index_files/cont.js"></script>
-<script id="template-projectList" type="text/template">
-{% raw %}
-<li>
-	<h2><a href="/project/index.html?id={{id}}">{{data.name}}</a></h2>
-	<div>{{data.path}}</div>
-</li>
-{% endraw %}
-</script>
-<script>
-	$(main.init(function(){
-		main.it79.fnc({}, [
-			function(it1, data){
-				// プロジェクト一覧を取得
-				main.socket.send('getProjectAll', {}, function(projects){
-					data.projects = projects;
+	<!-- local -->
+	<script src="./index_files/cont.js"></script>
+	<script id="template-projectList" type="text/template">
+	{% raw %}
+	<a href="/project/index.html?id={{id}}" class="list-group-item">
+		<h2 class="list-group-item-heading">{{data.name}}</h2>
+		<p class="list-group-item-text">{{data.path}}</p>
+		<button class="btn btn-default" onclick="alert('削除機能は開発中');return false;">削除する</button>
+	</a>
+	{% endraw %}
+	</script>
+	<script>
+		$(main.init(function(){
+			main.it79.fnc({}, [
+				function(it1, data){
+					console.log('setup env...');
+					setTimeout(function(){
+						it1.next(data);
+					}, 10);
+				},
+				function(it1, data){
+					// プロジェクト一覧を取得
+					main.socket.send('getProjectAll', {}, function(projects){
+						data.projects = projects;
+						it1.next(data);
+					});
+				} ,
+				function(it1, data){
+					// プロジェクト一覧を描画
+					var tpl = $('#template-projectList').html();
+					var $ul = $('<div class="list-group">');
+					main.it79.ary(
+						data.projects,
+						function(it2, row, idx){
+							// console.log(row);
+							var html =
+								twig({data: tpl})
+								.render({id: idx, data: row})
+							;
+							$ul.append(html);
+							it2.next();
+						},
+						function(){
+							$('.cont_project_list').html('').append($ul);
+							it1.next();
+						}
+					);
+					console.log(data);
 					it1.next(data);
-				});
-			} ,
-			function(it1, data){
-				// プロジェクト一覧を描画
-				var tpl = $('#template-projectList').html();
-				var $ul = $('<ul>');
-				main.it79.ary(
-					data.projects,
-					function(it2, row, idx){
-						// console.log(row);
-						var html =
-							twig({data: tpl})
-							.render({id: idx, data: row})
-						;
-						$ul.append(html);
-						it2.next();
-					},
-					function(){
-						$('.cont_project_list').html('').append($ul);
-						it1.next();
-					}
-				);
-				console.log(data);
-				it1.next(data);
-			} ,
-			function(it1, data){
-				console.log('Started!');
-			}
-		]);
-	}));
-</script>
+				} ,
+				function(it1, data){
+					console.log('Started!');
+				}
+			]);
+		}));
+	</script>
 {% endblock foot %}

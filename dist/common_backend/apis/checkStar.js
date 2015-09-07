@@ -1,1 +1,0 @@
-module.exports=new function(){this.run=function(n,o,c){console.log("checkStar")}};

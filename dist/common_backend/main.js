@@ -1,1 +1,0 @@
-module.exports=new function(){var e=(this.fs=require("fs"),this.path=require("path"),this.it79=require("iterate79"),require(__dirname+"/../../package.json"),this.desktopUtils=require("desktop-utils"));this.px2dtLDA=require("px2dt-localdata-access").create(e.getLocalDataDir(".pickles2desktoptool"))};

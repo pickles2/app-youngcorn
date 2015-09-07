@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>HOME - YoungCorn - The GUI App for Pickles 2.</title>
+		<title>Project HOME - YoungCorn - The GUI App for Pickles 2.</title>
 
 		<!-- Bootstrap -->
 		<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
@@ -11,20 +11,22 @@
 		<link rel="stylesheet" href="/common/styles/common.css" />
 
 
-<!-- local -->
-<link rel="stylesheet" href="./index_files/cont.css" />
+	<!-- local -->
+	<link rel="stylesheet" href="./index_files/cont.css" />
 
 	</head>
 	<body>
 		<header class="t-header">
 			<div class="container">
-				<h1>YoungCorn <small>The GUI App for Pickles 2.</small></h1>
+				<p class="h3">YoungCorn <small>The GUI App for Pickles 2.</small></p>
 			</div>
 		</header>
-		<div class="container">
+		<div class="mainBlock container">
+			<h1>Project HOME</h1>
 			<div class="contents">
 
-<p>プロジェクトを<a href="/">再選択</a>へ。</p>
+	<p>プロジェクトを<a href="/">再選択</a>へ。</p>
+	<p><button class="btn btn-default" onclick="main.socketTest();return false;">疎通テスト</button></p>
 
 
 			</div>
@@ -33,6 +35,9 @@
 
 		<!-- jQuery -->
 		<script src="/bower_components/jquery/dist/jquery.js"></script>
+
+		<!-- Purl (URL Parser) -->
+		<script src="/bower_components/purl/purl.js"></script>
 
 		<!-- Bootstrap -->
 		<script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
@@ -47,24 +52,45 @@
 		<script src="/common/main.js"></script>
 
 
-<!-- local -->
-<script src="./index_files/cont.js"></script>
-<script>
-	$(main.init(function(){
-		main.it79.fnc({}, [
-			function(it1, data){
-				// プロジェクト一覧を取得
-				main.socket.send('getProjectAll', {}, function(projects){
-					data.projects = projects;
+	<!-- local -->
+	<script src="./index_files/cont.js"></script>
+	<script>
+		$(main.init(function(){
+			main.it79.fnc({}, [
+				function(it1, data){
+					console.log('setup env...');
+					setTimeout(function(){
+						it1.next(data);
+					}, 10);
+				},
+				function(it1, data){
+					// timer
+					setTimeout(function(){
+						it1.next(data);
+					}, 1000);
+				} ,
+				function(it1, data){
+					// Parse Query string parameters
+					data.projectId = main.php.intval($.url(window.location.href).param('id'));
+					// console.log( data );
 					it1.next(data);
-				});
-			} ,
-			function(it1, data){
-				console.log('Started!');
-			}
-		]);
-	}));
-</script>
+				} ,
+				function(it1, data){
+					// プロジェクト情報を取得
+					main.socket.send('getProject', {'projectId': data.projectId}, function(projectInfo){
+						data.projectInfo = projectInfo;
+						console.log( data );
+						it1.next(data);
+					});
+				} ,
+				function(it1, data){
+					console.log('Started!');
+					console.log(data);
+					it1.next(data);
+				}
+			]);
+		}));
+	</script>
 
 	</body>
 </html>

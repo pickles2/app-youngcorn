@@ -15,11 +15,10 @@
 	<body>
 		<header class="t-header">
 			<div class="container">
-				<p class="h3">{{ packageJson.name }} <small>{{ packageJson.description }}</small></p>
+				<h1>{{ packageJson.name }} <small>{{ packageJson.description }}</small></h1>
 			</div>
 		</header>
 		<div class="mainBlock container">
-			<h1>{% block title %}{% endblock title %}</h1>
 			<div class="contents">
 {% block main %}{% endblock main %}
 			</div>

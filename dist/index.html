@@ -26,8 +26,42 @@
 
 	
 
+	<p><button class="btn btn-default" data-toggle="modal" data-target="#cont_modal_create_new_project">新規プロジェクト追加</button></p>
+
 	<div class="cont_project_list">
 	</div>
+
+	<div class="modal fade" id="cont_modal_create_new_project" data-backdrop="static" data-keyboard="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="javascript:;" onsubmit="cont.createNewProject(this, '#cont_modal_create_new_project'); return false;">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Create NEW Project</h4>
+					</div>
+					<div class="modal-body">
+						<div class="input-group">
+							<span class="input-group-addon">Project Name</span>
+							<input type="text" class="form-control" name="name" placeholder="Your Project Name (Organic)" />
+						</div>
+						<div class="input-group">
+							<span class="input-group-addon">Path</span>
+							<input type="text" class="form-control" name="path" placeholder="/path/to/your/project/root/htdocs" />
+						</div>
+						<div class="input-group">
+							<span class="input-group-addon">Entry Script Name</span>
+							<input type="text" class="form-control" name="entry_script" value=".px_execute.php" placeholder=".px_execute.php" />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-primary">Create Now</button>
+					</div>
+				</form>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
 
 			</div>
 		</div>
@@ -58,7 +92,7 @@
 	<a href="/project/index.html?projectIdx={{projectIdx}}" class="list-group-item">
 		<h2 class="list-group-item-heading">{{data.name}}</h2>
 		<p class="list-group-item-text">{{data.path}}</p>
-		<button class="btn btn-default" onclick="alert('削除機能は開発中');return false;">削除する</button>
+		<button class="btn btn-default" onclick="cont.removeProject({{projectIdx}});return false;">削除する</button>
 	</a>
 	</script>
 	<script>

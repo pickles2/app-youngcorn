@@ -1,4 +1,5 @@
 window.cont = new (function(){
+	var _this = this;
 
 	this.init = function(){
 		/**
@@ -47,6 +48,32 @@ window.cont = new (function(){
 				}
 			]);
 		});
+	}
+
+	this.createNewProject = function(form, modal){
+		// プロジェクトを追加
+		var value = {
+			name: $(form).find('[name=name]').val(),
+			path: $(form).find('[name=path]').val(),
+			entry_script: $(form).find('[name=entry_script]').val()
+		};
+		main.socket.send('createNewProject', value, function(result){
+			// alert(result);
+			$(modal).modal('hide');
+			_this.init();
+		});
+		return this;
+	}
+
+	this.removeProject = function( projectIdx ){
+		if( !confirm('本当に削除してよろしいですか？') ){
+			return this;
+		}
+		main.socket.send('removeProject', {'projectIdx': projectIdx}, function(result){
+			// alert(result);
+			_this.init();
+		});
+		return this;
 	}
 
 })();

@@ -5,6 +5,7 @@
   "main": "index.html",
   "scripts": {
     "start": "nw",
+    "up": "node ./node_modules/baobab-fw/lib/cmd/server.js",
     "test": "gulp; mocha --ui tdd ./tests/",
     "build": "node ./build.js"
   },
@@ -13,14 +14,15 @@
   "dependencies": {
     "baobab-fw": "git://github.com/tomk79/BaobabFW.git",
     "desktop-utils": "0.0.1",
+    "es6-promise": "^3.0.2",
     "express": "^4.13.0",
     "glob": "^5.0.10",
     "iterate79": "0.0.1",
     "marked": "^0.3.3",
     "mkdirp": "0.*",
-    "node-php-bin": "^0.0.1",
+    "node-php-bin": "^0.1.6",
     "phpjs": "^1.3.2",
-    "px2agent": "^2.0.0",
+    "px2agent": "^2.0.1",
     "px2dt-localdata-access": "git://github.com/tomk79/node-px2dt-localdata-access.git",
     "rmdir": "^1.1.0",
     "socket.io": "^1.3.5",
@@ -40,6 +42,7 @@
     "nw": "^0.12.3",
     "nw-builder": "2.0.*",
     "phantomjs": "^1.9.17",
+    "selenium-webdriver": "^2.46.1",
     "zip-folder": "^1.0.0"
   },
   "window": {

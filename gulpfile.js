@@ -45,7 +45,7 @@ gulp.task("main.js", function() {
 		}))
 		.pipe(plumber())
 		.pipe(concat('common/main.js'))
-		.pipe(uglify())
+		// .pipe(uglify())
 		.pipe(gulp.dest( conf.get().frontendDocumentRoot ))
 	;
 });
@@ -54,7 +54,7 @@ gulp.task("main.js", function() {
 gulp.task(".js", function() {
 	gulp.src(["src/**/*.js", "!src/common/**/*"])
 		.pipe(plumber())
-		.pipe(uglify())
+		// .pipe(uglify())
 		.pipe(gulp.dest( conf.get().frontendDocumentRoot ))
 	;
 });

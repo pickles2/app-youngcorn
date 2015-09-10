@@ -24,9 +24,7 @@
 		<div class="mainBlock container">
 			<div class="contents">
 
-	<p>ようこそ。YoungCorn へ。</p>
-	<p>YoungCorn は、Pickles2 の GUI制作環境です。</p>
-	<p><button class="btn btn-default" onclick="main.socketTest();return false;">疎通テスト</button></p>
+	
 
 	<div class="cont_project_list">
 	</div>
@@ -57,56 +55,14 @@
 	<!-- local -->
 	<script src="./index_files/cont.js"></script>
 	<script id="template-projectList" type="text/template">
-	<a href="/project/index.html?id={{id}}" class="list-group-item">
+	<a href="/project/index.html?projectIdx={{projectIdx}}" class="list-group-item">
 		<h2 class="list-group-item-heading">{{data.name}}</h2>
 		<p class="list-group-item-text">{{data.path}}</p>
 		<button class="btn btn-default" onclick="alert('削除機能は開発中');return false;">削除する</button>
 	</a>
 	</script>
 	<script>
-		$(main.init(function(){
-			main.it79.fnc({}, [
-				function(it1, data){
-					console.log('setup env...');
-					setTimeout(function(){
-						it1.next(data);
-					}, 10);
-				},
-				function(it1, data){
-					// プロジェクト一覧を取得
-					main.socket.send('getProjectAll', {}, function(projects){
-						data.projects = projects;
-						it1.next(data);
-					});
-				} ,
-				function(it1, data){
-					// プロジェクト一覧を描画
-					var tpl = $('#template-projectList').html();
-					var $ul = $('<div class="list-group">');
-					main.it79.ary(
-						data.projects,
-						function(it2, row, idx){
-							// console.log(row);
-							var html =
-								twig({data: tpl})
-								.render({id: idx, data: row})
-							;
-							$ul.append(html);
-							it2.next();
-						},
-						function(){
-							$('.cont_project_list').html('').append($ul);
-							it1.next();
-						}
-					);
-					console.log(data);
-					it1.next(data);
-				} ,
-				function(it1, data){
-					console.log('Started!');
-				}
-			]);
-		}));
+		$(window).load( window.cont.init() );
 	</script>
 
 	</body>

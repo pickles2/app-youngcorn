@@ -53,8 +53,8 @@ window.main = new (function($){
 			'socketTest',
 			{'message': 'socketTest from frontend.'} ,
 			function(data){
-				alert('callback function is called!');
 				console.log(data);
+				alert('callback function is called!');
 			}
 		);
 		return this;

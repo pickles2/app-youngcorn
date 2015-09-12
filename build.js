@@ -78,7 +78,7 @@ _utils.iterateFnc([
           str = phpjs.str_pad(str, len, '0', 'STR_PAD_LEFT');
           return str;
         }
-        if( packageJson.version.match(new RegExp('\-nb$')) ){
+        if( packageJson.version.match(new RegExp('\\+nb$')) ){
           versionSign += '-'+pad(date.getFullYear(),4)+pad(date.getMonth()+1, 2)+pad(date.getDate(), 2);
           versionSign += '-'+pad(date.getHours(),2)+pad(date.getMinutes(), 2);
         }

@@ -1,0 +1,30 @@
+{% extends "../../common/templates/default.html.twig" %}
+
+{% block title %}Module Editor{% endblock title %}
+
+{% block head %}
+	<!-- local -->
+	<link rel="stylesheet" href="./index_files/cont.css" />
+{% endblock head %}
+
+{% block main %}
+	<div class="cont_module_list">
+	</div>
+{% endblock main %}
+
+
+{% block foot %}
+	<!-- local -->
+	<script src="./index_files/cont.js"></script>
+	<script>
+		$(window).load( window.cont.init() );
+	</script>
+	<script id="template-moduleList" type="text/template">
+	{% raw %}
+		<div class="list-group">
+			<a href="./moduleEditor/?projectIdx={{projectIdx}}" class="list-group-item">モジュールを編集する</a>
+		</div>
+		<p><a class="btn btn-default" href="../?projectIdx={{projectIdx}}">プロジェクト ホーム</a></p>
+	{% endraw %}
+	</script>
+{% endblock foot %}

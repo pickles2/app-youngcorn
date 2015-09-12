@@ -14,6 +14,7 @@ window.main = new (function($){
 			}
 		)
 	;
+	var Keypress = this.Keypress = {};
 
 	function windowResized(){
 		// console.log('window resized');
@@ -30,6 +31,71 @@ window.main = new (function($){
 		it79.fnc(
 			{},
 			[
+				function(it1, data){
+					// 特定のキー操作を無効化
+					_Keypress = new window.keypress.Listener();
+					this.Keypress = _Keypress;
+
+					_Keypress.simple_combo("backspace", function(e) {
+						// alert("You pressed backspace");
+						e.preventDefault();
+						e.stopPropagation();
+						return false;
+					});
+					_Keypress.simple_combo("delete", function(e) {
+						// alert("You pressed delete");
+						e.preventDefault();
+						e.stopPropagation();
+						return false;
+					});
+					_Keypress.simple_combo("cmd left", function(e) {
+						// alert("You pressed Cmd+Left");
+						e.preventDefault();
+						e.stopPropagation();
+						return false;
+					});
+					_Keypress.simple_combo("cmd right", function(e) {
+						// alert("You pressed Cmd+Right");
+						e.preventDefault();
+						e.stopPropagation();
+						return false;
+					});
+					_Keypress.simple_combo("escape", function(e) {
+						// alert("You pressed escape");
+						e.preventDefault();
+						return false;
+					});
+
+					it1.next();
+				} ,
+				function(it1, data){
+					// ドラッグ＆ドロップ操作の無効化
+					$('html, body')
+						.bind( 'drop', function(e){
+							// ドロップ操作を無効化
+							// console.log(456);
+							e.preventDefault();
+							e.stopPropagation();
+							return false;
+						} )
+						.bind( 'dragenter', function(e){
+							// ドロップ操作を無効化
+							// console.log(45645);
+							e.preventDefault();
+							e.stopPropagation();
+							return false;
+						} )
+						.bind( 'dragover', function(e){
+							// ドロップ操作を無効化
+							// console.log(23456);
+							e.preventDefault();
+							e.stopPropagation();
+							return false;
+						} )
+					;
+
+					it1.next();
+				} ,
 				function(it1, data){
 					window.focus();
 					it1.next();

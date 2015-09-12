@@ -1,5 +1,19 @@
+@charset "UTF-8";
 body {
-  background: #e9e9e9; }
+  background: #f3f3f3;
+  cursor: default;
+  /* http://www.softel.co.jp/blogs/tech/archives/2909 */
+  user-select: none;
+  /* CSS3 */
+  -moz-user-select: none;
+  /* Firefox */
+  -webkit-user-select: none;
+  /* Safari、Chromeなど */
+  -ms-user-select: none;
+  /* IE10かららしい */ }
+
+*:focus {
+  outline: inset 3px #36f !important; }
 
 .input-group-addon label {
   line-height: 1;

@@ -38,7 +38,9 @@ module.exports = new (function(){
 		};
 		var rtn = px2agent.createProject( entryScriptName, options );
 
-		callback(rtn);
+		setTimeout(function(){
+			callback(rtn);
+		}, 100);
 		return this;
 	}
 })();

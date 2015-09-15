@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="/common/styles/common.css" />
 
 	<!-- local -->
-	<link rel="stylesheet" href="./index_files/cont.css" />
+	<link rel="stylesheet" href="./moduleList_files/cont.css" />
 
 	</head>
 	<body>
@@ -57,7 +57,7 @@
 		<script src="/common/main.js"></script>
 
 	<!-- local -->
-	<script src="./index_files/cont.js"></script>
+	<script src="./moduleList_files/cont.js"></script>
 	<script>
 		$(window).load( window.cont.init() );
 	</script>
@@ -66,13 +66,13 @@
 			{% for modPkg in modulePkgList %}
 				<a href="./moduleList.html?projectIdx={{projectIdx}}&amp;packageId={{modPkg.packageId}}" class="list-group-item">
 					<h2>{{modPkg.packageName}}</h2>
-					<p>{{modPkg.realpath}}</p>
 				</a>
 			{% endfor %}
 		</div>
 	</script>
 	<script id="template-content-footer" type="text/template">
 	<div class="list-group">
+			<a href="./?projectIdx={{projectIdx}}" class="list-group-item">モジュールパッケージを再選択</a>
 			<a href="../?projectIdx={{projectIdx}}" class="list-group-item">プロジェクト ホーム</a>
 		</div>
 	</script>

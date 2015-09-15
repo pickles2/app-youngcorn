@@ -4,7 +4,7 @@
 
 {% block head %}
 	<!-- local -->
-	<link rel="stylesheet" href="./index_files/cont.css" />
+	<link rel="stylesheet" href="./moduleList_files/cont.css" />
 {% endblock head %}
 
 {% block main %}
@@ -17,7 +17,7 @@
 
 {% block foot %}
 	<!-- local -->
-	<script src="./index_files/cont.js"></script>
+	<script src="./moduleList_files/cont.js"></script>
 	<script>
 		$(window).load( window.cont.init() );
 	</script>
@@ -27,7 +27,6 @@
 			{% for modPkg in modulePkgList %}
 				<a href="./moduleList.html?projectIdx={{projectIdx}}&amp;packageId={{modPkg.packageId}}" class="list-group-item">
 					<h2>{{modPkg.packageName}}</h2>
-					<p>{{modPkg.realpath}}</p>
 				</a>
 			{% endfor %}
 		</div>
@@ -36,6 +35,7 @@
 	<script id="template-content-footer" type="text/template">
 	{% raw %}
 		<div class="list-group">
+			<a href="./?projectIdx={{projectIdx}}" class="list-group-item">モジュールパッケージを再選択</a>
 			<a href="../?projectIdx={{projectIdx}}" class="list-group-item">プロジェクト ホーム</a>
 		</div>
 	{% endraw %}

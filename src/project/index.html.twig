@@ -8,10 +8,9 @@
 {% endblock head %}
 
 {% block main %}
-	<p><button class="btn btn-default" onclick="main.socketTest();return false;">疎通テスト</button></p>
+	<!-- <p><button class="btn btn-default" onclick="main.socketTest();return false;">疎通テスト</button></p> -->
 	<div class="cont_project_info">
 	</div>
-	<p><a class="btn btn-default" href="/">プロジェクト選択</a></p>
 {% endblock main %}
 
 
@@ -58,6 +57,7 @@
 		</table>
 		<div class="list-group">
 			<a href="./moduleEditor/?projectIdx={{projectIdx}}" class="list-group-item">モジュールを編集する</a>
+			<a href="/" class="list-group-item">プロジェクト選択</a>
 		</div>
 	{% endraw %}
 	</script>

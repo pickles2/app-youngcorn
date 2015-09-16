@@ -13,7 +13,7 @@
   "license": "BSD",
   "dependencies": {
     "baobab-fw": "git://github.com/tomk79/BaobabFW.git",
-    "desktop-utils": "0.0.1",
+    "desktop-utils": "git://github.com/tomk79/node-desktop-utils.git",
     "es6-promise": "^3.0.2",
     "express": "^4.13.0",
     "glob": "^5.0.10",

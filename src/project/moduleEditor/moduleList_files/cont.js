@@ -1,6 +1,7 @@
 window.cont = new (function(){
 	var _this = this;
 	var php = require('phpjs');
+	var data = {};
 
 	this.init = function(){
 		/**
@@ -43,6 +44,7 @@ window.cont = new (function(){
 							console.log( result );
 							data.packageId = result.packageId;
 							data.packageInfo = result.packageInfo;
+							data.packageRealpath = result.packageRealpath;
 							data.categories = result.categories;
 							it1.next(data);
 						}
@@ -63,15 +65,44 @@ window.cont = new (function(){
 					document.querySelector('.cont_cont_footer').innerHTML = html;
 					it1.next(data);
 				} ,
-				function(it1, data){
+				function(it1, _data){
+					data = _data;
 					console.log('Started!');
 				}
 			]);
 		});
 	}
 
+	/**
+	 * 編集ウィンドウを開く
+	 * @param  string modId モジュールID
+	 * @return object       this
+	 */
 	this.openEditor = function(modId){
-		window.open('./editor/?modId='+php.urlencode(modId));
+		window.open(
+			'./editor/?modId='+php.urlencode(modId) ,
+			'ModuleEditor:'+modId,
+			'width=400, height=300, location=no menubar=no, toolbar=no, scrollbars=yes'
+		);
+		return this;
+	}
+
+	/**
+	 * テキストエディタで開く
+	 * @return object       this
+	 */
+	this.openInTextEditor = function(){
+		// プロジェクト情報を取得
+		main.socket.send(
+			'open' ,
+			{
+				'path': data.packageRealpath,
+				'in': 'texteditorForDir'
+			} ,
+			function(result){
+			}
+		);
+		return this;
 	}
 
 })();

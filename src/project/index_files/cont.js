@@ -1,4 +1,5 @@
 window.cont = new (function(){
+	var data = {};
 
 	this.init = function(){
 		/**
@@ -38,13 +39,32 @@ window.cont = new (function(){
 					document.querySelector('.cont_project_info').innerHTML = html;
 					it1.next(data);
 				} ,
-				function(it1, data){
+				function(it1, _data){
+					data = _data;
 					console.log('Started!');
 					console.log(data);
 					it1.next(data);
 				}
 			]);
 		});
+	}
+
+	/**
+	 * テキストエディタで開く
+	 * @return object       this
+	 */
+	this.openInTextEditor = function(){
+		// プロジェクト情報を取得
+		main.socket.send(
+			'open' ,
+			{
+				'path': data.projectInfo.path,
+				'in': 'texteditorForDir'
+			} ,
+			function(result){
+			}
+		);
+		return this;
 	}
 
 })();

@@ -23,13 +23,23 @@
 	</script>
 	<script id="template-moduleList" type="text/template">
 	{% raw %}
-		<div class="list-group">
-			{% for modPkg in modulePkgList %}
-				<a href="./moduleList.html?projectIdx={{projectIdx}}&amp;packageId={{modPkg.packageId}}" class="list-group-item">
-					<h2>{{modPkg.packageName}}</h2>
-				</a>
-			{% endfor %}
-		</div>
+		<h2>{{ packageInfo.name }}</h2>
+		{% for category in categories %}
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">{{category.categoryName}}</h3>
+				</div>
+				<div class="panel-body">
+					<div class="list-group">
+						{% for module in category.modules %}
+							<a href="./editor/?projectIdx={{projectIdx}}&amp;packageId={{packageId}}&amp;moduleId={{module.moduleId}}" class="list-group-item" onclick="cont.openEditor('{{module.moduleId}}');return false;">
+								<div>{{module.moduleName}}</div>
+							</a>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		{% endfor %}
 	{% endraw %}
 	</script>
 	<script id="template-content-footer" type="text/template">

@@ -2,6 +2,7 @@
  * API: socketTest
  */
 module.exports = function( data, callback, main, socket ){
+	// delete(require.cache[require('path').resolve(__filename)]);
 	console.log(data);
 	console.log(data.message);
 	// data.main = main;

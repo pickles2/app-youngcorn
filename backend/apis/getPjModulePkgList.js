@@ -2,6 +2,7 @@
  * API: getPjModulePkgList
  */
 module.exports = function( data, callback, main, socket ){
+	// delete(require.cache[require('path').resolve(__filename)]);
 	var it79 = require('iterate79');
 	var path = require('path');
 	var php = require('phpjs');

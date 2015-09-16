@@ -1,5 +1,6 @@
 window.cont = new (function(){
 	var _this = this;
+	var php = require('phpjs');
 
 	this.init = function(){
 		/**
@@ -16,6 +17,7 @@ window.cont = new (function(){
 				function(it1, data){
 					// Parse Query string parameters
 					data.projectIdx = main.php.intval($.url(window.location.href).param('projectIdx'));
+					data.packageId = main.php.trim($.url(window.location.href).param('packageId'));
 					console.log( data );
 					it1.next(data);
 				} ,
@@ -32,14 +34,16 @@ window.cont = new (function(){
 				function(it1, data){
 					// プロジェクト情報を取得
 					main.socket.send(
-						'getPjModulePkgList',
+						'getPjModuleList',
 						{
 							'projectIdx': data.projectIdx,
-							'config': data.config
+							'packageId': data.packageId
 						},
 						function(result){
 							console.log( result );
-							data.modulePkgList = result;
+							data.packageId = result.packageId;
+							data.packageInfo = result.packageInfo;
+							data.categories = result.categories;
 							it1.next(data);
 						}
 					);
@@ -64,6 +68,10 @@ window.cont = new (function(){
 				}
 			]);
 		});
+	}
+
+	this.openEditor = function(modId){
+		window.open('./editor/?modId='+php.urlencode(modId));
 	}
 
 })();

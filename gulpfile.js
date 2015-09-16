@@ -53,6 +53,8 @@ gulp.task("main.js", function() {
 // *.js を処理
 gulp.task(".js", function() {
 	gulp.src(["src/**/*.js", "!src/common/main.js", "!src/common/apis/*"])
+		.pipe(browserify({
+		}))
 		.pipe(plumber())
 		// .pipe(uglify())
 		.pipe(gulp.dest( conf.get().frontendDocumentRoot ))

@@ -78,10 +78,10 @@ window.cont = new (function(){
 	 * @param  string modId モジュールID
 	 * @return object       this
 	 */
-	this.openEditor = function(modId){
+	this.openEditor = function(href){
 		window.open(
-			'./editor/?modId='+php.urlencode(modId) ,
-			'ModuleEditor:'+modId,
+			href ,
+			'ModuleEditor:'+href,
 			'width=400, height=300, location=no menubar=no, toolbar=no, scrollbars=yes'
 		);
 		return this;

@@ -4,18 +4,56 @@
 
 
 {% block head %}
+	<!-- local -->
+	<link rel="stylesheet" href="./index_files/cont.css" />
 {% endblock head %}
 
 
 {% block main %}
-	<div class="cont_module_list">
-		TODO: (開発中)<br />
-		<a href="javascript:window.blur();window.opener.focus();">openerにフォーカス</a><br />
-		<a href="javascript:window.close();">ウィンドウを閉じる</a><br />
-	</div>
-	<div class="cont_cont_footer">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xs-12">モジュール名</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-3">
+				<div>info.json</div>
+				<div><textarea></textarea></div>
+			</div>
+			<div class="col-xs-3">
+				<div>template.html</div>
+				<div><textarea></textarea></div>
+			</div>
+			<div class="col-xs-3">
+				<div>module.css.scss</div>
+				<div><textarea></textarea></div>
+			</div>
+			<div class="col-xs-3">
+				<div>module.js</div>
+				<div><textarea></textarea></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-3">
+				<div>icon</div>
+			</div>
+			<div class="col-xs-9">
+				<div>preview</div>
+				<div><iframe></iframe></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 text-right">
+				<a href="javascript:window.close();" class="btn btn-primary btn-lg" type="button">ウィンドウを閉じる</a>
+			</div>
+		</div>
 	</div>
 {% endblock main %}
 
+
 {% block foot %}
+	<!-- local -->
+	<script src="./index_files/cont.js"></script>
+	<script>
+		$(window).load( window.cont.init() );
+	</script>
 {% endblock foot %}

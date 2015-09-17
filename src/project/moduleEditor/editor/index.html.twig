@@ -10,6 +10,7 @@
 
 
 {% block main %}
+<form action="javascript:;" class="cont_main_form">
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-xs-12">モジュール名</div>
@@ -17,19 +18,19 @@
 		<div class="row">
 			<div class="col-xs-3">
 				<div>info.json</div>
-				<div><textarea></textarea></div>
+				<div><textarea name="src_infojson"></textarea></div>
 			</div>
 			<div class="col-xs-3">
 				<div>template.html</div>
-				<div><textarea></textarea></div>
+				<div><textarea name="src_html"></textarea></div>
 			</div>
 			<div class="col-xs-3">
 				<div>module.css.scss</div>
-				<div><textarea></textarea></div>
+				<div><textarea name="src_css"></textarea></div>
 			</div>
 			<div class="col-xs-3">
 				<div>module.js</div>
-				<div><textarea></textarea></div>
+				<div><textarea name="src_js"></textarea></div>
 			</div>
 		</div>
 		<div class="row">
@@ -38,7 +39,7 @@
 			</div>
 			<div class="col-xs-9">
 				<div>preview</div>
-				<div><iframe></iframe></div>
+				<div><iframe src="about:blank" class="cont_preview"></iframe></div>
 			</div>
 		</div>
 		<div class="row">
@@ -47,6 +48,7 @@
 			</div>
 		</div>
 	</div>
+</form>
 {% endblock main %}
 
 

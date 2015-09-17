@@ -69,10 +69,52 @@ module.exports = function( data, callback, main, socket ){
 		.then(function(){ return new Promise(function(rlv, rjt){
 			if( data.fnc == 'loadSrc' ){
 				// モジュールコードを取得
+				getModuleCode( rtn.moduleRealpath, function(src){
+					rtn.src = src;
+					rtn.result = true;
+					rlv();
+				} );
+
+			}else if( data.fnc == 'saveSrc' ){
+				// モジュールコードを保存
+				var filepath = path.resolve(rtn.moduleRealpath, data.filename);
+				fs.writeFile( filepath, data.src, function(err){
+					rtn.result = !err;
+					rlv();
+				} );
+
+			}else if( data.fnc == 'generatePreviewHTML' ){
+				// プレビューHTMLを生成する
+				buildPreviewHtml(rtn.moduleRealpath, function(html){
+					rtn.html = html;
+					rlv();
+				});
+
+			}else{
+				rjt();return;
+			}
+		}); })
+		.then(function(){ return new Promise(function(rlv, rjt){
+			// 返却
+			callback(rtn);
+			rlv();
+		}); })
+	;
+
+	/**
+	 * モジュールコードを取得する
+	 * @param  {String} moduleRealpath Realpath of Module Definition.
+	 * @param  {Function} callback callback function.
+	 * @return {Object}            this
+	 */
+	function getModuleCode( moduleRealpath, callback ){
+		var rtn = {};
+		new Promise(function(rlv){rlv();})
+			.then(function(){ return new Promise(function(rlv, rjt){
 				rtn.src = {};
 				function loadFile( filename ){
 					var result = {};
-					var filepath = path.resolve(rtn.moduleRealpath, filename);
+					var filepath = path.resolve(moduleRealpath, filename);
 					if( !fs.existsSync(filepath) || !fs.statSync(filepath).isFile() ){
 						return false;
 					}
@@ -91,26 +133,70 @@ module.exports = function( data, callback, main, socket ){
 				}
 				rtn.src.js = loadFile('module.js');
 
-				rtn.result = true;
 				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// 返却
+				callback(rtn.src);
+				rlv();
+			}); })
+		;
+		return;
+	}
 
-			}else if( data.fnc == 'saveSrc' ){
-				// モジュールコードを保存
-				var filepath = path.resolve(rtn.moduleRealpath, data.filename);
-				fs.writeFile( filepath, data.src, function(err){
-					rtn.result = !err;
+
+	/**
+	 * プレビューHTMLを構成する
+	 * @param  {Function} callback callback function.
+	 * @return {Object}            this
+	 */
+	function buildPreviewHtml( moduleRealpath, callback ){
+		var html = '',
+			loaderHtml = '',
+			moduleHtml = '';
+
+		new Promise(function(rlv){rlv();})
+			.then(function(){ return new Promise(function(rlv, rjt){
+				getModuleCode( moduleRealpath, function(code){
+					moduleHtml = code.html.src;
 					rlv();
-				} );
-			}else{
-				rjt();return;
-			}
-		}); })
-		.then(function(){ return new Promise(function(rlv, rjt){
-			// 返却
-			callback(rtn);
-			rlv();
-		}); })
-	;
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				px2proj.query('/?PX=px2dthelper.document_modules.load', {
+					"complete": function(loader, code){
+						loaderHtml = loader;
+						rlv();
+					}
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				html += '<!DOCTYPE html>';
+				html += '<html>';
+				html += '<head>';
+				html += '<style>';
+				html += 'body{background:#fff;}';
+				html += '</style>';
+				html += loaderHtml;
+				html += '</head>';
+				html += '<body>';
+				html += '<div class="contents">';
+				html += '<p style="background:#ddd; text-align:center;">(element before)</p>';
+				html += moduleHtml;
+				html += '<p style="background:#ddd; text-align:center;">(element after)</p>';
+				html += '</div>';
+				html += '</body>';
+				html += '</html>';
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// 返却
+				callback(html);
+				rlv();
+			}); })
+		;
+		return;
+	}
 
 	return;
 }

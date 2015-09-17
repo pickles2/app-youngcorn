@@ -13282,6 +13282,23 @@ window.cont = new (function(){
 		main.init(function(){
 			main.it79.fnc({}, [
 				function(it1, data){
+					// 編集中は Keypress の監視を停止する。
+					$('textarea')
+						.bind("focus", function() { main.Keypress.stop_listening(); })
+						.bind("blur", function() { main.Keypress.listen(); })
+					;
+					// cmd+sで保存
+					main.Keypress.simple_combo("cmd s", function(e) {
+						_this.save(function(){
+						});
+						// console.log("You pressed cmd+s");
+						e.preventDefault();
+						return false;
+					});
+
+					it1.next(data);
+				} ,
+				function(it1, data){
 					// Parse Query string parameters
 					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
 					data.packageId = php.trim($.url(window.location.href).param('packageId'));
@@ -13308,8 +13325,9 @@ window.cont = new (function(){
 						}
 					);
 				} ,
-				function(it1, data){
+				function(it1, _data){
 					// 描画
+					data = _data;
 
 					// info.json
 					if( data.src.infoJson ){
@@ -13347,7 +13365,7 @@ window.cont = new (function(){
 						;
 					}else{
 						$('[name=src_css]')
-							.val( '@charset "utf-8";' )
+							.val( '/* module CSS */' )
 							.attr( {"data-filename": 'module.css.scss'} )
 						;
 					}
@@ -13360,7 +13378,7 @@ window.cont = new (function(){
 						;
 					}else{
 						$('[name=src_js]')
-							.val( '' )
+							.val( '/* module JavaScript */' )
 							.attr( {"data-filename": 'module.js'} )
 						;
 					}
@@ -13374,9 +13392,9 @@ window.cont = new (function(){
 					// イベント処理
 
 					$('textarea').change(function(e){
-						console.log('changed');
 						var $this = $(this);
-						console.log($this.attr('data-filename'));
+						// console.log('changed');
+						// console.log($this.attr('data-filename'));
 
 						main.socket.send('moduleEditor',
 							{
@@ -13389,7 +13407,7 @@ window.cont = new (function(){
 							},
 							function(result){
 								console.log( result );
-								alert( '保存しました。' );
+								// alert( '保存しました。' );
 								_this.updatePreview( function(){} );
 							}
 						);
@@ -13410,6 +13428,16 @@ window.cont = new (function(){
 	}
 
 	/**
+	 * すべての変更を保存する
+	 * @return {Object} this
+	 */
+	this.save = function(callback){
+		callback = callback||function(){};
+		callback();
+		return this;
+	}
+
+	/**
 	 * プレビューを更新する。
 	 * @param  {Function} callback コールバック関数
 	 * @return {Object}            this
@@ -13418,12 +13446,27 @@ window.cont = new (function(){
 		callback = callback||function(){};
 		var $iframe = $($('iframe.cont_preview').get(0).contentWindow);
 		var doc = $iframe.get(0).document;
-		doc.write('<html><body><p>aaaaa</p></body></html>');
-		doc.close();
 
-		setTimeout(function(){
-			callback();
-		}, 0);
+		var html = '';
+		this.save(function(){
+			main.socket.send('moduleEditor',
+				{
+					'fnc': 'generatePreviewHTML' ,
+					'projectIdx': data.projectIdx ,
+					'packageId': data.packageId ,
+					'moduleId': data.moduleId
+				},
+				function(result){
+					console.log( result );
+					doc.write(result.html);
+					doc.close();
+
+					setTimeout(function(){
+						callback();
+					}, 0);
+				}
+			);
+		});
 		return this;
 	}
 

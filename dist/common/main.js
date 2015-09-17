@@ -13362,6 +13362,8 @@ module.exports = function( data, callback, main, socket ){
  * main.js
  */
 window.main = new (function($){
+	var _this = this;
+	var main = this;
 	var it79 = this.it79 = require('iterate79');
 	var php = this.php = require('phpjs');
 	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
@@ -13394,7 +13396,7 @@ window.main = new (function($){
 				function(it1, data){
 					// 特定のキー操作を無効化
 					_Keypress = new window.keypress.Listener();
-					this.Keypress = _Keypress;
+					_this.Keypress = _Keypress;
 
 					_Keypress.simple_combo("backspace", function(e) {
 						// alert("You pressed backspace");

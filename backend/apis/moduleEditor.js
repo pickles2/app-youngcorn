@@ -164,9 +164,15 @@ module.exports = function( data, callback, main, socket ){
 		 * @param  {[type]} code [description]
 		 * @return {[type]}      [description]
 		 */
-		function extractUiModel(code){
-			// TODO: モジュールデータからUI要素を抽出する
-			return {};
+		function extractUiModel(code, htmlFilename, callback){
+			if( htmlFilename == 'template.html' ){
+				// TODO: モジュールデータからUI要素を抽出する
+				callback(template);
+				return;
+			}else if( htmlFilename == 'template.html.twig' ){
+				callback(code.infoJson.interface);
+			}
+			return;
 		}
 		function bindTemplate(template, uiModel, data, htmlFilename, callback){
 			if( htmlFilename == 'template.html' ){
@@ -182,10 +188,6 @@ module.exports = function( data, callback, main, socket ){
 						callback(result);
 					}
 				);
-				// template = twig({
-				// 	'data': template
-				// }).render(data);
-				// callback(template);
 			}
 
 			return;
@@ -197,8 +199,10 @@ module.exports = function( data, callback, main, socket ){
 					moduleHtml = code.html.src;
 					htmlFilename = code.html.filename;
 					infoJson = JSON.parse(code.infoJson.src);
-					uiModel = extractUiModel(code); // <- モジュールコードからUIモデルを抽出する
-					rlv();
+					uiModel = extractUiModel(code, htmlFilename, function(){
+						// モジュールコードからUIモデルを抽出する
+						rlv();
+					});
 				});
 			}); })
 

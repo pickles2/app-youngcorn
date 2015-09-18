@@ -12,7 +12,8 @@ window.main = new (function($){
 			this,
 			io,
 			{
-				'showSocketTest': require('./apis/showSocketTest.js')
+				'showSocketTest': require('./apis/showSocketTest.js'),
+				'twig': require('./apis/twig.js')
 			}
 		)
 	;

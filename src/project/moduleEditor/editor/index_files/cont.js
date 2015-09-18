@@ -157,6 +157,7 @@ window.cont = new (function(){
 
 	/**
 	 * すべての変更を保存する
+	 * TODO: 未実装です。
 	 * @return {Object} this
 	 */
 	this.save = function(callback){

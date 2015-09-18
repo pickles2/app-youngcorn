@@ -13359,6 +13359,27 @@ module.exports = function( data, callback, main, socket ){
 
 },{}],5:[function(require,module,exports){
 /**
+ * API: twig
+ */
+module.exports = function( data, callback, main, socket ){
+
+	// console.log(twig);
+	// console.log(data);
+
+	setTimeout(function(){
+		var html = window.twig({
+			'data': data.template
+		}).render(data.data);
+
+		// console.log(html);
+		callback(html);
+	}, 0);
+
+	return;
+}
+
+},{}],6:[function(require,module,exports){
+/**
  * main.js
  */
 window.main = new (function($){
@@ -13372,7 +13393,8 @@ window.main = new (function($){
 			this,
 			io,
 			{
-				'showSocketTest': require('./apis/showSocketTest.js')
+				'showSocketTest': require('./apis/showSocketTest.js'),
+				'twig': require('./apis/twig.js')
 			}
 		)
 	;
@@ -13490,4 +13512,4 @@ window.main = new (function($){
 
 })(jQuery);
 
-},{"./apis/showSocketTest.js":4,"iterate79":1,"phpjs":3}]},{},[5])
+},{"./apis/showSocketTest.js":4,"./apis/twig.js":5,"iterate79":1,"phpjs":3}]},{},[6])

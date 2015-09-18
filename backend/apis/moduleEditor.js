@@ -153,42 +153,95 @@ module.exports = function( data, callback, main, socket ){
 	function buildPreviewHtml( moduleRealpath, callback ){
 		var html = '',
 			loaderHtml = '',
-			moduleHtml = '';
+			moduleHtml = '',
+			htmlFilename = '',
+			infoJson = {},
+			uiModel = {}
+		;
+
+		/**
+		 * モジュールデータからUI要素を抽出する
+		 * @param  {[type]} code [description]
+		 * @return {[type]}      [description]
+		 */
+		function extractUiModel(code){
+			// TODO: モジュールデータからUI要素を抽出する
+			return {};
+		}
+		function bindTemplate(template, uiModel, data, htmlFilename, callback){
+			if( htmlFilename == 'template.html' ){
+				callback(template);
+			}else if( htmlFilename == 'template.html.twig' ){
+				socket.send('twig',
+					{
+						'data':data,
+						'template': template
+					} ,
+					function(result){
+						console.log(result);
+						callback(result);
+					}
+				);
+				// template = twig({
+				// 	'data': template
+				// }).render(data);
+				// callback(template);
+			}
+
+			return;
+		}
 
 		new Promise(function(rlv){rlv();})
 			.then(function(){ return new Promise(function(rlv, rjt){
 				getModuleCode( moduleRealpath, function(code){
 					moduleHtml = code.html.src;
+					htmlFilename = code.html.filename;
+					infoJson = JSON.parse(code.infoJson.src);
+					uiModel = extractUiModel(code); // <- モジュールコードからUIモデルを抽出する
 					rlv();
 				});
 			}); })
+
 			.then(function(){ return new Promise(function(rlv, rjt){
-				px2proj.query('/?PX=px2dthelper.document_modules.load', {
-					"complete": function(loader, code){
-						loaderHtml = loader;
-						rlv();
+				px2proj.query(
+					'/?PX=px2dthelper.document_modules.load',
+					{
+						"complete": function(loader, code){
+							loaderHtml = loader;// ←全モジュールから生成されたCSSとJSのコード。(styleタグとscriptタグ)
+							rlv();
+						}
 					}
+				);
+			}); })
+
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// テンプレートにデータをはめてプレビューコードを完成させる
+				bindTemplate(moduleHtml, uiModel, {}, htmlFilename, function(result){
+					moduleHtml = result;
+					rlv();
 				});
 			}); })
+
 			.then(function(){ return new Promise(function(rlv, rjt){
-				html += '<!DOCTYPE html>';
-				html += '<html>';
-				html += '<head>';
-				html += '<style>';
-				html += 'body{background:#fff;}';
-				html += '</style>';
-				html += loaderHtml;
-				html += '</head>';
-				html += '<body>';
-				html += '<div class="contents">';
-				html += '<p style="background:#ddd; text-align:center;">(element before)</p>';
-				html += moduleHtml;
-				html += '<p style="background:#ddd; text-align:center;">(element after)</p>';
-				html += '</div>';
-				html += '</body>';
+				html += '<!DOCTYPE html>'+"\n";
+				html += '<html>'+"\n";
+				html += '<head>'+"\n";
+				html += '<style>'+"\n";
+				html += 'body{background:#fff;}'+"\n";
+				html += '</style>'+"\n";
+				html += loaderHtml+"\n";
+				html += '</head>'+"\n";
+				html += '<body>'+"\n";
+				html += '<div class="contents">'+"\n";
+				html += '<p style="background:#ddd; text-align:center;">(element before)</p>'+"\n";
+				html += moduleHtml+"\n";
+				html += '<p style="background:#ddd; text-align:center;">(element after)</p>'+"\n";
+				html += '</div>'+"\n";
+				html += '</body>'+"\n";
 				html += '</html>';
 				rlv();
 			}); })
+
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// 返却
 				callback(html);

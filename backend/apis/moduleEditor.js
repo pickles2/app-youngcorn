@@ -176,6 +176,7 @@ module.exports = function( data, callback, main, socket ){
 		}
 		function bindTemplate(template, uiModel, data, htmlFilename, callback){
 			if( htmlFilename == 'template.html' ){
+				var nameSpace = {'vars':{}};
 				function bindData(src, uiModel, data){
 					var rtn = '';
 					while( 1 ){
@@ -210,9 +211,9 @@ module.exports = function( data, callback, main, socket ){
 							if( !field.input.hidden ){//← "hidden": true だったら、非表示(=出力しない)
 								rtn += tmpVal;
 							}
-							// _this.nameSpace.vars[field.input.name] = {
-							// 	fieldType: "input", type: field.input.type, val: tmpVal
-							// }
+							nameSpace.vars[field.input.name] = {
+								fieldType: "input", type: field.input.type, val: tmpVal
+							};
 
 						}else if( field.module ){
 							// module field
@@ -245,7 +246,7 @@ module.exports = function( data, callback, main, socket ){
 							// 				var tmpValue = px.php.trim(RegExp.$2);
 							//
 							// 				if( tmpMethod == 'is_set' ){
-							// 					if( !_this.nameSpace.vars[tmpValue] || !px.php.trim(_this.nameSpace.vars[tmpValue].val).length ){
+							// 					if( !nameSpace.vars[tmpValue] || !px.php.trim(nameSpace.vars[tmpValue].val).length ){
 							// 						condBool = false;
 							// 						break;
 							// 					}
@@ -260,12 +261,12 @@ module.exports = function( data, callback, main, socket ){
 							// 				var tmpOpe = px.php.trim(RegExp.$2);
 							// 				var tmpDiff = px.php.trim(RegExp.$3);
 							// 				if( tmpOpe == '==' ){
-							// 					if( _this.nameSpace.vars[tmpValue].val != tmpDiff ){
+							// 					if( nameSpace.vars[tmpValue].val != tmpDiff ){
 							// 						condBool = false;
 							// 						break;
 							// 					}
 							// 				}else if( tmpOpe == '!=' ){
-							// 					if( _this.nameSpace.vars[tmpValue].val == tmpDiff ){
+							// 					if( nameSpace.vars[tmpValue].val == tmpDiff ){
 							// 						condBool = false;
 							// 						break;
 							// 					}
@@ -279,7 +280,7 @@ module.exports = function( data, callback, main, socket ){
 							// 		}
 							// 	}
 							// }
-							// if( _this.nameSpace.vars[field.if.is_set] && px.php.trim(_this.nameSpace.vars[field.if.is_set].val).length ){
+							// if( nameSpace.vars[field.if.is_set] && px.php.trim(nameSpace.vars[field.if.is_set].val).length ){
 							// 	boolResult = true;
 							// }
 							// if( boolResult ){
@@ -289,9 +290,9 @@ module.exports = function( data, callback, main, socket ){
 
 						}else if( field.echo ){
 							// echo field
-							// if( _this.nameSpace.vars[field.echo.ref] && _this.nameSpace.vars[field.echo.ref].val ){
-							// 	rtn += _this.nameSpace.vars[field.echo.ref].val;
-							// }
+							if( nameSpace.vars[field.echo.ref] && nameSpace.vars[field.echo.ref].val ){
+								rtn += nameSpace.vars[field.echo.ref].val;
+							}
 
 						}
 

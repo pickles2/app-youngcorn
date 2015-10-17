@@ -4,8 +4,8 @@
 window.main = new (function($){
 	var _this = this;
 	var main = this;
-	var it79 = this.it79 = require('iterate79');
-	var php = this.php = require('phpjs');
+	var it79 = require('iterate79');
+	var php = require('phpjs');
 	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
 	var socket = this.socket = window.baobabFw
 		.createSocket(

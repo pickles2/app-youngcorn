@@ -1,12 +1,14 @@
 window.cont = new (function(){
 	var data = {};
+	var it79 = require('iterate79');
+	var php = require('phpjs');
 
 	this.init = function(){
 		/**
 		 * initialize
 		 */
 		main.init(function(){
-			main.it79.fnc({}, [
+			it79.fnc({}, [
 				function(it1, data){
 					console.log('setup env...');
 					setTimeout(function(){
@@ -15,7 +17,7 @@ window.cont = new (function(){
 				},
 				function(it1, data){
 					// Parse Query string parameters
-					data.projectIdx = main.php.intval($.url(window.location.href).param('projectIdx'));
+					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
 					console.log( data );
 					it1.next(data);
 				} ,

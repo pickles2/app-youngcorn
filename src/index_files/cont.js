@@ -1,12 +1,14 @@
 window.cont = new (function(){
 	var _this = this;
+	var it79 = require('iterate79');
+	var php = require('phpjs');
 
 	this.init = function(){
 		/**
 		 * initialize
 		 */
 		main.init(function(){
-			main.it79.fnc({}, [
+			it79.fnc({}, [
 				function(it1, data){
 					console.log('setup env...');
 					setTimeout(function(){
@@ -24,7 +26,7 @@ window.cont = new (function(){
 					// プロジェクト一覧を描画
 					var tpl = $('#template-projectList').html();
 					var $ul = $('<div class="list-group">');
-					main.it79.ary(
+					it79.ary(
 						data.projects,
 						function(it2, row, idx){
 							// console.log(row);

@@ -13346,170 +13346,171 @@ module.exports = phpjs;
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./build/npm":2}],4:[function(require,module,exports){
-/**
- * API: showSocketTest
- */
-module.exports = function( data, callback, main, socket ){
-	// console.log(data);
-	alert(data.message);
-	// console.log(callback);
-	callback(data);
-	return;
-}
-
-},{}],5:[function(require,module,exports){
-/**
- * API: twig
- */
-module.exports = function( data, callback, main, socket ){
-
-	// console.log(twig);
-	// console.log(data);
-
-	setTimeout(function(){
-		var html = window.twig({
-			'data': data.template
-		}).render(data.data);
-
-		// console.log(html);
-		callback(html);
-	}, 0);
-
-	return;
-}
-
-},{}],6:[function(require,module,exports){
-/**
- * main.js
- */
-window.main = new (function($){
+window.cont = new (function(){
 	var _this = this;
-	var main = this;
 	var it79 = require('iterate79');
 	var php = require('phpjs');
-	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
-	var socket = this.socket = window.baobabFw
-		.createSocket(
-			this,
-			io,
-			{
-				'showSocketTest': require('./apis/showSocketTest.js'),
-				'twig': require('./apis/twig.js')
-			}
-		)
-	;
-	var Keypress = this.Keypress = {};
+	var data = {};
 
-	function windowResized(){
-		// console.log('window resized');
+	this.init = function(){
+		/**
+		 * initialize
+		 */
+		main.init(function(){
+			it79.fnc({}, [
+				function(it1, data){
+					// Parse Query string parameters
+					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
+					data.path = php.trim($.url(window.location.href).param('path'));
+					console.log( data );
+					it1.next(data);
+				} ,
+				// function(it1, _data){
+				// 	// 描画
+				// 	data = _data;
+				//
+				// 	// info.json
+				// 	if( data.src.infoJson ){
+				// 		$('[name=src_infojson]')
+				// 			.val( data.src.infoJson.src )
+				// 			.attr( {"data-filename": data.src.infoJson.filename} )
+				// 		;
+				// 	}else{
+				// 		$('[name=src_infojson]')
+				// 			.val( JSON.stringify( {
+				// 				"name": ""
+				// 			}, null, 2 ) )
+				// 			.attr( {"data-filename": 'info.json'} )
+				// 		;
+				// 	}
+				//
+				// 	// template.html
+				// 	if( data.src.html ){
+				// 		$('[name=src_html]')
+				// 			.val( data.src.html.src )
+				// 			.attr( {"data-filename": data.src.html.filename} )
+				// 		;
+				// 	}else{
+				// 		$('[name=src_html]')
+				// 			.val( '<div></div>' )
+				// 			.attr( {"data-filename": 'template.html'} )
+				// 		;
+				// 	}
+				//
+				// 	// module.css.scss
+				// 	if( data.src.css ){
+				// 		$('[name=src_css]')
+				// 			.val( data.src.css.src )
+				// 			.attr( {"data-filename": data.src.css.filename} )
+				// 		;
+				// 	}else{
+				// 		$('[name=src_css]')
+				// 			.val( '/* module CSS */' )
+				// 			.attr( {"data-filename": 'module.css.scss'} )
+				// 		;
+				// 	}
+				//
+				// 	// module.js
+				// 	if( data.src.js ){
+				// 		$('[name=src_js]')
+				// 			.val( data.src.js.src )
+				// 			.attr( {"data-filename": data.src.js.filename} )
+				// 		;
+				// 	}else{
+				// 		$('[name=src_js]')
+				// 			.val( '/* module JavaScript */' )
+				// 			.attr( {"data-filename": 'module.js'} )
+				// 		;
+				// 	}
+				//
+				// 	_this.updatePreview(function(){
+				// 		it1.next(data);
+				// 	});
+				//
+				// } ,
+				// function(it1, data){
+				// 	// イベント処理
+				//
+				// 	$('textarea').change(function(e){
+				// 		var $this = $(this);
+				// 		// console.log('changed');
+				// 		// console.log($this.attr('data-filename'));
+				//
+				// 		main.socket.send('moduleEditor',
+				// 			{
+				// 				'fnc': 'saveSrc' ,
+				// 				'filename': $this.attr('data-filename') ,
+				// 				'src': $this.val(),
+				// 				'projectIdx': data.projectIdx ,
+				// 				'packageId': data.packageId ,
+				// 				'moduleId': data.moduleId
+				// 			},
+				// 			function(result){
+				// 				console.log( result );
+				// 				// alert( '保存しました。' );
+				// 				_this.updatePreview( function(){} );
+				// 			}
+				// 		);
+				//
+				// 	});
+				//
+				//
+				// 	it1.next(data);
+				// } ,
+				function(it1, _data){
+					data = _data;
+					console.log(data);
+					console.log('Started!');
+				}
+			]);
+		});
+		return this;
 	}
 
 	/**
-	 * initialize
-	 * @param  {Function} callback Callback function.
-	 * @return {Object}            return this;
+	 * すべての変更を保存する
+	 * TODO: 未実装です。
+	 * @return {Object} this
 	 */
-	this.init = function(callback){
-		callback = callback || function(){};
+	this.save = function(callback){
+		callback = callback||function(){};
+		callback();
+		return this;
+	}
 
-		it79.fnc(
-			{},
-			[
-				function(it1, data){
-					// 特定のキー操作を無効化
-					_Keypress = new window.keypress.Listener();
-					_this.Keypress = _Keypress;
+	/**
+	 * プレビューを更新する。
+	 * @param  {Function} callback コールバック関数
+	 * @return {Object}            this
+	 */
+	this.updatePreview = function(callback){
+		callback = callback||function(){};
+		var $iframe = $($('iframe.cont_preview').get(0).contentWindow);
+		var doc = $iframe.get(0).document;
 
-					_Keypress.simple_combo("backspace", function(e) {
-						// alert("You pressed backspace");
-						e.preventDefault();
-						e.stopPropagation();
-						return false;
-					});
-					_Keypress.simple_combo("delete", function(e) {
-						// alert("You pressed delete");
-						e.preventDefault();
-						e.stopPropagation();
-						return false;
-					});
-					_Keypress.simple_combo("cmd left", function(e) {
-						// alert("You pressed Cmd+Left");
-						e.preventDefault();
-						e.stopPropagation();
-						return false;
-					});
-					_Keypress.simple_combo("cmd right", function(e) {
-						// alert("You pressed Cmd+Right");
-						e.preventDefault();
-						e.stopPropagation();
-						return false;
-					});
-					_Keypress.simple_combo("escape", function(e) {
-						// alert("You pressed escape");
-						e.preventDefault();
-						return false;
-					});
+		var html = '';
+		this.save(function(){
+			main.socket.send('moduleEditor',
+				{
+					'fnc': 'generatePreviewHTML' ,
+					'projectIdx': data.projectIdx ,
+					'packageId': data.packageId ,
+					'moduleId': data.moduleId
+				},
+				function(result){
+					console.log( result );
+					doc.write(result.html);
+					doc.close();
 
-					it1.next();
-				} ,
-				function(it1, data){
-					// ドラッグ＆ドロップ操作の無効化
-					$('html, body')
-						.bind( 'drop', function(e){
-							// ドロップ操作を無効化
-							// console.log(456);
-							e.preventDefault();
-							e.stopPropagation();
-							return false;
-						} )
-						.bind( 'dragenter', function(e){
-							// ドロップ操作を無効化
-							// console.log(45645);
-							e.preventDefault();
-							e.stopPropagation();
-							return false;
-						} )
-						.bind( 'dragover', function(e){
-							// ドロップ操作を無効化
-							// console.log(23456);
-							e.preventDefault();
-							e.stopPropagation();
-							return false;
-						} )
-					;
-
-					it1.next();
-				} ,
-				function(it1, data){
-					window.focus();
-					it1.next();
-				} ,
-				function(it1, data){
-					$(window).resize(windowResized);
 					setTimeout(function(){
 						callback();
 					}, 0);
 				}
-			]
-		);
+			);
+		});
 		return this;
 	}
 
-	/**
-	 * WebSocket疎通確認
-	 */
-	this.socketTest = function(){
-		socket.send(
-			'socketTest',
-			{'message': 'socketTest from frontend.'} ,
-			function(data){
-				console.log(data);
-				alert('callback function is called!');
-			}
-		);
-		return this;
-	}
+})();
 
-})(jQuery);
-
-},{"./apis/showSocketTest.js":4,"./apis/twig.js":5,"iterate79":1,"phpjs":3}]},{},[6])
+},{"iterate79":1,"phpjs":3}]},{},[4])

@@ -1,5 +1,6 @@
 window.cont = new (function(){
 	var _this = this;
+	var it79 = require('iterate79');
 	var php = require('phpjs');
 	var data = {};
 
@@ -8,7 +9,7 @@ window.cont = new (function(){
 		 * initialize
 		 */
 		main.init(function(){
-			main.it79.fnc({}, [
+			it79.fnc({}, [
 				function(it1, data){
 					// 編集中は Keypress の監視を停止する。
 					$('textarea')

@@ -13346,170 +13346,76 @@ module.exports = phpjs;
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./build/npm":2}],4:[function(require,module,exports){
-/**
- * API: showSocketTest
- */
-module.exports = function( data, callback, main, socket ){
-	// console.log(data);
-	alert(data.message);
-	// console.log(callback);
-	callback(data);
-	return;
-}
-
-},{}],5:[function(require,module,exports){
-/**
- * API: twig
- */
-module.exports = function( data, callback, main, socket ){
-
-	// console.log(twig);
-	// console.log(data);
-
-	setTimeout(function(){
-		var html = window.twig({
-			'data': data.template
-		}).render(data.data);
-
-		// console.log(html);
-		callback(html);
-	}, 0);
-
-	return;
-}
-
-},{}],6:[function(require,module,exports){
-/**
- * main.js
- */
-window.main = new (function($){
+window.cont = new (function(){
 	var _this = this;
-	var main = this;
 	var it79 = require('iterate79');
 	var php = require('phpjs');
-	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
-	var socket = this.socket = window.baobabFw
-		.createSocket(
-			this,
-			io,
-			{
-				'showSocketTest': require('./apis/showSocketTest.js'),
-				'twig': require('./apis/twig.js')
-			}
-		)
-	;
-	var Keypress = this.Keypress = {};
 
-	function windowResized(){
-		// console.log('window resized');
-	}
-
-	/**
-	 * initialize
-	 * @param  {Function} callback Callback function.
-	 * @return {Object}            return this;
-	 */
-	this.init = function(callback){
-		callback = callback || function(){};
-
-		it79.fnc(
-			{},
-			[
+	this.init = function(){
+		/**
+		 * initialize
+		 */
+		main.init(function(){
+			it79.fnc({}, [
 				function(it1, data){
-					// 特定のキー操作を無効化
-					_Keypress = new window.keypress.Listener();
-					_this.Keypress = _Keypress;
-
-					_Keypress.simple_combo("backspace", function(e) {
-						// alert("You pressed backspace");
-						e.preventDefault();
-						e.stopPropagation();
-						return false;
-					});
-					_Keypress.simple_combo("delete", function(e) {
-						// alert("You pressed delete");
-						e.preventDefault();
-						e.stopPropagation();
-						return false;
-					});
-					_Keypress.simple_combo("cmd left", function(e) {
-						// alert("You pressed Cmd+Left");
-						e.preventDefault();
-						e.stopPropagation();
-						return false;
-					});
-					_Keypress.simple_combo("cmd right", function(e) {
-						// alert("You pressed Cmd+Right");
-						e.preventDefault();
-						e.stopPropagation();
-						return false;
-					});
-					_Keypress.simple_combo("escape", function(e) {
-						// alert("You pressed escape");
-						e.preventDefault();
-						return false;
-					});
-
-					it1.next();
-				} ,
-				function(it1, data){
-					// ドラッグ＆ドロップ操作の無効化
-					$('html, body')
-						.bind( 'drop', function(e){
-							// ドロップ操作を無効化
-							// console.log(456);
-							e.preventDefault();
-							e.stopPropagation();
-							return false;
-						} )
-						.bind( 'dragenter', function(e){
-							// ドロップ操作を無効化
-							// console.log(45645);
-							e.preventDefault();
-							e.stopPropagation();
-							return false;
-						} )
-						.bind( 'dragover', function(e){
-							// ドロップ操作を無効化
-							// console.log(23456);
-							e.preventDefault();
-							e.stopPropagation();
-							return false;
-						} )
-					;
-
-					it1.next();
-				} ,
-				function(it1, data){
-					window.focus();
-					it1.next();
-				} ,
-				function(it1, data){
-					$(window).resize(windowResized);
+					console.log('setup env...');
 					setTimeout(function(){
-						callback();
-					}, 0);
+						it1.next(data);
+					}, 10);
+				},
+				function(it1, data){
+					// Parse Query string parameters
+					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
+					console.log( data );
+					it1.next(data);
+				} ,
+				function(it1, data){
+					// プロジェクト情報を取得
+					main.socket.send('getProject', {'projectIdx': data.projectIdx}, function(result){
+						// console.log( result );
+						data.projectInfo = result.projectInfo;
+						data.config = result.config;
+						data.path_homedir = result.path_homedir;
+						it1.next(data);
+					});
+				} ,
+				function(it1, data){
+					// サイトマップを取得
+					main.socket.send(
+						'getSitemap',
+						{
+							'projectIdx': data.projectIdx
+						},
+						function(sitemap){
+							// console.log( sitemap );
+							data.sitemap = sitemap.sitemap;
+							it1.next(data);
+						}
+					);
+				} ,
+				function(it1, data){
+					// 描画
+					console.log( data );
+					var html =
+						twig({data: document.getElementById('template-pageList').innerHTML})
+						.render(data)
+					;
+					document.querySelector('.cont_page_list').innerHTML = html;
+
+					var html =
+						twig({data: document.getElementById('template-content-footer').innerHTML})
+						.render(data)
+					;
+					document.querySelector('.cont_cont_footer').innerHTML = html;
+					it1.next(data);
+				} ,
+				function(it1, data){
+					console.log('Started!');
 				}
-			]
-		);
-		return this;
+			]);
+		});
 	}
 
-	/**
-	 * WebSocket疎通確認
-	 */
-	this.socketTest = function(){
-		socket.send(
-			'socketTest',
-			{'message': 'socketTest from frontend.'} ,
-			function(data){
-				console.log(data);
-				alert('callback function is called!');
-			}
-		);
-		return this;
-	}
+})();
 
-})(jQuery);
-
-},{"./apis/showSocketTest.js":4,"./apis/twig.js":5,"iterate79":1,"phpjs":3}]},{},[6])
+},{"iterate79":1,"phpjs":3}]},{},[4])

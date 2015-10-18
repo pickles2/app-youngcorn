@@ -1,0 +1,19 @@
+.cont_outline {
+  position: relative;
+  top: 0;
+  left: 0;
+  overflow: auto; }
+  .cont_outline #canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 75%;
+    height: 100%;
+    overflow: auto; }
+  .cont_outline #palette {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20%;
+    height: 100%;
+    overflow: auto; }

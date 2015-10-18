@@ -3,19 +3,87 @@ window.cont = new (function(){
 	var it79 = require('iterate79');
 	var php = require('phpjs');
 	var data = {};
+	var broccoli = new Broccoli();
 
 	this.init = function(){
 		/**
 		 * initialize
 		 */
 		main.init(function(){
-			it79.fnc({}, [
+			it79.fnc(data, [
 				function(it1, data){
 					// Parse Query string parameters
 					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
 					data.path = php.trim($.url(window.location.href).param('path'));
-					console.log( data );
+					// console.log( data );
+					$('#canvas').attr({
+						"data-broccoli-preview": "http://127.0.0.1:8080"+data.path // TODO: プレビューサーバー上のURLを指定
+					});
 					it1.next(data);
+				} ,
+				function(it1, data){
+					// getting Project Info
+					main.socket.send(
+						'getProject',
+						{'projectIdx': data.projectIdx},
+						function(pjInfo){
+							data.projectInfo = pjInfo;
+							// console.log(data);
+							it1.next(data);
+						}
+					);
+				} ,
+				function(){
+					// broccoli-html-editor standby.
+					broccoli.init(
+						{
+							'elmCanvas': document.getElementById('canvas'),
+							'elmModulePalette': document.getElementById('palette'),
+							'contents_area_selector': data.projectInfo.config.plugins.px2dt.contents_area_selector,
+								// ↑編集可能領域を探すためのクエリを設定します。
+								//  この例では、data-contents属性が付いている要素が編集可能領域として認識されます。
+							'contents_bowl_name_by': data.projectInfo.config.plugins.px2dt.contents_bowl_name_by,
+								// ↑bowlの名称を、data-contents属性値から取得します。
+							'customFields': {
+								// 'custom1': function(broccoli){
+								// 	// カスタムフィールドを実装します。
+								// 	// この関数は、fieldBase.js を基底クラスとして継承します。
+								// 	// customFields オブジェクトのキー(ここでは custom1)が、フィールドの名称になります。
+								// }
+							},
+							'gpiBridge': function(api, options, callback){
+								// GPI(General Purpose Interface) Bridge
+								// broccoliは、バックグラウンドで様々なデータ通信を行います。
+								// GPIは、これらのデータ通信を行うための汎用的なAPIです。
+								main.socket.send(
+									'broccoliBridge',
+									{
+										'api': 'gpiBridge' ,
+										'projectIdx': php.intval($.url(window.location.href).param('projectIdx')),
+										'path': php.trim($.url(window.location.href).param('path')),
+										'bridge': {
+											'api': api ,
+											'options': options
+										}
+									} ,
+									function(rtn){
+										// console.log(rtn);
+										callback(rtn);
+									}
+								);
+								return;
+							}
+						} ,
+						function(){
+							// 初期化が完了すると呼びだされるコールバック関数です。
+
+							$(window).resize(function(){
+								// このメソッドは、canvasの再描画を行います。
+								// ウィンドウサイズが変更された際に、UIを再描画するよう命令しています。
+								onWindowResized();
+							}).resize();
+						}
+					);
 				} ,
 				// function(it1, _data){
 				// 	// 描画
@@ -120,6 +188,22 @@ window.cont = new (function(){
 	}
 
 	/**
+	 * Window Resize Event
+	 */
+	function onWindowResized(callback){
+		callback = callback||function(){};
+		$('.cont_outline')
+			.css({
+				'width': $(window).innerWidth() ,
+				'height': $(window).innerHeight()
+			})
+		;
+		broccoli.redraw();
+		callback();
+		return;
+	}
+
+	/**
 	 * すべての変更を保存する
 	 * TODO: 未実装です。
 	 * @return {Object} this
@@ -133,7 +217,7 @@ window.cont = new (function(){
 	/**
 	 * プレビューを更新する。
 	 * @param  {Function} callback コールバック関数
-	 * @return {Object}            this
+	 * @return {Object}			this
 	 */
 	this.updatePreview = function(callback){
 		callback = callback||function(){};

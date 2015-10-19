@@ -22,6 +22,9 @@ module.exports = new (function(){
 		}
 	);
 
+	var Px2ServerEmurator = require('./px_server_emurator.node.js');
+	this.px2ServerEmurator = new Px2ServerEmurator(this);
+
 	/**
 	 * px2agent からプロジェクトオブジェクトを生成する
 	 * @param Number pjInfo プロジェクト情報

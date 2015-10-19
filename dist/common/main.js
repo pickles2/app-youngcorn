@@ -13496,7 +13496,30 @@ window.main = new (function($){
 	}
 
 	/**
+	 * Pickles2 プレビュー用サーバーを起動
+	 * @param  {Integer}  projectIdx プロジェクトインデックス番号
+	 * @param  {Function} callback   callback function.
+	 * @return {Object}              this.
+	 */
+	this.previewServerUp = function(projectIdx, callback){
+		callback = callback||function(){};
+		socket.send(
+			'initPx2ServerEmurator',
+			{
+				'projectIdx': projectIdx
+			} ,
+			function(data){
+				console.log('Pickles2 Server Emurator, standby.');
+				console.log(data);
+				callback(data);
+			}
+		);
+		return this;
+	}
+
+	/**
 	 * WebSocket疎通確認
+	 * (baobabFwの疎通確認用メソッド)
 	 */
 	this.socketTest = function(){
 		socket.send(

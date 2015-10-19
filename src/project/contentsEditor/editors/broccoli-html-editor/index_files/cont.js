@@ -5,7 +5,9 @@ window.cont = new (function(){
 	var data = {};
 	var broccoli = new Broccoli();
 
-	this.init = function(){
+	this.init = function(callback){
+		callback = callback||function(){};
+
 		/**
 		 * initialize
 		 */
@@ -16,10 +18,15 @@ window.cont = new (function(){
 					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
 					data.path = php.trim($.url(window.location.href).param('path'));
 					// console.log( data );
-					$('#canvas').attr({
-						"data-broccoli-preview": "http://127.0.0.1:8080"+data.path // TODO: プレビューサーバー上のURLを指定
-					});
 					it1.next(data);
+				} ,
+				function(it1, data){
+					main.previewServerUp(data.projectIdx, function(serverInfo){
+						$('#canvas').attr({
+							"data-broccoli-preview": serverInfo.scheme+"://"+serverInfo.domain+":"+serverInfo.port+data.path
+						});
+						it1.next(data);
+					});
 				} ,
 				function(it1, data){
 					// getting Project Info
@@ -33,23 +40,15 @@ window.cont = new (function(){
 						}
 					);
 				} ,
-				function(){
+				function(it1, data){
 					// broccoli-html-editor standby.
 					broccoli.init(
 						{
 							'elmCanvas': document.getElementById('canvas'),
 							'elmModulePalette': document.getElementById('palette'),
 							'contents_area_selector': data.projectInfo.config.plugins.px2dt.contents_area_selector,
-								// ↑編集可能領域を探すためのクエリを設定します。
-								//  この例では、data-contents属性が付いている要素が編集可能領域として認識されます。
 							'contents_bowl_name_by': data.projectInfo.config.plugins.px2dt.contents_bowl_name_by,
-								// ↑bowlの名称を、data-contents属性値から取得します。
 							'customFields': {
-								// 'custom1': function(broccoli){
-								// 	// カスタムフィールドを実装します。
-								// 	// この関数は、fieldBase.js を基底クラスとして継承します。
-								// 	// customFields オブジェクトのキー(ここでは custom1)が、フィールドの名称になります。
-								// }
 							},
 							'gpiBridge': function(api, options, callback){
 								// GPI(General Purpose Interface) Bridge
@@ -82,6 +81,8 @@ window.cont = new (function(){
 								// ウィンドウサイズが変更された際に、UIを再描画するよう命令しています。
 								onWindowResized();
 							}).resize();
+
+							it1.next(data);
 						}
 					);
 				} ,
@@ -181,6 +182,7 @@ window.cont = new (function(){
 					data = _data;
 					console.log(data);
 					console.log('Started!');
+					callback();
 				}
 			]);
 		});

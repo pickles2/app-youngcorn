@@ -16,9 +16,16 @@ module.exports = function(main){
 	var projectConfig;
 	var px2proj;
 	var serverInfo = {
+		// 'protocol': 'http:',
+		// 'host': '127.0.0.1:8080',
+		// 'hostname': '127.0.0.1',
+		// 'port': '8080',
+		// 'origin': 'http://127.0.0.1:8080',
+
 		'scheme': 'http',
 		'domain': '127.0.0.1',
-		'port': 8080 ,
+		'port': '8080' ,
+
 		'php': 'php',
 		'php_ini': null ,
 		'php_extension_dir': null
@@ -134,44 +141,12 @@ module.exports = function(main){
 						'Content-Type': mime
 					});
 					response.write( document_body );
+					if(mime=='text/html'){
+						response.write(getBroccoliScript());
+					}
 					response.end();
 				}
 			});
-			// spawn(
-			// 	serverInfo.php,
-			// 	[
-			// 		projectInfo.path+'/'+projectInfo.entry_script ,
-			// 		'-o', 'json' ,
-			// 		'-u', 'Mozilla/5.0' ,
-			// 		requestPath
-			// 	] ,
-			// 	{
-			// 		success: function(data){
-			// 			_cmdData += data;
-			// 		},
-			// 		complete: function(code){
-			// 			var dataDecoded, document_body, statusCode = 500;
-			// 			try{
-			// 				dataDecoded = JSON.parse(_cmdData);
-			// 				document_body = dataDecoded.body_base64;
-			// 				statusCode = dataDecoded.status;
-			// 				document_body = (new Buffer(document_body, 'base64')).toString();
-			// 			}catch(e){
-			// 				document_body = _cmdData;
-			// 				statusCode = 500;
-			// 				console.log('disabled to decode Base64 data.');
-			// 				console.log(document_body);
-			// 			}
-			//
-			// 			response.writeHead( statusCode, 'OK', {
-			// 				'Connection': 'close' ,
-			// 				'Content-Type': mime
-			// 			});
-			// 			response.write( document_body );
-			// 			response.end();
-			// 		}
-			// 	}
-			// );
 			return ;
 		}else{
 			fs.readFile( path.dirname( projectInfo.path+'/'+projectInfo.entry_script ) + requestPath, function(error, bin){
@@ -224,6 +199,24 @@ module.exports = function(main){
 		});
 		return this;
 	}// serverStart();
+
+	/**
+	 * broccoli-html-editor が要求するコードを取得
+	 */
+	function getBroccoliScript(){
+		var fin = '';
+			fin += '<script data-broccoli-receive-message="yes">'+"\n";
+			fin += 'window.addEventListener(\'message\',(function() {'+"\n";
+			fin += 'return function f(event) {'+"\n";
+			// fin += 'if(event.origin!=\'http://127.0.0.1:8088\'){return;}'+"\n";
+			fin += 'var s=document.createElement(\'script\');'+"\n";
+			fin += 'document.querySelector(\'body\').appendChild(s);s.src=event.data.scriptUrl;'+"\n";
+			fin += 'window.removeEventListener(\'message\', f, false);'+"\n";
+			fin += '}'+"\n";
+			fin += '})(),false);'+"\n";
+			fin += '</script>'+"\n";
+		return fin;
+	}
 
 	/**
 	 * システムコマンドを実行する(spawn)

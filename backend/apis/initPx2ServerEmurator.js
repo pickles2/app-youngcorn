@@ -33,7 +33,7 @@ module.exports = function( data, callback, main, socket ){
 			);
 		} ,
 		function(it1, pjData){
-			console.log(pjData);
+			// console.log(pjData);
 			serverInfo = { // TODO: 仮実装
 				'scheme': 'http',
 				'port':8080 ,

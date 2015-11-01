@@ -57,37 +57,40 @@ module.exports = function( data, callback, main, socket ){
 			// console.log(data.conf.plugins.px2dt);
 
 			// broccoli setup.
-			broccoli = new Broccoli({
-				'paths_module_template': data.conf.plugins.px2dt.paths_module_template ,
-				'documentRoot': data.documentRoot,
-				'pathHtml': data.path,
-				'pathResourceDir': data.pathResourceDir,
-				'realpathDataDir': data.realpathDataDir,
-				'customFields': {
-				} ,
-				'bindTemplate': function(htmls, callback){
-					var fin = '';
-					for( var bowlId in htmls ){
-						if( bowlId == 'main' ){
-							fin += htmls['main']+"\n";
-							fin += "\n";
-						}else{
-							fin += '<?php ob_start(); ?>'+"\n";
-							fin += htmls[bowlId]+"\n";
-							fin += '<?php $px->bowl()->send( ob_get_clean(), '+JSON.stringify(bowlId)+' ); ?>'+"\n";
-							fin += "\n";
-						}
-					}
-					callback(fin);
-					return;
-				}
-
-			});
+			broccoli = new Broccoli();
 
 			// console.log(broccoli);
-			broccoli.init(function(){
-				it1.next(data);
-			});
+			broccoli.init(
+				{
+					'paths_module_template': data.conf.plugins.px2dt.paths_module_template ,
+					'documentRoot': data.documentRoot,
+					'pathHtml': data.path,
+					'pathResourceDir': data.pathResourceDir,
+					'realpathDataDir': data.realpathDataDir,
+					'customFields': {
+					} ,
+					'bindTemplate': function(htmls, callback){
+						var fin = '';
+						for( var bowlId in htmls ){
+							if( bowlId == 'main' ){
+								fin += htmls['main']+"\n";
+								fin += "\n";
+							}else{
+								fin += '<?php ob_start(); ?>'+"\n";
+								fin += htmls[bowlId]+"\n";
+								fin += '<?php $px->bowl()->send( ob_get_clean(), '+JSON.stringify(bowlId)+' ); ?>'+"\n";
+								fin += "\n";
+							}
+						}
+						callback(fin);
+						return;
+					}
+
+				},
+				function(){
+					it1.next(data);
+				}
+			);
 		} ,
 		function(it1, data){
 			if(data.api == 'gpiBridge'){

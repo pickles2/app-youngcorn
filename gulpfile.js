@@ -15,7 +15,8 @@ var _tasks = [
 	'.css',
 	'.css.scss',
 	'main.js',
-	'.js'
+	'.js',
+	'broccoli-client'
 ];
 
 
@@ -78,6 +79,16 @@ gulp.task(".html.twig", function() {
 		}))
 		.pipe(rename({extname: ''}))
 		.pipe(gulp.dest( conf.get().frontendDocumentRoot ))
+	;
+});
+
+// broccoli-client (frontend) を処理
+gulp.task("broccoli-client", function() {
+	gulp.src(["node_modules/broccoli-html-editor/client/dist/*"])
+		.pipe(gulp.dest( './dist/libs/broccoli-html-editor/client/dist/' ))
+	;
+	gulp.src(["node_modules/broccoli-html-editor--table-field/dist/*"])
+		.pipe(gulp.dest( './dist/libs/broccoli-html-editor--table-field/dist/' ))
 	;
 });
 

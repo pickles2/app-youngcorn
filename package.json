@@ -14,6 +14,7 @@
   "dependencies": {
     "baobab-fw": "git://github.com/tomk79/BaobabFW.git",
     "broccoli-html-editor": "git://github.com/tomk79/broccoli.git",
+    "broccoli-html-editor--table-field": "git://github.com/tomk79/broccoli-html-editor--table-field.git",
     "desktop-utils": "git://github.com/tomk79/node-desktop-utils.git",
     "es6-promise": "^3.0.2",
     "express": "^4.13.0",

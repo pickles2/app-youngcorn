@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>Module Editor - YoungCorn - The GUI App for Pickles 2.</title>
+		<title>Theme Editor - YoungCorn - The GUI App for Pickles 2.</title>
 
 		<!-- Bootstrap -->
 		<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
@@ -24,7 +24,7 @@
 			</div>
 		</header>
 		<div class="mainBlock container">
-			<h1>Module Editor</h1>
+			<h1>Theme Editor</h1>
 			<div class="contents">
 	<div class="cont_layout_list">
 	</div>
@@ -66,10 +66,9 @@
 	</script>
 	<script id="template-layoutList" type="text/template">
 	<div class="list-group">
-			{% for modPkg in modulePkgList %}
-				<a href="./moduleList.html?projectIdx={{projectIdx}}&amp;packageId={{modPkg.packageId}}" class="list-group-item">
-					<h2>{{modPkg.packageName}}</h2>
-					<p>{{modPkg.realpath}}</p>
+			{% for layout in layoutList %}
+				<a href="./editors/broccoli-html-editor/index.html?projectIdx={{projectIdx}}&amp;layout={{layout}}" class="list-group-item" target="_blank">
+					<h2>{{layout}}</h2>
 				</a>
 			{% endfor %}
 		</div>

@@ -1,6 +1,6 @@
 {% extends "../../common/templates/default.html.twig" %}
 
-{% block title %}Module Editor{% endblock title %}
+{% block title %}Theme Editor{% endblock title %}
 
 {% block head %}
 	<!-- local -->
@@ -24,10 +24,9 @@
 	<script id="template-layoutList" type="text/template">
 	{% raw %}
 		<div class="list-group">
-			{% for modPkg in modulePkgList %}
-				<a href="./moduleList.html?projectIdx={{projectIdx}}&amp;packageId={{modPkg.packageId}}" class="list-group-item">
-					<h2>{{modPkg.packageName}}</h2>
-					<p>{{modPkg.realpath}}</p>
+			{% for layout in layoutList %}
+				<a href="./editors/broccoli-html-editor/index.html?projectIdx={{projectIdx}}&amp;layout={{layout}}" class="list-group-item" target="_blank">
+					<h2>{{layout}}</h2>
 				</a>
 			{% endfor %}
 		</div>

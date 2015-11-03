@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>broccoli HTML Editor - YoungCorn - The GUI App for Pickles 2.</title>
+
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
+
+		<!-- FESS -->
+		<link rel="stylesheet" href="/common/styles/fess.css" />
+
+		<!-- common -->
+		<link rel="stylesheet" href="/common/styles/common.css" />
+
+	<!-- local -->
+	<link rel="stylesheet" href="./index_files/cont.css" />
+	</head>
+	<body>
+
+<div class="cont_outline">
+	<div id="canvas"></div>
+	<div id="palette"></div>
+</div>
+
+
+		<!-- jQuery -->
+		<script src="/bower_components/jquery/dist/jquery.js"></script>
+
+		<!-- Keypress -->
+		<script src="/libs/dmauro-Keypress/keypress.js"></script>
+
+		<!-- Purl (URL Parser) -->
+		<script src="/bower_components/purl/purl.js"></script>
+
+		<!-- Bootstrap -->
+		<script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+
+		<!-- Twig -->
+		<script src="/bower_components/twig.js/twig.min.js"></script>
+
+		<!-- socket.io -->
+		<script src="/socket.io/socket.io.js" type="text/javascript"></script>
+
+		<!-- baobab-fw -->
+		<script src="/baobab-fw/baobab-fw.js" type="text/javascript"></script>
+
+		<!-- common -->
+		<script src="/common/main.js"></script>
+
+	<!-- broccoli-html-editor -->
+	<link rel="stylesheet" href="/libs/broccoli-html-editor/client/dist/broccoli.css" />
+	<script src="/libs/broccoli-html-editor/client/dist/broccoli.js"></script>
+
+	<!-- broccoli-html-editor--table-field -->
+	<script src="/libs/broccoli-html-editor--table-field/dist/broccoli-html-editor--table-field.js"></script>
+
+	<!-- local -->
+	<script src="./index_files/cont.js"></script>
+	<script>
+		$(window).load( window.cont.init() );
+	</script>
+	</body>
+</html>

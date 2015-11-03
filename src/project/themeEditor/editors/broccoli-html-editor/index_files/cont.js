@@ -16,7 +16,7 @@ window.cont = new (function(){
 				function(it1, data){
 					// Parse Query string parameters
 					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
-					data.path = php.trim($.url(window.location.href).param('path'));
+					data.layout = php.trim($.url(window.location.href).param('layout'));
 					// console.log( data );
 					it1.next(data);
 				} ,
@@ -33,12 +33,19 @@ window.cont = new (function(){
 					);
 				} ,
 				function(it1, data){
-					main.previewServerUp(data.projectIdx, {}, function(serverInfo){
-						$('#canvas').attr({
-							"data-broccoli-preview": serverInfo.scheme+"://"+serverInfo.domain+":"+serverInfo.port+data.path
-						});
-						it1.next(data);
-					});
+					main.previewServerUp(
+						data.projectIdx,
+						{
+							'staticWeb': true,
+							'documentRoot': data.projectInfo.path_homedir + '/themes/broccoli/'
+						},
+						function(serverInfo){
+							$('#canvas').attr({
+								"data-broccoli-preview": serverInfo.scheme+"://"+serverInfo.domain+":"+serverInfo.port+'/'+data.layout+'.html'
+							});
+							it1.next(data);
+						}
+					);
 				} ,
 				function(it1, data){
 					// broccoli-html-editor standby.
@@ -56,11 +63,11 @@ window.cont = new (function(){
 								// broccoliは、バックグラウンドで様々なデータ通信を行います。
 								// GPIは、これらのデータ通信を行うための汎用的なAPIです。
 								main.socket.send(
-									'broccoliBridge',
+									'broccoliBridgeForThemeEditor',
 									{
 										'api': 'gpiBridge' ,
 										'projectIdx': php.intval($.url(window.location.href).param('projectIdx')),
-										'path': php.trim($.url(window.location.href).param('path')),
+										'layout': php.trim($.url(window.location.href).param('layout')),
 										'bridge': {
 											'api': api ,
 											'options': options

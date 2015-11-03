@@ -1,0 +1,33 @@
+{% extends "../../../../common/templates/plain.html.twig" %}
+
+{% block title %}broccoli HTML Editor{% endblock title %}
+
+
+{% block head %}
+	<!-- local -->
+	<link rel="stylesheet" href="./index_files/cont.css" />
+{% endblock head %}
+
+
+{% block main %}
+<div class="cont_outline">
+	<div id="canvas"></div>
+	<div id="palette"></div>
+</div>
+{% endblock main %}
+
+
+{% block foot %}
+	<!-- broccoli-html-editor -->
+	<link rel="stylesheet" href="/libs/broccoli-html-editor/client/dist/broccoli.css" />
+	<script src="/libs/broccoli-html-editor/client/dist/broccoli.js"></script>
+
+	<!-- broccoli-html-editor--table-field -->
+	<script src="/libs/broccoli-html-editor--table-field/dist/broccoli-html-editor--table-field.js"></script>
+
+	<!-- local -->
+	<script src="./index_files/cont.js"></script>
+	<script>
+		$(window).load( window.cont.init() );
+	</script>
+{% endblock foot %}

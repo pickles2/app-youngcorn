@@ -117,16 +117,17 @@ window.main = new (function($){
 	/**
 	 * Pickles2 プレビュー用サーバーを起動
 	 * @param  {Integer}  projectIdx プロジェクトインデックス番号
+	 * @param  {Object}   options    オプション
 	 * @param  {Function} callback   callback function.
 	 * @return {Object}              this.
 	 */
-	this.previewServerUp = function(projectIdx, callback){
+	this.previewServerUp = function(projectIdx, options, callback){
 		callback = callback||function(){};
+		var params = options || {};
+		params.projectIdx = projectIdx;
 		socket.send(
 			'initPx2ServerEmurator',
-			{
-				'projectIdx': projectIdx
-			} ,
+			params ,
 			function(data){
 				console.log('Pickles2 Server Emurator, standby.');
 				console.log(data);

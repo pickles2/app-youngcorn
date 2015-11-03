@@ -39,12 +39,20 @@ module.exports = function( data, callback, main, socket ){
 				'port':8080 ,
 				'domain': '127.0.0.1'
 			};
+			var options = {};
+			if( data.documentRoot ){
+				options.documentRoot = data.documentRoot;
+			}
+			if( data.staticWeb ){
+				options.staticWeb = true;
+			}
 
 			main.px2ServerEmurator.init(
 				pjData.projectInfo,
 				pjData.config,
 				px2proj,
 				serverInfo ,
+				options ,
 				function(){
 					serverInfo.scheme = main.px2ServerEmurator.getScheme();
 					serverInfo.domain = main.px2ServerEmurator.getDomain();

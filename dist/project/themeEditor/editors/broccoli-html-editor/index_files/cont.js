@@ -13346,194 +13346,173 @@ module.exports = phpjs;
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./build/npm":2}],4:[function(require,module,exports){
-/**
- * API: showSocketTest
- */
-module.exports = function( data, callback, main, socket ){
-	// console.log(data);
-	alert(data.message);
-	// console.log(callback);
-	callback(data);
-	return;
-}
-
-},{}],5:[function(require,module,exports){
-/**
- * API: twig
- */
-module.exports = function( data, callback, main, socket ){
-
-	// console.log(twig);
-	// console.log(data);
-
-	setTimeout(function(){
-		var html = window.twig({
-			'data': data.template
-		}).render(data.data);
-
-		// console.log(html);
-		callback(html);
-	}, 0);
-
-	return;
-}
-
-},{}],6:[function(require,module,exports){
-/**
- * main.js
- */
-window.main = new (function($){
+window.cont = new (function(){
 	var _this = this;
-	var main = this;
 	var it79 = require('iterate79');
 	var php = require('phpjs');
-	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
-	var socket = this.socket = window.baobabFw
-		.createSocket(
-			this,
-			io,
-			{
-				'showSocketTest': require('./apis/showSocketTest.js'),
-				'twig': require('./apis/twig.js')
-			}
-		)
-	;
-	var Keypress = this.Keypress = {};
+	var data = {};
+	var broccoli = new Broccoli();
 
-	function windowResized(){
-		// console.log('window resized');
+	this.init = function(callback){
+		callback = callback||function(){};
+
+		/**
+		 * initialize
+		 */
+		main.init(function(){
+			it79.fnc(data, [
+				function(it1, data){
+					// Parse Query string parameters
+					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
+					data.layout = php.trim($.url(window.location.href).param('layout'));
+					// console.log( data );
+					it1.next(data);
+				} ,
+				function(it1, data){
+					// getting Project Info
+					main.socket.send(
+						'getProject',
+						{'projectIdx': data.projectIdx},
+						function(pjInfo){
+							data.projectInfo = pjInfo;
+							// console.log(data);
+							it1.next(data);
+						}
+					);
+				} ,
+				function(it1, data){
+					main.previewServerUp(
+						data.projectIdx,
+						{
+							'staticWeb': true,
+							'documentRoot': data.projectInfo.path_homedir + '/themes/broccoli/'
+						},
+						function(serverInfo){
+							$('#canvas').attr({
+								"data-broccoli-preview": serverInfo.scheme+"://"+serverInfo.domain+":"+serverInfo.port+'/'+data.layout+'.html'
+							});
+							it1.next(data);
+						}
+					);
+				} ,
+				function(it1, data){
+					// broccoli-html-editor standby.
+					broccoli.init(
+						{
+							'elmCanvas': document.getElementById('canvas'),
+							'elmModulePalette': document.getElementById('palette'),
+							'contents_area_selector': data.projectInfo.config.plugins.px2dt.contents_area_selector,
+							'contents_bowl_name_by': data.projectInfo.config.plugins.px2dt.contents_bowl_name_by,
+							'customFields': {
+								'table': window.BroccoliHtmlEditorTableField
+							},
+							'gpiBridge': function(api, options, callback){
+								// GPI(General Purpose Interface) Bridge
+								// broccoliは、バックグラウンドで様々なデータ通信を行います。
+								// GPIは、これらのデータ通信を行うための汎用的なAPIです。
+								main.socket.send(
+									'broccoliBridgeForThemeEditor',
+									{
+										'api': 'gpiBridge' ,
+										'projectIdx': php.intval($.url(window.location.href).param('projectIdx')),
+										'layout': php.trim($.url(window.location.href).param('layout')),
+										'bridge': {
+											'api': api ,
+											'options': options
+										}
+									} ,
+									function(rtn){
+										// console.log(rtn);
+										callback(rtn);
+									}
+								);
+								return;
+							}
+						} ,
+						function(){
+							// 初期化が完了すると呼びだされるコールバック関数です。
+
+							$(window).resize(function(){
+								// このメソッドは、canvasの再描画を行います。
+								// ウィンドウサイズが変更された際に、UIを再描画するよう命令しています。
+								onWindowResized();
+							}).resize();
+
+							it1.next(data);
+						}
+					);
+				} ,
+				function(it1, _data){
+					data = _data;
+					console.log(data);
+					console.log('Started!');
+					callback();
+				}
+			]);
+		});
+		return this;
 	}
 
 	/**
-	 * initialize
-	 * @param  {Function} callback Callback function.
-	 * @return {Object}            return this;
+	 * Window Resize Event
 	 */
-	this.init = function(callback){
-		callback = callback || function(){};
+	function onWindowResized(callback){
+		callback = callback||function(){};
+		$('.cont_outline')
+			.css({
+				'width': $(window).innerWidth() ,
+				'height': $(window).innerHeight()
+			})
+		;
+		broccoli.redraw();
+		callback();
+		return;
+	}
 
-		it79.fnc(
-			{},
-			[
-				function(it1, data){
-					// 特定のキー操作を無効化
-					_Keypress = new window.keypress.Listener();
-					_this.Keypress = _Keypress;
+	/**
+	 * すべての変更を保存する
+	 * TODO: 未実装です。
+	 * @return {Object} this
+	 */
+	this.save = function(callback){
+		callback = callback||function(){};
+		callback();
+		return this;
+	}
 
-					_Keypress.simple_combo("backspace", function(e) {
-						// alert("You pressed backspace");
-						e.preventDefault();
-						e.stopPropagation();
-						return false;
-					});
-					_Keypress.simple_combo("delete", function(e) {
-						// alert("You pressed delete");
-						e.preventDefault();
-						e.stopPropagation();
-						return false;
-					});
-					_Keypress.simple_combo("cmd left", function(e) {
-						// alert("You pressed Cmd+Left");
-						e.preventDefault();
-						e.stopPropagation();
-						return false;
-					});
-					_Keypress.simple_combo("cmd right", function(e) {
-						// alert("You pressed Cmd+Right");
-						e.preventDefault();
-						e.stopPropagation();
-						return false;
-					});
-					_Keypress.simple_combo("escape", function(e) {
-						// alert("You pressed escape");
-						e.preventDefault();
-						return false;
-					});
+	/**
+	 * プレビューを更新する。
+	 * @param  {Function} callback コールバック関数
+	 * @return {Object}			this
+	 */
+	this.updatePreview = function(callback){
+		callback = callback||function(){};
+		var $iframe = $($('iframe.cont_preview').get(0).contentWindow);
+		var doc = $iframe.get(0).document;
 
-					it1.next();
-				} ,
-				function(it1, data){
-					// ドラッグ＆ドロップ操作の無効化
-					$('html, body')
-						.bind( 'drop', function(e){
-							// ドロップ操作を無効化
-							// console.log(456);
-							e.preventDefault();
-							e.stopPropagation();
-							return false;
-						} )
-						.bind( 'dragenter', function(e){
-							// ドロップ操作を無効化
-							// console.log(45645);
-							e.preventDefault();
-							e.stopPropagation();
-							return false;
-						} )
-						.bind( 'dragover', function(e){
-							// ドロップ操作を無効化
-							// console.log(23456);
-							e.preventDefault();
-							e.stopPropagation();
-							return false;
-						} )
-					;
+		var html = '';
+		this.save(function(){
+			main.socket.send('moduleEditor',
+				{
+					'fnc': 'generatePreviewHTML' ,
+					'projectIdx': data.projectIdx ,
+					'packageId': data.packageId ,
+					'moduleId': data.moduleId
+				},
+				function(result){
+					console.log( result );
+					doc.write(result.html);
+					doc.close();
 
-					it1.next();
-				} ,
-				function(it1, data){
-					window.focus();
-					it1.next();
-				} ,
-				function(it1, data){
-					$(window).resize(windowResized);
 					setTimeout(function(){
 						callback();
 					}, 0);
 				}
-			]
-		);
+			);
+		});
 		return this;
 	}
 
-	/**
-	 * Pickles2 プレビュー用サーバーを起動
-	 * @param  {Integer}  projectIdx プロジェクトインデックス番号
-	 * @param  {Object}   options    オプション
-	 * @param  {Function} callback   callback function.
-	 * @return {Object}              this.
-	 */
-	this.previewServerUp = function(projectIdx, options, callback){
-		callback = callback||function(){};
-		var params = options || {};
-		params.projectIdx = projectIdx;
-		socket.send(
-			'initPx2ServerEmurator',
-			params ,
-			function(data){
-				console.log('Pickles2 Server Emurator, standby.');
-				console.log(data);
-				callback(data);
-			}
-		);
-		return this;
-	}
+})();
 
-	/**
-	 * WebSocket疎通確認
-	 * (baobabFwの疎通確認用メソッド)
-	 */
-	this.socketTest = function(){
-		socket.send(
-			'socketTest',
-			{'message': 'socketTest from frontend.'} ,
-			function(data){
-				console.log(data);
-				alert('callback function is called!');
-			}
-		);
-		return this;
-	}
-
-})(jQuery);
-
-},{"./apis/showSocketTest.js":4,"./apis/twig.js":5,"iterate79":1,"phpjs":3}]},{},[6])
+},{"iterate79":1,"phpjs":3}]},{},[4])

@@ -1,10 +1,12 @@
 /**
- * API: broccoliBridge
+ * API: broccoliBridgeForThemeEditor
  */
 module.exports = function( data, callback, main, socket ){
 	delete(require.cache[require('path').resolve(__filename)]);
+	var fs = require('fs');
 	var path = require('path');
 	var it79 = require('iterate79');
+	var mkdirp = require('mkdirp');
 
 	data = data||{};
 	callback = callback||function(){};
@@ -41,16 +43,24 @@ module.exports = function( data, callback, main, socket ){
 			);
 		} ,
 		function(it1, data){
-			data.documentRoot = path.resolve(data.projectInfo.path, data.projectInfo.entry_script, '..')+'/'
-			px2proj.realpath_files(data.path, '', function(realpath){
-				data.realpathDataDir = path.resolve(realpath, 'guieditor.ignore')+'/';
+			data.documentRoot = path.resolve(data.path_homedir, 'themes/broccoli')+'/'
+			data.realpathDataDir = path.resolve(data.documentRoot, 'guieditor.ignore', './'+data.layout, 'data')+'/';
+			data.pathResourceDir = path.resolve(data.documentRoot, 'guieditor.ignore', './'+data.layout, 'resources')+'/';
 
-				px2proj.path_files(data.path, '', function(localpath){
-					data.pathResourceDir = path.resolve(localpath, 'resources')+'/';
+			// ディレクトリ作成
+			mkdirp(data.realpathDataDir, function(err){
+				mkdirp(data.pathResourceDir, function(err){
 					it1.next(data);
 				});
-
 			});
+		} ,
+		function(it1, data){
+			// データファイル作成
+			console.log(fs.existsSync(data.realpathDataDir+'/data.json'));
+			if( !fs.existsSync(data.realpathDataDir+'/data.json') ){
+				fs.writeFileSync(data.realpathDataDir+'/data.json', '{}');
+			}
+			it1.next(data);
 		} ,
 		function(it1, data){
 			// console.log(data);
@@ -62,9 +72,11 @@ module.exports = function( data, callback, main, socket ){
 			// console.log(broccoli);
 			broccoli.init(
 				{
-					'paths_module_template': data.conf.plugins.px2dt.paths_module_template ,
+					'paths_module_template': [
+						data.documentRoot+'/modules/'
+					] ,
 					'documentRoot': data.documentRoot,
-					'pathHtml': data.path,
+					'pathHtml': path.resolve(data.documentRoot, data.layout+'.html'),
 					'pathResourceDir': data.pathResourceDir,
 					'realpathDataDir': data.realpathDataDir,
 					'customFields': {
@@ -72,6 +84,12 @@ module.exports = function( data, callback, main, socket ){
 					} ,
 					'bindTemplate': function(htmls, callback){
 						var fin = '';
+						fin += '<!DOCTYPE html>'+"\n";
+						fin += '<html>'+"\n";
+						fin += '<head>'+"\n";
+						fin += '<title>BROCCOLI HTML EDITOR</title>'+"\n";
+						fin += '</head>'+"\n";
+						fin += '<body>'+"\n";
 						for( var bowlId in htmls ){
 							if( bowlId == 'main' ){
 								fin += htmls['main']+"\n";
@@ -83,6 +101,8 @@ module.exports = function( data, callback, main, socket ){
 								fin += "\n";
 							}
 						}
+						fin += '</body>'+"\n";
+						fin += '</html>'+"\n";
 						callback(fin);
 						return;
 					}

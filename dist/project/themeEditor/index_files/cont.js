@@ -13380,16 +13380,16 @@ window.cont = new (function(){
 					});
 				} ,
 				function(it1, data){
-					// モジュールパッケージ一覧を取得
+					// レイアウト一覧を取得
 					main.socket.send(
-						'getPjModulePkgList',
+						'themeEditor',
 						{
-							'projectIdx': data.projectIdx,
-							'config': data.config
+							'api': 'getLayoutList',
+							'projectIdx': data.projectIdx
 						},
 						function(result){
-							console.log( result );
-							data.modulePkgList = result;
+							console.log(result);
+							data.layoutList = result;
 							it1.next(data);
 						}
 					);

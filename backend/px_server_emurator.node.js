@@ -30,16 +30,19 @@ module.exports = function(main){
 		'php_ini': null ,
 		'php_extension_dir': null
 	};
+	var options = {};
 
 	/**
 	 * 初期化
 	 */
-	this.init = function(_projectInfo, _projectConfig, _px2proj, _serverInfo, callback){
+	this.init = function(_projectInfo, _projectConfig, _px2proj, _serverInfo, _options, callback){
 		callback = callback||function(){};
 		projectInfo = _projectInfo;
 		projectConfig = _projectConfig;
 		px2proj = _px2proj;
 		serverInfo = _serverInfo;
+		options = _options || {};
+		console.log(options);
 
 		serverStart(function(){
 			callback();
@@ -83,14 +86,17 @@ module.exports = function(main){
 		var mime = 'application/octet-stream';
 		var applyPx = false;
 		switch( pathExt ){
-			case 'html': case 'htm':			 mime = 'text/html'; applyPx = true; break;
-			case 'js':						   mime = 'text/javascript'; applyPx = true; break;
+			case 'html': case 'htm':		  mime = 'text/html'; applyPx = true; break;
+			case 'js':						  mime = 'text/javascript'; applyPx = true; break;
 			case 'css':						  mime = 'text/css'; applyPx = true; break;
 			case 'gif':						  mime = 'image/gif';break;
 			case 'jpg': case 'jpeg': case 'jpe': mime = 'image/jpeg';break;
 			case 'png':						  mime = 'image/png';break;
 			case 'svg':						  mime = 'image/svg+xml';break;
 			case 'pdf':						  mime = 'application/pdf';break;
+		}
+		if( options.staticWeb ){
+			applyPx = false;
 		}
 
 		if( applyPx && !requestPath.match( new RegExp( '^'+php.preg_quote( projectConfig.path_controot ) ) ) ){
@@ -149,7 +155,12 @@ module.exports = function(main){
 			});
 			return ;
 		}else{
-			fs.readFile( path.dirname( projectInfo.path+'/'+projectInfo.entry_script ) + requestPath, function(error, bin){
+			var pathDocumentRoot = path.dirname( projectInfo.path+'/'+projectInfo.entry_script );
+			if( options.documentRoot ){
+				pathDocumentRoot = options.documentRoot;
+			}
+			// console.log( pathDocumentRoot + requestPath );
+			fs.readFile( pathDocumentRoot + requestPath, function(error, bin){
 				if(error) {
 					response.writeHead(404, 'Not Found', {
 						'Connection': 'close' ,

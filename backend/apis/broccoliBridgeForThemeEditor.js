@@ -45,7 +45,7 @@ module.exports = function( data, callback, main, socket ){
 		function(it1, data){
 			data.documentRoot = path.resolve(data.path_homedir, 'themes/broccoli')+'/'
 			data.realpathDataDir = path.resolve(data.documentRoot, 'guieditor.ignore', './'+data.layout, 'data')+'/';
-			data.pathResourceDir = path.resolve(data.documentRoot, 'guieditor.ignore', './'+data.layout, 'resources')+'/';
+			data.pathResourceDir = path.resolve('/guieditor.ignore', './'+data.layout, 'resources')+'/';
 
 			// ディレクトリ作成
 			mkdirp(data.realpathDataDir, function(err){
@@ -76,7 +76,7 @@ module.exports = function( data, callback, main, socket ){
 						data.documentRoot+'/modules/'
 					] ,
 					'documentRoot': data.documentRoot,
-					'pathHtml': path.resolve(data.documentRoot, data.layout+'.html'),
+					'pathHtml': path.resolve('/'+data.layout+'.html'),
 					'pathResourceDir': data.pathResourceDir,
 					'realpathDataDir': data.realpathDataDir,
 					'customFields': {

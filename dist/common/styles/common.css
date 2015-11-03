@@ -36,36 +36,3 @@ dl {
 
 .mainBlock {
   margin-top: 110px; }
-
-.font-list {
-  margin: 1em 0;
-  padding: 0; }
-  .font-list > li {
-    list-style-type: none;
-    background-color: #f9f9f9;
-    margin: 1em 0;
-    padding: 1em;
-    border: 1px solid #eee;
-    border-radius: 0.5em; }
-  .font-list__display {
-    font-size: xx-large;
-    overflow: auto;
-    white-space: nowrap;
-    line-height: 1;
-    padding: 0.5em 0; }
-  .font-list__family {
-    font-size: small;
-    margin: 0;
-    padding: 0; }
-    .font-list__family > li {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      display: inline-block; }
-
-.star {
-  color: #ddd; }
-  .star__active,
-  .star__active:active {
-    color: #eeee33;
-    font-size: 180%; }

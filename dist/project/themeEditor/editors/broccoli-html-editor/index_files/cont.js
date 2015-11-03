@@ -13401,8 +13401,8 @@ window.cont = new (function(){
 						{
 							'elmCanvas': document.getElementById('canvas'),
 							'elmModulePalette': document.getElementById('palette'),
-							'contents_area_selector': data.projectInfo.config.plugins.px2dt.contents_area_selector,
-							'contents_bowl_name_by': data.projectInfo.config.plugins.px2dt.contents_bowl_name_by,
+							'contents_area_selector': '[data-px2-contents]',
+							'contents_bowl_name_by': 'data-px2-contents',
 							'customFields': {
 								'table': window.BroccoliHtmlEditorTableField
 							},

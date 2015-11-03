@@ -92,12 +92,14 @@ module.exports = function( data, callback, main, socket ){
 						fin += '<body>'+"\n";
 						for( var bowlId in htmls ){
 							if( bowlId == 'main' ){
+								fin += '<div data-px2-contents>'+"\n";
 								fin += htmls['main']+"\n";
+								fin += '</div>'+"\n";
 								fin += "\n";
 							}else{
-								fin += '<?php ob_start(); ?>'+"\n";
+								fin += '<div data-px2-contents="'+bowlId+'">'+"\n";
 								fin += htmls[bowlId]+"\n";
-								fin += '<?php $px->bowl()->send( ob_get_clean(), '+JSON.stringify(bowlId)+' ); ?>'+"\n";
+								fin += '</div>'+"\n";
 								fin += "\n";
 							}
 						}

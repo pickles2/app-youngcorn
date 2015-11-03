@@ -181,6 +181,9 @@ module.exports = function(main){
 				} else {
 					response.writeHead(200, 'OK', { 'Content-Type': mime });
 					response.write(bin);
+					if(mime=='text/html'){
+						response.write(getBroccoliScript());
+					}
 					response.end();
 				}
 			});

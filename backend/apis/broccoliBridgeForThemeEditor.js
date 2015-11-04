@@ -85,11 +85,27 @@ module.exports = function( data, callback, main, socket ){
 					'bindTemplate': function(htmls, callback){
 						var fin = '';
 						fin += '<!DOCTYPE html>'+"\n";
-						fin += '<html data-px2-contents-theme-editor="main">'+"\n";
+						fin += '<html>'+"\n";
+						fin += '	<head>'+"\n";
+						fin += '		<title><?= htmlspecialchars( $px->site()->get_current_page_info(\'title_full\') ) ?></title>'+"\n";
+						fin += '		<meta charset="UTF-8" />'+"\n";
+						fin += '		<meta name="keywords" content="<?= htmlspecialchars($px->site()->get_current_page_info(\'keywords\')); ?>" />'+"\n";
+						fin += '		<meta name="description" content="<?= htmlspecialchars($px->site()->get_current_page_info(\'description\')); ?>" />'+"\n";
+						fin += ''+"\n";
+						fin += '		<!-- Bootstrap Theme -->'+"\n";
+						fin += '		<link rel="stylesheet" href="./theme_files/styles/bootstrap-theme.min.css">'+"\n";
+						fin += '		<link rel="stylesheet" href="./theme_files/styles/theme.css">'+"\n";
+						fin += ''+"\n";
+						fin += '<?= $px->get_contents_manifesto(); ?>'+"\n";
+						fin += '<?= $px->bowl()->pull(\'head\') ?>'+"\n";
+						fin += ''+"\n";
+						fin += '	</head>'+"\n";
+						fin += '	<body data-px2-contents-theme-editor="main">'+"\n";
 						for( var bowlId in htmls ){
 							fin += htmls[bowlId]+"\n";
 						}
-						fin += '</html>'+"\n";
+						fin += '<?= $px->bowl()->pull(\'foot\') ?>'+"\n";
+						fin += '	</body>'+"\n";
 						callback(fin);
 						return;
 					}

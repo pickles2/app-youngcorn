@@ -18,6 +18,12 @@ window.main = new (function($){
 		)
 	;
 	var Keypress = this.Keypress = {};
+	var _commandKeyName = (function(){
+		var platform = 'unknown';
+		if(process.env.LOCALAPPDATA)return 'ctrl';//Windows
+		if(process.env.HOME)return 'cmd';//Darwin
+		return 'ctrl';
+	})();
 
 	function windowResized(){
 		// console.log('window resized');
@@ -41,23 +47,31 @@ window.main = new (function($){
 
 					_Keypress.simple_combo("backspace", function(e) {
 						// alert("You pressed backspace");
+						switch(e.target.tagName.toLowerCase()){
+							case 'input': case 'textarea':
+								return true; break;
+						}
 						e.preventDefault();
 						e.stopPropagation();
 						return false;
 					});
 					_Keypress.simple_combo("delete", function(e) {
 						// alert("You pressed delete");
+						switch(e.target.tagName.toLowerCase()){
+							case 'input': case 'textarea':
+								return true; break;
+						}
 						e.preventDefault();
 						e.stopPropagation();
 						return false;
 					});
-					_Keypress.simple_combo("cmd left", function(e) {
+					_Keypress.simple_combo(_commandKeyName+" left", function(e) {
 						// alert("You pressed Cmd+Left");
 						e.preventDefault();
 						e.stopPropagation();
 						return false;
 					});
-					_Keypress.simple_combo("cmd right", function(e) {
+					_Keypress.simple_combo(_commandKeyName+" right", function(e) {
 						// alert("You pressed Cmd+Right");
 						e.preventDefault();
 						e.stopPropagation();

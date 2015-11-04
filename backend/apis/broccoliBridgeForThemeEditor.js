@@ -72,9 +72,9 @@ module.exports = function( data, callback, main, socket ){
 			// console.log(broccoli);
 			broccoli.init(
 				{
-					'paths_module_template': [
-						data.documentRoot+'/modules/'
-					] ,
+					'paths_module_template': {
+						"local": data.documentRoot+'/modules/'
+					} ,
 					'documentRoot': data.documentRoot,
 					'pathHtml': path.resolve('/'+data.layout+'.html'),
 					'pathResourceDir': data.pathResourceDir,

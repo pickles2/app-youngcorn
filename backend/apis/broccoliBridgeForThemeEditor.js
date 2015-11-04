@@ -92,8 +92,12 @@ module.exports = function( data, callback, main, socket ){
 						fin += '		<meta name="keywords" content="<?= htmlspecialchars($px->site()->get_current_page_info(\'keywords\')); ?>" />'+"\n";
 						fin += '		<meta name="description" content="<?= htmlspecialchars($px->site()->get_current_page_info(\'description\')); ?>" />'+"\n";
 						fin += ''+"\n";
-						fin += '		<!-- Bootstrap Theme -->'+"\n";
-						fin += '		<link rel="stylesheet" href="./theme_files/styles/bootstrap-theme.min.css">'+"\n";
+						fin += '		<!-- Bootstrap -->'+"\n";
+						fin += '		<link rel="stylesheet" href="./theme_files/bootstrap/css/bootstrap.css">'+"\n";
+						fin += '		<link rel="stylesheet" href="./theme_files/bootstrap/css/bootstrap-theme.css">'+"\n";
+						fin += '		<scri'+'pt src="./theme_files/bootstrap/js/bootstrap.js"></scr'+'ipt>'+"\n";
+						fin += ''+"\n";
+						fin += '		<!-- Custom Styles -->'+"\n";
 						fin += '		<link rel="stylesheet" href="./theme_files/styles/theme.css">'+"\n";
 						fin += ''+"\n";
 						fin += '<?= $px->get_contents_manifesto(); ?>'+"\n";

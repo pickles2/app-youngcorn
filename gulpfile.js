@@ -90,6 +90,9 @@ gulp.task("broccoli-client", function() {
 	gulp.src(["node_modules/broccoli-html-editor--table-field/dist/*"])
 		.pipe(gulp.dest( './dist/libs/broccoli-html-editor--table-field/dist/' ))
 	;
+	gulp.src(["node_modules/broccoli-html-editor-pdf/dist/*"])
+		.pipe(gulp.dest( './dist/libs/broccoli-html-editor-pdf/dist/' ))
+	;
 });
 
 // src 中のすべての拡張子を監視して処理

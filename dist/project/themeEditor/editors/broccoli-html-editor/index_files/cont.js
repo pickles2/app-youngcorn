@@ -13388,6 +13388,8 @@ window.cont = new (function(){
 							'documentRoot': data.projectInfo.path_homedir + '/themes/broccoli/'
 						},
 						function(serverInfo){
+							console.log('getting callback by previewServerUp();');
+							console.log('Loading Preview Window: ' + serverInfo.scheme+"://"+serverInfo.domain+":"+serverInfo.port+'/'+data.layout+'.html');
 							$('#canvas').attr({
 								"data-broccoli-preview": serverInfo.scheme+"://"+serverInfo.domain+":"+serverInfo.port+'/'+data.layout+'.html'
 							});
@@ -13397,12 +13399,13 @@ window.cont = new (function(){
 				} ,
 				function(it1, data){
 					// broccoli-html-editor standby.
+					console.log('initialize broccoli...');
 					broccoli.init(
 						{
 							'elmCanvas': document.getElementById('canvas'),
 							'elmModulePalette': document.getElementById('palette'),
-							'contents_area_selector': '[data-px2-contents]',
-							'contents_bowl_name_by': 'data-px2-contents',
+							'contents_area_selector': '[data-px2-contents-theme-editor]',
+							'contents_bowl_name_by': 'data-px2-contents-theme-editor',
 							'customFields': {
 								'table': window.BroccoliHtmlEditorTableField
 							},

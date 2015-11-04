@@ -45,11 +45,11 @@ module.exports = function( data, callback, main, socket ){
 		function(it1, data){
 			data.documentRoot = path.resolve(data.path_homedir, 'themes/broccoli')+'/'
 			data.realpathDataDir = path.resolve(data.documentRoot, 'guieditor.ignore', './'+data.layout, 'data')+'/';
-			data.pathResourceDir = path.resolve('/guieditor.ignore', './'+data.layout, 'resources')+'/';
+			data.pathResourceDir = path.resolve('/theme_files/layouts/', './'+data.layout, 'resources')+'/';
 
 			// ディレクトリ作成
 			mkdirp(data.realpathDataDir, function(err){
-				mkdirp(data.pathResourceDir, function(err){
+				mkdirp(data.documentRoot+'/'+data.pathResourceDir, function(err){
 					it1.next(data);
 				});
 			});
@@ -85,25 +85,10 @@ module.exports = function( data, callback, main, socket ){
 					'bindTemplate': function(htmls, callback){
 						var fin = '';
 						fin += '<!DOCTYPE html>'+"\n";
-						fin += '<html>'+"\n";
-						fin += '<head>'+"\n";
-						fin += '<title>BROCCOLI HTML EDITOR</title>'+"\n";
-						fin += '</head>'+"\n";
-						fin += '<body>'+"\n";
+						fin += '<html data-px2-contents-theme-editor="main">'+"\n";
 						for( var bowlId in htmls ){
-							if( bowlId == 'main' ){
-								fin += '<div data-px2-contents>'+"\n";
-								fin += htmls['main']+"\n";
-								fin += '</div>'+"\n";
-								fin += "\n";
-							}else{
-								fin += '<div data-px2-contents="'+bowlId+'">'+"\n";
-								fin += htmls[bowlId]+"\n";
-								fin += '</div>'+"\n";
-								fin += "\n";
-							}
+							fin += htmls[bowlId]+"\n";
 						}
-						fin += '</body>'+"\n";
 						fin += '</html>'+"\n";
 						callback(fin);
 						return;

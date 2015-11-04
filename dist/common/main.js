@@ -13509,10 +13509,10 @@ window.main = new (function($){
 		socket.send(
 			'initPx2ServerEmurator',
 			params ,
-			function(data){
-				console.log('Pickles2 Server Emurator, standby.');
-				console.log(data);
-				callback(data);
+			function(serverInfo){
+				console.log('--- Pickles2 Server Emurator, standby. ---');
+				console.log(serverInfo);
+				callback(serverInfo);
 			}
 		);
 		return this;

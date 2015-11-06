@@ -40,7 +40,58 @@ module.exports = function(broccoli) {
   }
 }
 
-},{"m-util":18}],2:[function(require,module,exports){
+},{"m-util":2}],2:[function(require,module,exports){
+module.exports = new(function() {
+
+  // ヒアドキュメントサポート
+  String.prototype.uHereDoc = function() {
+    return this.replace(/^function\s?\(\)\s?\{\/\*/gi, "").replace(/\*\/;?\}$/gi, "");
+  };
+  // スラッシュ挿入
+  String.prototype.uAddslashes = function(s) {
+    var reg = new RegExp(s, 'g');
+    return this.replace(reg, "\\" + s);
+  }
+  // 文字列の繰り返し
+  String.prototype.uRepeat = function(i) {
+    var repeatStr = this;
+    var str = "";
+    while (i > 0) {
+      str += repeatStr;
+      i--;
+    }
+    return str;
+  }
+  // パスからファイル情報返す @return ['ファイル名','拡張子','拡張子抜きファイル名']
+  String.prototype.uGetFileInfo = function() {
+      var file_path = this;
+      // Extract a file name with the extension.
+      var name_ext = file_path.substring(file_path.lastIndexOf("/") + 1, file_path.length);
+      // Extract only the extension of the file.
+      var ext = name_ext.substring(name_ext.lastIndexOf(".") + 1, name_ext.length);
+      // Extract only the name part of the file.
+      var name = name_ext.substring(0, name_ext.indexOf("."));
+      array = new Array(name_ext, ext, name);
+      return array;
+    }
+    // パスからファイル名を返す
+  String.prototype.uGetFileNameExt = function() {
+      file_path = this;
+      return file_path.uGetFileInfo()[0];
+    }
+    // パスから拡張子を返す
+  String.prototype.uGetFileExt = function() {
+      file_path = this;
+      return file_path.uGetFileInfo()[1];
+    }
+    // パスから拡張子抜きファイル名を返す
+  String.prototype.uGetFileName = function() {
+    file_path = this;
+    return file_path.uGetFileInfo()[2];
+  }
+})();
+
+},{}],3:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -105,7 +156,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /**
  * node-iterate79
  */
@@ -181,10 +232,10 @@ process.chdir = function (dir) {
 
 })(exports);
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 module.exports = require('./libs/log');
 
-},{"./libs/log":5}],5:[function(require,module,exports){
+},{"./libs/log":6}],6:[function(require,module,exports){
 module.exports = new(function() {
 
     'use strict';
@@ -354,7 +405,7 @@ module.exports = new(function() {
     }
 })();
 
-},{"colors":10,"date-format":17}],6:[function(require,module,exports){
+},{"colors":11,"date-format":18}],7:[function(require,module,exports){
 /*
 
 The MIT License (MIT)
@@ -542,7 +593,7 @@ for (var map in colors.maps) {
 }
 
 defineProps(colors, init());
-},{"./custom/trap":7,"./custom/zalgo":8,"./maps/america":11,"./maps/rainbow":12,"./maps/random":13,"./maps/zebra":14,"./styles":15,"./system/supports-colors":16}],7:[function(require,module,exports){
+},{"./custom/trap":8,"./custom/zalgo":9,"./maps/america":12,"./maps/rainbow":13,"./maps/random":14,"./maps/zebra":15,"./styles":16,"./system/supports-colors":17}],8:[function(require,module,exports){
 module['exports'] = function runTheTrap (text, options) {
   var result = "";
   text = text || "Run the trap, drop the bass";
@@ -589,7 +640,7 @@ module['exports'] = function runTheTrap (text, options) {
 
 }
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 // please no
 module['exports'] = function zalgo(text, options) {
   text = text || "   he is here   ";
@@ -695,7 +746,7 @@ module['exports'] = function zalgo(text, options) {
   return heComes(text, options);
 }
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var colors = require('./colors');
 
 module['exports'] = function () {
@@ -809,7 +860,7 @@ module['exports'] = function () {
   };
 
 };
-},{"./colors":6}],10:[function(require,module,exports){
+},{"./colors":7}],11:[function(require,module,exports){
 var colors = require('./colors');
 module['exports'] = colors;
 
@@ -822,7 +873,7 @@ module['exports'] = colors;
 //
 //
 require('./extendStringPrototype')();
-},{"./colors":6,"./extendStringPrototype":9}],11:[function(require,module,exports){
+},{"./colors":7,"./extendStringPrototype":10}],12:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function() {
@@ -835,7 +886,7 @@ module['exports'] = (function() {
     }
   }
 })();
-},{"../colors":6}],12:[function(require,module,exports){
+},{"../colors":7}],13:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function () {
@@ -850,7 +901,7 @@ module['exports'] = (function () {
 })();
 
 
-},{"../colors":6}],13:[function(require,module,exports){
+},{"../colors":7}],14:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function () {
@@ -859,13 +910,13 @@ module['exports'] = (function () {
     return letter === " " ? letter : colors[available[Math.round(Math.random() * (available.length - 1))]](letter);
   };
 })();
-},{"../colors":6}],14:[function(require,module,exports){
+},{"../colors":7}],15:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = function (letter, i, exploded) {
   return i % 2 === 0 ? letter : colors.inverse(letter);
 };
-},{"../colors":6}],15:[function(require,module,exports){
+},{"../colors":7}],16:[function(require,module,exports){
 /*
 The MIT License (MIT)
 
@@ -943,7 +994,7 @@ Object.keys(codes).forEach(function (key) {
   style.open = '\u001b[' + val[0] + 'm';
   style.close = '\u001b[' + val[1] + 'm';
 });
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 (function (process){
 /*
 The MIT License (MIT)
@@ -1007,7 +1058,7 @@ module.exports = (function () {
   return false;
 })();
 }).call(this,require("1YiZ5S"))
-},{"1YiZ5S":2}],17:[function(require,module,exports){
+},{"1YiZ5S":3}],18:[function(require,module,exports){
 "use strict";
 
 module.exports = asString
@@ -1083,17 +1134,19 @@ function asString(/*format,*/ date) {
 
 };
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = new(function() {
 
-  
+  // ヒアドキュメント用
   String.prototype.uHereDoc = function() {
     return this.replace(/^function\s?\(\)\s?\{\/\*/gi, "").replace(/\*\/;?\}$/gi, "");
   };
+  // スラッシュ挿入
   String.prototype.uAddslashes = function(s) {
-    var reg = new RegExp(s, 'g');
-    return this.replace(reg, "\\" + s);
-  }
+      var reg = new RegExp(s, 'g');
+      return this.replace(reg, "\\" + s);
+    }
+    // 文字列の繰り返し
   String.prototype.uRepeat = function(i) {
     var repeatStr = this;
     var str = "";
@@ -1104,10 +1157,7 @@ module.exports = new(function() {
     return str;
   }
 
-  /**
-   * パスからファイル情報返す
-   * @return ['ファイル名','拡張子','拡張子抜きファイル名']
-   */
+  // パスからファイル情報返す @return ['ファイル名','拡張子','拡張子抜きファイル名']
   String.prototype.uGetFileInfo = function() {
       var file_path = this;
       // Extract a file name with the extension.
@@ -1131,12 +1181,36 @@ module.exports = new(function() {
     }
     // パスから拡張子抜きファイル名を返す
   String.prototype.uGetFileName = function() {
-    file_path = this;
-    return file_path.uGetFileInfo()[2];
+      file_path = this;
+      return file_path.uGetFileInfo()[2];
+    }
+    // Math.floor(x)小数点以下指定
+  Math.uFloor = function(x, scale) {
+      if (typeof scale !== "undefined" && scale !== null) {
+        var s = Math.pow(10, scale)
+        return Math.floor(x * s) / s;
+      }
+      return Math.floor(x);
+    }
+    // Math.ceil(x)小数点以下指定
+  Math.uCeil = function(x, scale) {
+      if (typeof scale !== "undefined" && scale !== null) {
+        var s = Math.pow(10, scale);
+        return Math.ceil(x * s) / s;
+      }
+      return Math.ceil(x);
+    }
+    // Math.round(x)小数点以下指定
+  Math.uRound = function(x, scale) {
+    if (typeof scale !== "undefined" && scale !== null) {
+      var s = Math.pow(10, scale);
+      return Math.round(x * s) / s;
+    }
+    return Math.round(x);
   }
 })();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 (function (global){
 // This file is generated by `make build`. 
 // Do NOT edit by hand. 
@@ -14394,7 +14468,7 @@ exports.strtr = function (str, from, to) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 (function (global){
 phpjs = require('./build/npm');
 
@@ -14407,13 +14481,13 @@ phpjs.registerGlobals = function() {
 module.exports = phpjs;
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./build/npm":19}],21:[function(require,module,exports){
+},{"./build/npm":20}],22:[function(require,module,exports){
 (function(window){
 	// window.BroccoliHtmlEditorTableField = require('../libs/main.js');
 	window.BroccoliPSDField = require('../tests/testdata/htdocs/index_files/psd-c.src.js');
 })(window);
 
-},{"../tests/testdata/htdocs/index_files/psd-c.src.js":22}],22:[function(require,module,exports){
+},{"../tests/testdata/htdocs/index_files/psd-c.src.js":23}],23:[function(require,module,exports){
 module.exports = function(broccoli){
 
 	require('m-util');
@@ -14493,7 +14567,8 @@ module.exports = function(broccoli){
 			_resMgr.getResource( data.resKey, function(res){
 				if(typeof res.base64 !== "undefined"){
 					DL_file = res.publicFilename + '.' + res.ext;
-					var DL_data = 'data:' +res.type + ';base64,'+ res.base64;
+					// var DL_data = 'data:' +res.type + ';base64,'+ res.base64;
+					var DL_data = 'data:application/octet-stream;base64,'+ res.base64;
 					DL_link = '<a href="' + DL_data + '" download="' + res.publicFilename + '">' + "Download" + '</a>';
 				}
 			});
@@ -14702,4 +14777,4 @@ module.exports = function(broccoli){
 
 }
 
-},{"br-resouce":1,"iterate79":3,"m-log":4,"m-util":18,"phpjs":20}]},{},[21])
+},{"br-resouce":1,"iterate79":4,"m-log":5,"m-util":19,"phpjs":21}]},{},[22])

@@ -59,8 +59,8 @@ window.cont = new (function(){
 							'contents_area_selector': '[data-px2-contents-theme-editor]',
 							'contents_bowl_name_by': 'data-px2-contents-theme-editor',
 							'customFields': {
-								'table': window.BroccoliHtmlEditorTableField
-								// 'psd': window.BroccoliHtmlEditorPDFField
+								'table': window.BroccoliHtmlEditorTableField,
+								'psd': window.BroccoliPSDField
 							},
 							'gpiBridge': function(api, options, callback){
 								// GPI(General Purpose Interface) Bridge

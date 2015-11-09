@@ -46,6 +46,8 @@ window.cont = new (function(){
 						{
 							'elmCanvas': document.getElementById('canvas'),
 							'elmModulePalette': document.getElementById('palette'),
+							'elmInstanceTreeView': document.getElementById('instanceTreeView'),
+							'elmInstancePathView': document.getElementById('instancePathView'),
 							'contents_area_selector': data.projectInfo.config.plugins.px2dt.contents_area_selector,
 							'contents_bowl_name_by': data.projectInfo.config.plugins.px2dt.contents_bowl_name_by,
 							'customFields': {

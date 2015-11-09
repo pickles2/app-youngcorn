@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = function(broccoli) {
+module.exports = function() {
   this.ext;
   this.type;
   this.size;
@@ -40,58 +40,7 @@ module.exports = function(broccoli) {
   }
 }
 
-},{"m-util":2}],2:[function(require,module,exports){
-module.exports = new(function() {
-
-  // ヒアドキュメントサポート
-  String.prototype.uHereDoc = function() {
-    return this.replace(/^function\s?\(\)\s?\{\/\*/gi, "").replace(/\*\/;?\}$/gi, "");
-  };
-  // スラッシュ挿入
-  String.prototype.uAddslashes = function(s) {
-    var reg = new RegExp(s, 'g');
-    return this.replace(reg, "\\" + s);
-  }
-  // 文字列の繰り返し
-  String.prototype.uRepeat = function(i) {
-    var repeatStr = this;
-    var str = "";
-    while (i > 0) {
-      str += repeatStr;
-      i--;
-    }
-    return str;
-  }
-  // パスからファイル情報返す @return ['ファイル名','拡張子','拡張子抜きファイル名']
-  String.prototype.uGetFileInfo = function() {
-      var file_path = this;
-      // Extract a file name with the extension.
-      var name_ext = file_path.substring(file_path.lastIndexOf("/") + 1, file_path.length);
-      // Extract only the extension of the file.
-      var ext = name_ext.substring(name_ext.lastIndexOf(".") + 1, name_ext.length);
-      // Extract only the name part of the file.
-      var name = name_ext.substring(0, name_ext.indexOf("."));
-      array = new Array(name_ext, ext, name);
-      return array;
-    }
-    // パスからファイル名を返す
-  String.prototype.uGetFileNameExt = function() {
-      file_path = this;
-      return file_path.uGetFileInfo()[0];
-    }
-    // パスから拡張子を返す
-  String.prototype.uGetFileExt = function() {
-      file_path = this;
-      return file_path.uGetFileInfo()[1];
-    }
-    // パスから拡張子抜きファイル名を返す
-  String.prototype.uGetFileName = function() {
-    file_path = this;
-    return file_path.uGetFileInfo()[2];
-  }
-})();
-
-},{}],3:[function(require,module,exports){
+},{"m-util":18}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -156,7 +105,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 /**
  * node-iterate79
  */
@@ -232,10 +181,10 @@ process.chdir = function (dir) {
 
 })(exports);
 
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 module.exports = require('./libs/log');
 
-},{"./libs/log":6}],6:[function(require,module,exports){
+},{"./libs/log":5}],5:[function(require,module,exports){
 module.exports = new(function() {
 
     'use strict';
@@ -405,7 +354,7 @@ module.exports = new(function() {
     }
 })();
 
-},{"colors":11,"date-format":18}],7:[function(require,module,exports){
+},{"colors":10,"date-format":17}],6:[function(require,module,exports){
 /*
 
 The MIT License (MIT)
@@ -593,7 +542,7 @@ for (var map in colors.maps) {
 }
 
 defineProps(colors, init());
-},{"./custom/trap":8,"./custom/zalgo":9,"./maps/america":12,"./maps/rainbow":13,"./maps/random":14,"./maps/zebra":15,"./styles":16,"./system/supports-colors":17}],8:[function(require,module,exports){
+},{"./custom/trap":7,"./custom/zalgo":8,"./maps/america":11,"./maps/rainbow":12,"./maps/random":13,"./maps/zebra":14,"./styles":15,"./system/supports-colors":16}],7:[function(require,module,exports){
 module['exports'] = function runTheTrap (text, options) {
   var result = "";
   text = text || "Run the trap, drop the bass";
@@ -640,7 +589,7 @@ module['exports'] = function runTheTrap (text, options) {
 
 }
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // please no
 module['exports'] = function zalgo(text, options) {
   text = text || "   he is here   ";
@@ -746,7 +695,7 @@ module['exports'] = function zalgo(text, options) {
   return heComes(text, options);
 }
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var colors = require('./colors');
 
 module['exports'] = function () {
@@ -860,7 +809,7 @@ module['exports'] = function () {
   };
 
 };
-},{"./colors":7}],11:[function(require,module,exports){
+},{"./colors":6}],10:[function(require,module,exports){
 var colors = require('./colors');
 module['exports'] = colors;
 
@@ -873,7 +822,7 @@ module['exports'] = colors;
 //
 //
 require('./extendStringPrototype')();
-},{"./colors":7,"./extendStringPrototype":10}],12:[function(require,module,exports){
+},{"./colors":6,"./extendStringPrototype":9}],11:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function() {
@@ -886,7 +835,7 @@ module['exports'] = (function() {
     }
   }
 })();
-},{"../colors":7}],13:[function(require,module,exports){
+},{"../colors":6}],12:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function () {
@@ -901,7 +850,7 @@ module['exports'] = (function () {
 })();
 
 
-},{"../colors":7}],14:[function(require,module,exports){
+},{"../colors":6}],13:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function () {
@@ -910,13 +859,13 @@ module['exports'] = (function () {
     return letter === " " ? letter : colors[available[Math.round(Math.random() * (available.length - 1))]](letter);
   };
 })();
-},{"../colors":7}],15:[function(require,module,exports){
+},{"../colors":6}],14:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = function (letter, i, exploded) {
   return i % 2 === 0 ? letter : colors.inverse(letter);
 };
-},{"../colors":7}],16:[function(require,module,exports){
+},{"../colors":6}],15:[function(require,module,exports){
 /*
 The MIT License (MIT)
 
@@ -994,7 +943,7 @@ Object.keys(codes).forEach(function (key) {
   style.open = '\u001b[' + val[0] + 'm';
   style.close = '\u001b[' + val[1] + 'm';
 });
-},{}],17:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 (function (process){
 /*
 The MIT License (MIT)
@@ -1058,7 +1007,7 @@ module.exports = (function () {
   return false;
 })();
 }).call(this,require("1YiZ5S"))
-},{"1YiZ5S":3}],18:[function(require,module,exports){
+},{"1YiZ5S":2}],17:[function(require,module,exports){
 "use strict";
 
 module.exports = asString
@@ -1134,7 +1083,7 @@ function asString(/*format,*/ date) {
 
 };
 
-},{}],19:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = new(function() {
 
   // ヒアドキュメント用
@@ -1202,15 +1151,45 @@ module.exports = new(function() {
     }
     // Math.round(x)小数点以下指定
   Math.uRound = function(x, scale) {
-    if (typeof scale !== "undefined" && scale !== null) {
-      var s = Math.pow(10, scale);
-      return Math.round(x * s) / s;
+      if (typeof scale !== "undefined" && scale !== null) {
+        var s = Math.pow(10, scale);
+        return Math.round(x * s) / s;
+      }
+      return Math.round(x);
     }
-    return Math.round(x);
-  }
+    // 左空白詰め（右寄せ）
+  uLpad = function(txt, pad) {
+    var c, i, t;
+    if (pad == null) {
+      pad = 40;
+    }
+    c = " ";
+    i = 0;
+    t = txt;
+    while (i <= pad - txt.length) {
+      t = c + t;
+      i++;
+    }
+    return t;
+  };
+  // 右空白詰め（左寄せ）
+  uRpad = function(txt, pad) {
+    var c, i, t;
+    if (pad == null) {
+      pad = 40;
+    }
+    c = " ";
+    i = 0;
+    t = txt;
+    while (i <= pad - txt.length) {
+      t += c;
+      i++;
+    }
+    return t;
+  };
 })();
 
-},{}],20:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 (function (global){
 // This file is generated by `make build`. 
 // Do NOT edit by hand. 
@@ -14468,7 +14447,7 @@ exports.strtr = function (str, from, to) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 (function (global){
 phpjs = require('./build/npm');
 
@@ -14481,13 +14460,13 @@ phpjs.registerGlobals = function() {
 module.exports = phpjs;
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./build/npm":20}],22:[function(require,module,exports){
+},{"./build/npm":19}],21:[function(require,module,exports){
 (function(window){
 	// window.BroccoliHtmlEditorTableField = require('../libs/main.js');
 	window.BroccoliPSDField = require('../tests/testdata/htdocs/index_files/psd-c.src.js');
 })(window);
 
-},{"../tests/testdata/htdocs/index_files/psd-c.src.js":23}],23:[function(require,module,exports){
+},{"../tests/testdata/htdocs/index_files/psd-c.src.js":22}],22:[function(require,module,exports){
 module.exports = function(broccoli){
 
 	require('m-util');
@@ -14559,17 +14538,53 @@ module.exports = function(broccoli){
 	this.mkEditor = function( mod, data, elm, callback ){
 		var rtn = $('<div>');
 		var _this = this;
-		var DL_link = "", DL_file = "";
+		var $DL_link = "", DL_file = "";
 		if( typeof(data) !== typeof({}) ){ data = {}; }
 		if( typeof(data.resKey) !== typeof('') ){
 			data.resKey = '';
 		}else{
 			_resMgr.getResource( data.resKey, function(res){
 				if(typeof res.base64 !== "undefined"){
-					DL_file = res.publicFilename + '.' + res.ext;
+					/* for Browser */
+					// DL_file = res.publicFilename + '.' + res.ext;
 					// var DL_data = 'data:' +res.type + ';base64,'+ res.base64;
-					var DL_data = 'data:application/octet-stream;base64,'+ res.base64;
-					DL_link = '<a href="' + DL_data + '" download="' + res.publicFilename + '">' + "Download" + '</a>';
+					// DL_link = '<a href="' + DL_data + '" download="' + res.publicFilename + '">' + "Download" + '</a>';
+
+					/* for node-webkit */
+					DL_file = res.publicFilename + '.' + res.ext;
+					var DL_data = res.base64;
+					$DL_link = $('<div data-psd-info>');
+					$DL_link.html('')
+					.append($('<input type="button" class="download" value="Download" />')
+						.attr({
+							'data-psd-resKey': data.resKey
+						})
+						.click(function(){
+							var resKey = $(this).attr('data-psd-resKey');
+							var $chooser = $('#nw_download');
+							$chooser.nwsaveas = DL_file;
+							// console.log('chooser', $chooser);
+							$chooser.click();
+							$chooser.bind('change', function(evt){
+								// console.log('evt', evt);
+						    // $chooser.addEventListener("change", function(evt) {
+						    var dlFilePath = $(this).val();
+						    $chooser.nwdirectory = dlFilePath;
+						    // console.log('directory', dlFilePath);
+						    $(this).val('');
+						    // console.log("white");
+						    _this.callGpi(
+						      {
+						        'api': 'openOuternalEditor',
+						        'data': {'base64': DL_data, 'dlFilePath': dlFilePath + '/'+ DL_file}
+						      } ,
+						      function(output){
+						        return;
+						      }
+						    );
+							});
+						})
+					).append($('<input id="nw_download" type="file" style="display:none" nwworkingdir="" nwsaveas="" nwdirectory="" />'));
 				}
 			});
 		}
@@ -14707,7 +14722,7 @@ module.exports = function(broccoli){
 				)
 			);
 			rtn.append(
-					$('<div>').append($(DL_link))
+					$('<div>').append($DL_link)
 			);
 			$(elm).html(rtn);
 
@@ -14754,6 +14769,7 @@ module.exports = function(broccoli){
 		$elem = $(elm);
 		if($elem.data('isChanged') === true){
 			// PSDの変更あり
+			// if(realpathSelected){
 			data.PngPath = $elem.data('PngPath');
 			data.HtmlPath = $elem.data('HtmlPath');
 
@@ -14777,4 +14793,4 @@ module.exports = function(broccoli){
 
 }
 
-},{"br-resouce":1,"iterate79":4,"m-log":5,"m-util":19,"phpjs":21}]},{},[22])
+},{"br-resouce":1,"iterate79":3,"m-log":4,"m-util":18,"phpjs":20}]},{},[21])

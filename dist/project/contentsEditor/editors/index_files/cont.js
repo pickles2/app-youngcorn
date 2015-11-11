@@ -13359,7 +13359,7 @@ window.cont = new (function(){
 			it79.fnc({}, [
 				function(it1, data){
 					console.log('setup env...');
-					document.querySelector('.cont_page_list').innerHTML = main.getLoadingImage().outerHTML;
+					document.querySelector('.cont_main').innerHTML = main.getLoadingImage().outerHTML;
 					setTimeout(function(){
 						it1.next(data);
 					}, 10);
@@ -13367,6 +13367,7 @@ window.cont = new (function(){
 				function(it1, data){
 					// Parse Query string parameters
 					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
+					data.path = php.trim($.url(window.location.href).param('path'));
 					// console.log( data );
 					it1.next(data);
 				} ,
@@ -13381,31 +13382,65 @@ window.cont = new (function(){
 					});
 				} ,
 				function(it1, data){
-					// サイトマップを取得
+					// ページ情報を取得
 					main.socket.send(
-						'getSitemap',
+						'getPageInfo',
 						{
-							'projectIdx': data.projectIdx
+							'projectIdx': data.projectIdx,
+							'path': data.path
 						},
-						function(sitemap){
-							// console.log( sitemap );
-							data.sitemap = sitemap.sitemap;
+						function(pageInfo){
+							// console.log( pageInfo );
+							data.pageInfo = pageInfo;
 							it1.next(data);
 						}
 					);
 				} ,
 				function(it1, data){
-					// 描画
-					// console.log( data );
-					var html =
-						twig({data: document.getElementById('template-pageList').innerHTML})
-						.render(data)
-					;
-					document.querySelector('.cont_page_list').innerHTML = html;
-
-					it1.next(data);
+					// ページのパス情報を取得
+					main.socket.send(
+						'getPagePaths',
+						{
+							'projectIdx': data.projectIdx,
+							'path': data.path
+						},
+						function(paths){
+							// console.log( paths );
+							data.pagePaths = paths;
+							it1.next(data);
+						}
+					);
 				} ,
 				function(it1, data){
+					// ページのパス情報を取得
+					main.socket.send(
+						'getPageEditorType',
+						{
+							'projectIdx': data.projectIdx,
+							'path': data.path
+						},
+						function(type){
+							// console.log( type );
+							data.editorType = type;
+							it1.next(data);
+						}
+					);
+				} ,
+				function(it1, data){
+					switch( data.editorType ){
+						case 'html.gui':
+							window.location.href = './broccoli-html-editor/index.html?projectIdx='+php.urlencode(data.projectIdx)+'&path='+php.urlencode(data.path);
+							break;
+						case 'html':
+							window.location.href = './html/index.html?projectIdx='+php.urlencode(data.projectIdx)+'&path='+php.urlencode(data.path);
+							break;
+						case 'md':
+							window.location.href = './markdown/index.html?projectIdx='+php.urlencode(data.projectIdx)+'&path='+php.urlencode(data.path);
+							break;
+						case '.not_exists':
+							document.querySelector('.cont_main').innerHTML = '<p>.not_exists</p>';
+							break;
+					}
 					console.log('Started!');
 				}
 			]);

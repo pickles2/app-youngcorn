@@ -13459,6 +13459,12 @@ window.cont = new (function(){
 				'height': $(window).innerHeight()
 			})
 		;
+		$('#instanceTreeView, #canvas, #palette')
+			.css({
+				'height': $('.cont_outline').outerHeight() - $('#instancePathView').outerHeight()
+			})
+		;
+
 		broccoli.redraw();
 		callback();
 		return;

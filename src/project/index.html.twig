@@ -27,38 +27,46 @@
 			<a href="javascript:cont.openInTextEditor();" class="btn btn-default">テキストエディタで開く</a>
 			<a href="javascript:cont.openFolder();" class="btn btn-default">フォルダを開く</a>
 		</div>
-		<table class="table table-bordered">
-			<tbody>
-				<tr>
-					<th>Project Index</th>
-					<td>{{projectIdx}}</td>
-				</tr>
-				<tr>
-					<th>Project Name</th>
-					<td>{{projectInfo.name}}</td>
-				</tr>
-				<tr>
-					<th>Path</th>
-					<td>{{projectInfo.path}}</td>
-				</tr>
-				<tr>
-					<th>Entry Script Name</th>
-					<td>{{projectInfo.entry_script}}</td>
-				</tr>
-			</tbody>
-		</table>
-		<table class="table table-bordered">
-			<tbody>
-				<tr>
-					<th>Project Name</th>
-					<td>{{config.name}}</td>
-				</tr>
-				<tr>
-					<th>Home Directory</th>
-					<td>{{path_homedir}}</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="unit">
+			<table class="def" style="width:100%; table-layout:fixed;">
+				<colgroup width="30%">
+				<colgroup width="70%">
+				<tbody>
+					<tr>
+						<th>Project Index</th>
+						<td style="overflow:auto; white-space:nowrap;">{{projectIdx}}</td>
+					</tr>
+					<tr>
+						<th>Project Name</th>
+						<td style="overflow:auto; white-space:nowrap;">{{projectInfo.name}}</td>
+					</tr>
+					<tr>
+						<th>Path</th>
+						<td style="overflow:auto; white-space:nowrap;">{{projectInfo.path}}</td>
+					</tr>
+					<tr>
+						<th>Entry Script Name</th>
+						<td style="overflow:auto; white-space:nowrap;">{{projectInfo.entry_script}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="unit">
+			<table class="def" style="width:100%; table-layout:fixed;">
+				<colgroup width="30%">
+				<colgroup width="70%">
+				<tbody>
+					<tr>
+						<th>Project Name</th>
+						<td style="overflow:auto; white-space:nowrap;">{{config.name}}</td>
+					</tr>
+					<tr>
+						<th>Home Directory</th>
+						<td style="overflow:auto; white-space:nowrap;">{{path_homedir}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	{% endraw %}
 	</script>
 {% endblock foot %}

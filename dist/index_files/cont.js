@@ -13400,6 +13400,13 @@ window.cont = new (function(){
 		});
 	}
 
+	/**
+	 * 新しいプロジェクトを追加する
+	 *
+	 * @param  {[type]} form  [description]
+	 * @param  {[type]} modal [description]
+	 * @return {[type]}       [description]
+	 */
 	this.createNewProject = function(form, modal){
 		// プロジェクトを追加
 		var value = {
@@ -13415,6 +13422,12 @@ window.cont = new (function(){
 		return this;
 	}
 
+	/**
+	 * プロジェクトを削除する
+	 * 
+	 * @param  {[type]} projectIdx [description]
+	 * @return {[type]}            [description]
+	 */
 	this.removeProject = function( projectIdx ){
 		if( !confirm('本当に削除してよろしいですか？') ){
 			return this;

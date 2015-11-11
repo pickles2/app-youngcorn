@@ -23,6 +23,10 @@
 	<script id="template-projectInfo" type="text/template">
 	{% raw %}
 		<h2>{{data.name}}</h2>
+		<div class="mb1em">
+			<a href="javascript:cont.openInTextEditor();" class="btn btn-default">テキストエディタで開く</a>
+			<a href="javascript:cont.openFolder();" class="btn btn-default">フォルダを開く</a>
+		</div>
 		<table class="table table-bordered">
 			<tbody>
 				<tr>
@@ -55,13 +59,6 @@
 				</tr>
 			</tbody>
 		</table>
-		<div class="list-group">
-			<a href="javascript:cont.openInTextEditor();" class="list-group-item">テキストエディタで開く</a>
-			<a href="./themeEditor/?projectIdx={{projectIdx}}" class="list-group-item">テーマを編集する</a>
-			<a href="./contentsEditor/?projectIdx={{projectIdx}}" class="list-group-item">コンテンツを編集する</a>
-			<a href="./moduleEditor/?projectIdx={{projectIdx}}" class="list-group-item">モジュールを編集する</a>
-			<a href="/" class="list-group-item">プロジェクト選択</a>
-		</div>
 	{% endraw %}
 	</script>
 {% endblock foot %}

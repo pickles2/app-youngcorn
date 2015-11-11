@@ -3,6 +3,8 @@ window.cont = new (function(){
 	var it79 = require('iterate79');
 	var php = require('phpjs');
 
+	var projectIdx;
+
 	this.init = function(){
 		/**
 		 * initialize
@@ -17,7 +19,7 @@ window.cont = new (function(){
 				},
 				function(it1, data){
 					// Parse Query string parameters
-					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
+					data.projectIdx = projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
 					console.log( data );
 					it1.next(data);
 				} ,
@@ -67,6 +69,64 @@ window.cont = new (function(){
 				}
 			]);
 		});
+	}
+
+	/**
+	 * 新しいレイアウトを追加する
+	 *
+	 * @param  {[type]} form  [description]
+	 * @param  {[type]} modal [description]
+	 * @return {[type]}       [description]
+	 */
+	this.createNewLayout = function(form, modal){
+		// プロジェクトを追加
+		var value = {
+			api: 'createNewLayout',
+			projectIdx: projectIdx,
+			layoutName: $(form).find('[name=name]').val()
+		};
+		if( value.layoutName.match(/[^a-zA-Z0-9\_\-]/) ){
+			alert('使用できない文字が含まれています。');
+			return this;
+		}
+		main.socket.send(
+			'themeEditor',
+			value,
+			function(result){
+				// console.log(result);
+				if(!result.result){
+					alert(result.message);
+				}
+				$(modal).modal('hide');
+				_this.init();
+			}
+		);
+		return this;
+	}
+
+	/**
+	 * プロジェクトを削除する
+	 *
+	 * @param  {[type]} layoutName [description]
+	 * @return {[type]}            [description]
+	 */
+	this.removeLayout = function( layoutName ){
+		if( !confirm('本当に削除してよろしいですか？') ){
+			return this;
+		}
+		main.socket.send(
+			'themeEditor',
+			{
+				'api': 'removeLayout',
+				'projectIdx': projectIdx,
+				'layoutName': layoutName
+			},
+			function(result){
+				// alert(result);
+				_this.init();
+			}
+		);
+		return this;
 	}
 
 })();

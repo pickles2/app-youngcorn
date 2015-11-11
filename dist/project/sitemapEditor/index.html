@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title> - YoungCorn - The GUI App for Pickles 2.</title>
+		<title>Sitemap Editor - YoungCorn - The GUI App for Pickles 2.</title>
 
 		<!-- Bootstrap -->
 		<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
@@ -13,6 +13,8 @@
 		<!-- common -->
 		<link rel="stylesheet" href="/common/styles/common.css" />
 
+	<!-- local -->
+	<link rel="stylesheet" href="./index_files/cont.css" />
 
 	</head>
 	<body>
@@ -33,10 +35,12 @@
 			</div>
 		</header>
 		<div class="mainBlock container">
-			<h1></h1>
+			<h1>Sitemap Editor</h1>
 			<div class="row">
 				<div class="col-md-9">
 					<div class="contents">
+	<p>開発中の機能です。</p>
+
 
 					</div>
 				</div>
@@ -84,6 +88,26 @@
 		<!-- common -->
 		<script src="/common/main.js"></script>
 
+	<!-- local -->
+	<script src="./index_files/cont.js"></script>
+	<script>
+		$(window).load( window.cont.init() );
+	</script>
+	<script id="template-layoutList" type="text/template">
+	<div class="list-group">
+			{% for layout in layoutList %}
+				<a href="./editors/broccoli-html-editor/index.html?projectIdx={{projectIdx}}&amp;layout={{layout}}" class="list-group-item" target="_blank">
+					<h2>{{layout}}</h2>
+					<button class="btn btn-default" onclick="cont.removeLayout('{{layout}}');return false;">削除する</button>
+				</a>
+			{% endfor %}
+		</div>
+	</script>
+	<script id="template-content-footer" type="text/template">
+	<div class="list-group">
+			<a href="../?projectIdx={{projectIdx}}" class="list-group-item">プロジェクト ホーム</a>
+		</div>
+	</script>
 
 	</body>
 </html>

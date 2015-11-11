@@ -111,6 +111,7 @@ module.exports = function( data, callback, main, socket ){
 						}
 						fin += '<?= $px->bowl()->pull(\'foot\') ?>'+"\n";
 						fin += '	</body>'+"\n";
+						fin += '</html>'+"\n";
 						callback(fin);
 						return;
 					}

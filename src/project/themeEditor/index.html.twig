@@ -8,10 +8,37 @@
 {% endblock head %}
 
 {% block main %}
+	<p><button class="btn btn-default" data-toggle="modal" data-target="#cont_modal_create_new_layout">新規レイアウト追加</button></p>
+
 	<div class="cont_layout_list">
 	</div>
 	<div class="cont_cont_footer">
 	</div>
+
+	<div class="modal fade" id="cont_modal_create_new_layout" data-backdrop="static" data-keyboard="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="javascript:;" onsubmit="cont.createNewLayout(this, '#cont_modal_create_new_layout'); return false;">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Create NEW Layout</h4>
+					</div>
+					<div class="modal-body">
+						<div class="input-group">
+							<span class="input-group-addon">Layout Name</span>
+							<input type="text" class="form-control" name="name" placeholder="default" />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-primary">Create Now</button>
+					</div>
+				</form>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+
 {% endblock main %}
 
 
@@ -27,6 +54,7 @@
 			{% for layout in layoutList %}
 				<a href="./editors/broccoli-html-editor/index.html?projectIdx={{projectIdx}}&amp;layout={{layout}}" class="list-group-item" target="_blank">
 					<h2>{{layout}}</h2>
+					<button class="btn btn-default" onclick="cont.removeLayout('{{layout}}');return false;">削除する</button>
 				</a>
 			{% endfor %}
 		</div>

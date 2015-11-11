@@ -24,6 +24,7 @@ window.main = new (function($){
 		if(process.env.HOME)return 'cmd';//Darwin
 		return 'ctrl';
 	})();
+	var params = {};
 
 	function windowResized(){
 		// console.log('window resized');
@@ -83,39 +84,41 @@ window.main = new (function($){
 						return false;
 					});
 
-					it1.next();
+					it1.next(data);
 				} ,
 				function(it1, data){
 					// ドラッグ＆ドロップ操作の無効化
 					$('html, body')
 						.bind( 'drop', function(e){
 							// ドロップ操作を無効化
-							// console.log(456);
 							e.preventDefault();
 							e.stopPropagation();
 							return false;
 						} )
 						.bind( 'dragenter', function(e){
 							// ドロップ操作を無効化
-							// console.log(45645);
 							e.preventDefault();
 							e.stopPropagation();
 							return false;
 						} )
 						.bind( 'dragover', function(e){
 							// ドロップ操作を無効化
-							// console.log(23456);
 							e.preventDefault();
 							e.stopPropagation();
 							return false;
 						} )
 					;
 
-					it1.next();
+					it1.next(data);
+				} ,
+				function(it1, data){
+					// URL内のGETパラメータを抽出
+					params = $.url(window.location.href).param();
+					it1.next(data);
 				} ,
 				function(it1, data){
 					window.focus();
-					it1.next();
+					it1.next(data);
 				} ,
 				function(it1, data){
 					$(window).resize(windowResized);
@@ -125,6 +128,16 @@ window.main = new (function($){
 				}
 			]
 		);
+		return this;
+	}
+
+	/**
+	 * ページに遷移する
+	 * @param  {String} path 遷移先の画面パス
+	 * @return {[type]}      [description]
+	 */
+	this.goto = function(path){
+		window.location.href = path + '?projectIdx='+params.projectIdx;
 		return this;
 	}
 

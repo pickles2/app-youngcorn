@@ -13366,7 +13366,7 @@ window.cont = new (function(){
 				function(it1, data){
 					// Parse Query string parameters
 					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
-					console.log( data );
+					// console.log( data );
 					it1.next(data);
 				} ,
 				function(it1, data){
@@ -13401,7 +13401,7 @@ window.cont = new (function(){
 
 	/**
 	 * テキストエディタで開く
-	 * @return object       this
+	 * @return {Object}       this
 	 */
 	this.openInTextEditor = function(){
 		// プロジェクト情報を取得
@@ -13410,6 +13410,23 @@ window.cont = new (function(){
 			{
 				'path': data.projectInfo.path,
 				'in': 'texteditorForDir'
+			} ,
+			function(result){
+			}
+		);
+		return this;
+	}
+
+	/**
+	 * フォルダを開く
+	 * @return {Object}       this
+	 */
+	this.openFolder = function(){
+		// プロジェクト情報を取得
+		main.socket.send(
+			'open' ,
+			{
+				'path': data.projectInfo.path
 			} ,
 			function(result){
 			}

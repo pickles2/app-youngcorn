@@ -15,6 +15,7 @@ module.exports = function( data, callback, main, socket ){
 
 	it79.fnc(data, [
 		function(it1, data){
+			data.return = {};
 			main.px2dtLDA.getProject(
 				data.projectIdx,
 				function( projectInfo ){
@@ -57,16 +58,51 @@ module.exports = function( data, callback, main, socket ){
 								}
 							}
 						}
-						data = layoutList;
+						data.return = layoutList;
+
+						it1.next(data);
+					})();
+					break;
+				case 'createNewLayout':
+					(function(){
+						var filepath = path_themeDir+'/'+data.layoutName+'.html';
+						try {
+							if( fs.statSync(filepath) ){
+								data.return.message = data.layoutName+' は既に存在します。';
+								data.return.result = false;
+								it1.next(data);
+								return;
+							}
+						} catch (e) {
+						}
+						var src = '';
+						src += '<!DOCTYPE html>'+"\n";
+						src += '<html>'+"\n";
+						src += '<head>'+"\n";
+						src += '</head>'+"\n";
+						src += '<body data-px2-contents-theme-editor="main">'+"\n";
+						src += '</body>'+"\n";
+						src += '</html>'+"\n";
+						fs.writeFileSync(filepath, src);
+						data.return.result = true;
+
+						it1.next(data);
+					})();
+					break;
+				case 'removeLayout':
+					(function(){
+						fs.unlinkSync(path_themeDir+'/'+data.layoutName+'.html');
+						data.return.result = true;
+						it1.next(data);
 					})();
 					break;
 				default:
 					break;
 			}
-			it1.next(data);
+			return;
 		} ,
 		function(it1, data){
-			callback(data);
+			callback(data.return);
 			it1.next(data);
 		}
 	]);

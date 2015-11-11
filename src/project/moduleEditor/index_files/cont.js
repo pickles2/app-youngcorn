@@ -11,6 +11,7 @@ window.cont = new (function(){
 			it79.fnc({}, [
 				function(it1, data){
 					console.log('setup env...');
+					document.querySelector('.cont_module_list').innerHTML = main.getLoadingImage().outerHTML;
 					setTimeout(function(){
 						it1.next(data);
 					}, 10);
@@ -53,12 +54,6 @@ window.cont = new (function(){
 						.render(data)
 					;
 					document.querySelector('.cont_module_list').innerHTML = html;
-
-					var html =
-						twig({data: document.getElementById('template-content-footer').innerHTML})
-						.render(data)
-					;
-					document.querySelector('.cont_cont_footer').innerHTML = html;
 
 					it1.next(data);
 				} ,

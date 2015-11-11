@@ -39,11 +39,9 @@
 			<div class="row">
 				<div class="col-md-9">
 					<div class="contents">
-	<p><button class="btn btn-default" data-toggle="modal" data-target="#cont_modal_create_new_layout">新規レイアウト追加</button></p>
+	<p class="cont_add_button"><button class="btn btn-default" data-toggle="modal" data-target="#cont_modal_create_new_layout">新規レイアウト追加</button></p>
 
 	<div class="cont_layout_list">
-	</div>
-	<div class="cont_cont_footer">
 	</div>
 
 	<div class="modal fade" id="cont_modal_create_new_layout" data-backdrop="static" data-keyboard="true">
@@ -132,9 +130,9 @@
 			{% endfor %}
 		</div>
 	</script>
-	<script id="template-content-footer" type="text/template">
-	<div class="list-group">
-			<a href="../?projectIdx={{projectIdx}}" class="list-group-item">プロジェクト ホーム</a>
+	<script id="template-error-notStandby" type="text/template">
+	<div class="error">
+			テーマ編集用ディレクトリ <code>./px-files/themes/broccoli/*</code> の準備が整っていないようです。<br />
 		</div>
 	</script>
 

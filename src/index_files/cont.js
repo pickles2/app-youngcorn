@@ -11,6 +11,7 @@ window.cont = new (function(){
 			it79.fnc({}, [
 				function(it1, data){
 					console.log('setup env...');
+					document.querySelector('.cont_project_list').innerHTML = main.getLoadingImage().outerHTML;
 					setTimeout(function(){
 						it1.next(data);
 					}, 10);
@@ -76,7 +77,7 @@ window.cont = new (function(){
 
 	/**
 	 * プロジェクトを削除する
-	 * 
+	 *
 	 * @param  {[type]} projectIdx [description]
 	 * @return {[type]}            [description]
 	 */

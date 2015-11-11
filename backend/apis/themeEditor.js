@@ -46,19 +46,23 @@ module.exports = function( data, callback, main, socket ){
 			switch( data.api ){
 				case 'getLayoutList':
 					(function(){
-						var files = fs.readdirSync(path_themeDir);
-						var layoutList = [];
-						for(var idx in files){
-							var basename = files[idx];
-							if( fs.statSync(path_themeDir+basename).isDirectory() ){
+						try {
+							var files = fs.readdirSync(path_themeDir);
+							var layoutList = [];
+							for(var idx in files){
+								var basename = files[idx];
+								if( fs.statSync(path_themeDir+basename).isDirectory() ){
 
-							}else if( fs.statSync(path_themeDir+basename).isFile() ){
-								if( basename.match(/[\\.]html$/) ){
-									layoutList.push( basename.replace(/[\\.]html$/, '') );
+								}else if( fs.statSync(path_themeDir+basename).isFile() ){
+									if( basename.match(/[\\.]html$/) ){
+										layoutList.push( basename.replace(/[\\.]html$/, '') );
+									}
 								}
 							}
+							data.return = layoutList;
+						} catch (e) {
+							data.return = false;
 						}
-						data.return = layoutList;
 
 						it1.next(data);
 					})();

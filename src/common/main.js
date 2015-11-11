@@ -6,6 +6,7 @@ window.main = new (function($){
 	var main = this;
 	var it79 = require('iterate79');
 	var php = require('phpjs');
+	// var $ = require('jquery');
 	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
 	var socket = this.socket = window.baobabFw
 		.createSocket(
@@ -162,6 +163,18 @@ window.main = new (function($){
 			}
 		);
 		return this;
+	}
+
+	/**
+	 * ローディングイメージを表現するDOM要素を取得
+	 * @return {[type]} [description]
+	 */
+	this.getLoadingImage = function(){
+		var nowLoading = '';
+		nowLoading += '<div style="padding:130px 30%;">';
+		nowLoading += '<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 100%"></div></div>';
+		nowLoading += '</div>';
+		return $(nowLoading).get(0);
 	}
 
 	/**

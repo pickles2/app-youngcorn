@@ -13361,6 +13361,8 @@ window.cont = new (function(){
 			it79.fnc({}, [
 				function(it1, data){
 					console.log('setup env...');
+					document.querySelector('.cont_layout_list').innerHTML = main.getLoadingImage().outerHTML;
+
 					setTimeout(function(){
 						it1.next(data);
 					}, 10);
@@ -13398,17 +13400,17 @@ window.cont = new (function(){
 				} ,
 				function(it1, data){
 					// 描画
-					var html =
-						twig({data: document.getElementById('template-layoutList').innerHTML})
-						.render(data)
-					;
-					document.querySelector('.cont_layout_list').innerHTML = html;
-
-					var html =
-						twig({data: document.getElementById('template-content-footer').innerHTML})
-						.render(data)
-					;
-					document.querySelector('.cont_cont_footer').innerHTML = html;
+					if( typeof(data.layoutList) == typeof([]) ){
+						var html =
+							twig({data: document.getElementById('template-layoutList').innerHTML})
+							.render(data)
+						;
+						document.querySelector('.cont_layout_list').innerHTML = html;
+					}else{
+						var node = document.querySelector('.cont_add_button');
+						node.parentNode.removeChild( node );
+						document.querySelector('.cont_layout_list').innerHTML = document.getElementById('template-error-notStandby').innerHTML;
+					}
 
 					it1.next(data);
 				} ,

@@ -1,14 +1,14 @@
 window.cont = new (function(){
-	var data = {};
 	var it79 = require('iterate79');
 	var php = require('phpjs');
+	var data = {};
 
 	this.init = function(){
 		/**
 		 * initialize
 		 */
 		main.init(function(){
-			it79.fnc({}, [
+			it79.fnc(data, [
 				function(it1, data){
 					console.log('setup env...');
 					document.querySelector('.cont_project_info').innerHTML = main.getLoadingImage().outerHTML;
@@ -57,7 +57,6 @@ window.cont = new (function(){
 	 * @return {Object}       this
 	 */
 	this.openInTextEditor = function(){
-		// プロジェクト情報を取得
 		main.socket.send(
 			'open' ,
 			{
@@ -75,7 +74,6 @@ window.cont = new (function(){
 	 * @return {Object}       this
 	 */
 	this.openFolder = function(){
-		// プロジェクト情報を取得
 		main.socket.send(
 			'open' ,
 			{
@@ -84,6 +82,29 @@ window.cont = new (function(){
 			function(result){
 			}
 		);
+		return this;
+	}
+
+	/**
+	 * ブラウザで開く
+	 * @return {Object}       this
+	 */
+	this.openInBrowser = function(){
+		// プロジェクト情報を取得
+		// console.log(data.projectIdx);
+		main.previewServerUp(data.projectIdx, {}, function(serverInfo){
+			var pareviewUrl = serverInfo.scheme+"://"+serverInfo.domain+":"+serverInfo.port;
+			// console.log(pareviewUrl);
+			main.socket.send(
+				'open' ,
+				{
+					'path': pareviewUrl
+				} ,
+				function(result){
+					console.log( 'Opened URL: '+pareviewUrl );
+				}
+			);
+		});
 		return this;
 	}
 

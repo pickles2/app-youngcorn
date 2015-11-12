@@ -31,7 +31,7 @@ module.exports = function( data, callback, main, socket ){
 		}); })
 		.then(function(){ return new Promise(function(rlv, rjt){
 			// 返却
-			callback();
+			callback(true);
 			rlv();
 		}); })
 	;

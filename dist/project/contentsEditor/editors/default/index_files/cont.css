@@ -1,0 +1,17 @@
+.cont_outline {
+  position: relative;
+  top: 0;
+  left: 0;
+  overflow: auto; }
+  .cont_outline #canvas {
+    width: 50%;
+    float: left; }
+    .cont_outline #canvas textarea {
+      width: 100%;
+      height: 100%; }
+  .cont_outline #preview {
+    width: 50%;
+    float: right; }
+    .cont_outline #preview iframe {
+      width: 100%;
+      height: 100%; }

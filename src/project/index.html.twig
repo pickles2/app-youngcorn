@@ -9,7 +9,18 @@
 
 {% block main %}
 	<!-- <p><button class="btn btn-default" onclick="main.socketTest();return false;">疎通テスト</button></p> -->
-	<div class="cont_project_info">
+	<div class="row">
+		<div class="col-md-9">
+			<div class="cont_project_info">
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="list-group">
+				<a href="javascript:main.goto('/project/themeEditor/');" class="list-group-item">テーマを編集する</a>
+				<a href="javascript:main.goto('/project/contentsEditor/');" class="list-group-item">コンテンツを編集する</a>
+				<a href="javascript:main.goto('/project/moduleEditor/');" class="list-group-item">モジュールを編集する</a>
+			</div>
+		</div>
 	</div>
 {% endblock main %}
 

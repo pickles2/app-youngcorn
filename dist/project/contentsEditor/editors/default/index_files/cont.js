@@ -13350,20 +13350,16 @@ window.cont = new (function(){
 	var _this = this;
 	var it79 = require('iterate79');
 	var php = require('phpjs');
+	var data = {};
 
-	this.init = function(){
+	this.init = function(callback){
+		callback = callback||function(){};
+
 		/**
 		 * initialize
 		 */
 		main.init(function(){
-			it79.fnc({}, [
-				function(it1, data){
-					console.log('setup env...');
-					document.querySelector('.cont_main').innerHTML = main.getLoadingImage().outerHTML;
-					setTimeout(function(){
-						it1.next(data);
-					}, 10);
-				},
+			it79.fnc(data, [
 				function(it1, data){
 					// Parse Query string parameters
 					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
@@ -13372,62 +13368,19 @@ window.cont = new (function(){
 					it1.next(data);
 				} ,
 				function(it1, data){
-					// プロジェクト情報を取得
-					main.socket.send('getProject', {'projectIdx': data.projectIdx}, function(result){
-						// console.log( result );
-						data.projectInfo = result.projectInfo;
-						data.config = result.config;
-						data.path_homedir = result.path_homedir;
-						it1.next(data);
-					});
-				} ,
-				function(it1, data){
-					// ページ情報を取得
+					// getting Project Info
 					main.socket.send(
-						'getPageInfo',
-						{
-							'projectIdx': data.projectIdx,
-							'path': data.path
-						},
-						function(pageInfo){
-							// console.log( pageInfo );
-							data.pageInfo = pageInfo;
+						'getProject',
+						{'projectIdx': data.projectIdx},
+						function(pjInfo){
+							data.projectInfo = pjInfo;
+							// console.log(data);
 							it1.next(data);
 						}
 					);
 				} ,
 				function(it1, data){
-					// ページのパス情報を取得
-					main.socket.send(
-						'getPagePaths',
-						{
-							'projectIdx': data.projectIdx,
-							'path': data.path
-						},
-						function(paths){
-							// console.log( paths );
-							data.pagePaths = paths;
-							it1.next(data);
-						}
-					);
-				} ,
-				function(it1, data){
-					// ページのパス情報を取得
-					main.socket.send(
-						'getPageEditorType',
-						{
-							'projectIdx': data.projectIdx,
-							'path': data.path
-						},
-						function(type){
-							// console.log( type );
-							data.editorType = type;
-							it1.next(data);
-						}
-					);
-				} ,
-				function(it1, data){
-					// ページのパス情報を取得
+					// getting Project Info
 					main.socket.send(
 						'findPageContent',
 						{
@@ -13435,29 +13388,123 @@ window.cont = new (function(){
 							'path': data.path
 						},
 						function(path_content){
-							console.log( path_content );
 							data.path_content = path_content;
+							// console.log(data);
 							it1.next(data);
 						}
 					);
 				} ,
 				function(it1, data){
-					switch( data.editorType ){
-						case 'html.gui':
-							window.location.href = './broccoli-html-editor/index.html?projectIdx='+php.urlencode(data.projectIdx)+'&path='+php.urlencode(data.path);
-							break;
-						case 'html':
-						case 'md':
-							window.location.href = './default/index.html?projectIdx='+php.urlencode(data.projectIdx)+'&path='+php.urlencode(data.path);
-							break;
-						case '.not_exists':
-							document.querySelector('.cont_main').innerHTML = '<p>.not_exists</p>';
-							break;
-					}
+					// getting Project Info
+					main.socket.send(
+						'contentsEditor',
+						{
+							'api': 'loadContentsSrc',
+							'projectIdx': data.projectIdx,
+							'path': data.path
+						},
+						function(srcContents){
+							console.log(srcContents);
+							// data.path_content = path_content;
+							data.srcContents = srcContents;
+							it1.next(data);
+						}
+					);
+				} ,
+				function(it1, data){
+					main.previewServerUp(data.projectIdx, {}, function(serverInfo){
+						var pareviewUrl = serverInfo.scheme+"://"+serverInfo.domain+":"+serverInfo.port+data.path;
+						$('#preview')
+							.attr({
+								"data-broccoli-preview": pareviewUrl
+							})
+							.append( $('<iframe>')
+								.attr({
+									'src': pareviewUrl
+								})
+							)
+						;
+						it1.next(data);
+					});
+				} ,
+				function(it1, data){
+					$('#canvas')
+						.append( $('<textarea>')
+							.val( data.srcContents )
+							.bind('change', function(){
+								var $this = $(this);
+								data.srcContents = $this.val();
+								_this.save(function(result){
+									var $iframe = $('#preview iframe');
+									$iframe.attr({//reload
+										'src': $iframe.attr('src')
+									});
+								});
+							})
+						)
+					;
+					it1.next(data);
+				} ,
+				function(it1, data){
+					$(window).resize(function(){
+						// このメソッドは、canvasの再描画を行います。
+						// ウィンドウサイズが変更された際に、UIを再描画するよう命令しています。
+						onWindowResized();
+					}).resize();
+
+					it1.next(data);
+				} ,
+				function(it1, data){
 					console.log('Started!');
+					callback();
 				}
 			]);
 		});
+		return this;
+	}
+
+	/**
+	 * Window Resize Event
+	 */
+	function onWindowResized(callback){
+		callback = callback||function(){};
+		$('.cont_outline')
+			.css({
+				'width': $(window).innerWidth() ,
+				'height': $(window).innerHeight()
+			})
+		;
+		$('#preview, #canvas')
+			.css({
+				'height': $('.cont_outline').outerHeight() - 5
+			})
+		;
+		callback();
+		return;
+	}
+
+	/**
+	 * データを保存する。
+	 *
+	 * @param  {Function} callback [description]
+	 * @return {[type]}            [description]
+	 */
+	this.save = function(callback){
+		callback = callback||function(){};
+		main.socket.send(
+			'contentsEditor',
+			{
+				'api': 'save',
+				'projectIdx': data.projectIdx,
+				'path': data.path,
+				'srcContents': data.srcContents
+			},
+			function(result){
+				// console.log(result);
+				callback(result);
+			}
+		);
+		return this;
 	}
 
 })();

@@ -79,15 +79,28 @@ window.cont = new (function(){
 					);
 				} ,
 				function(it1, data){
+					// ページのパス情報を取得
+					main.socket.send(
+						'findPageContent',
+						{
+							'projectIdx': data.projectIdx,
+							'path': data.path
+						},
+						function(path_content){
+							console.log( path_content );
+							data.path_content = path_content;
+							it1.next(data);
+						}
+					);
+				} ,
+				function(it1, data){
 					switch( data.editorType ){
 						case 'html.gui':
 							window.location.href = './broccoli-html-editor/index.html?projectIdx='+php.urlencode(data.projectIdx)+'&path='+php.urlencode(data.path);
 							break;
 						case 'html':
-							window.location.href = './html/index.html?projectIdx='+php.urlencode(data.projectIdx)+'&path='+php.urlencode(data.path);
-							break;
 						case 'md':
-							window.location.href = './markdown/index.html?projectIdx='+php.urlencode(data.projectIdx)+'&path='+php.urlencode(data.path);
+							window.location.href = './default/index.html?projectIdx='+php.urlencode(data.projectIdx)+'&path='+php.urlencode(data.path);
 							break;
 						case '.not_exists':
 							document.querySelector('.cont_main').innerHTML = '<p>.not_exists</p>';

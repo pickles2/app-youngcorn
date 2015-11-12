@@ -122,48 +122,4 @@ window.cont = new (function(){
 		return;
 	}
 
-	/**
-	 * すべての変更を保存する
-	 * TODO: 未実装です。
-	 * @return {Object} this
-	 */
-	this.save = function(callback){
-		callback = callback||function(){};
-		callback();
-		return this;
-	}
-
-	/**
-	 * プレビューを更新する。
-	 * @param  {Function} callback コールバック関数
-	 * @return {Object}			this
-	 */
-	this.updatePreview = function(callback){
-		callback = callback||function(){};
-		var $iframe = $($('iframe.cont_preview').get(0).contentWindow);
-		var doc = $iframe.get(0).document;
-
-		var html = '';
-		this.save(function(){
-			main.socket.send('moduleEditor',
-				{
-					'fnc': 'generatePreviewHTML' ,
-					'projectIdx': data.projectIdx ,
-					'packageId': data.packageId ,
-					'moduleId': data.moduleId
-				},
-				function(result){
-					console.log( result );
-					doc.write(result.html);
-					doc.close();
-
-					setTimeout(function(){
-						callback();
-					}, 0);
-				}
-			);
-		});
-		return this;
-	}
-
 })();

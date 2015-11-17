@@ -7,7 +7,10 @@ module.exports = function( data, callback, main, socket ){
 	var path = require('path');
 	var php = require('phpjs');
 	var fs = require('fs');
+	var fsx = require('fs-extra');
+	var Broccoli = require('broccoli-html-editor');
 	var rtn = {},
+		broccoli,
 		px2proj;
 
 	new Promise(function(rlv){rlv();})
@@ -67,6 +70,83 @@ module.exports = function( data, callback, main, socket ){
 			rlv();
 		}); })
 		.then(function(){ return new Promise(function(rlv, rjt){
+			// broccoli setup.
+			broccoli = new Broccoli();
+
+			console.log(rtn);
+			// console.log(broccoli);
+			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/');
+			// console.log(3456789);
+			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/preview_files/');
+			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/preview_files/resources/');
+			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/');
+			fs.writeFileSync(rtn.moduleRealpath+'/_preview/preview.html', '');
+			fs.writeFileSync(rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/data.json', JSON.stringify({
+				'bowl':{
+					'main':{
+						'modId': '_sys/root',
+						'fields':{
+							'main':[
+								{
+									'modId': data.moduleId,
+									'fields': {
+									}
+								}
+							]
+						}
+					}
+				}
+			}));
+			// console.log(rtn.packageId);
+			var paths_module_template = {};
+			paths_module_template[''+rtn.packageId] = rtn.packageRealpath;
+			console.log(paths_module_template);
+			broccoli.init(
+				{
+					'paths_module_template': paths_module_template ,
+					'documentRoot': rtn.moduleRealpath+'/_preview/',
+					'pathHtml': '/preview.html',
+					'pathResourceDir': '/preview_files/resources/',
+					'realpathDataDir': rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/',
+					'customFields': {
+						'table': require('broccoli-html-editor--table-field'),
+						'psd': require('broccoli-psd-field')
+					} ,
+					'bindTemplate': function(htmls, callback){
+						var fin = '';
+						fin += '<!DOCTYPE html>'+"\n";
+						fin += '<html>'+"\n";
+						fin += '<head>'+"\n";
+						fin += '<style>'+"\n";
+						fin += 'body{background:#fff;}'+"\n";
+						fin += '</style>'+"\n";
+						// fin += loaderHtml+"\n";
+						fin += '</head>'+"\n";
+						fin += '<body>'+"\n";
+						fin += '<div class="contents">'+"\n";
+						fin += '<p style="background:#ddd; text-align:center;">(element before)</p>'+"\n";
+						fin += '<div data-px2-contents-theme-editor="main">'+"\n";
+						for( var bowlId in htmls ){
+							fin += htmls[bowlId]+"\n";
+						}
+						fin += '</div>'+"\n";
+						fin += '<p style="background:#ddd; text-align:center;">(element after)</p>'+"\n";
+						fin += '</div>'+"\n";
+						fin += '</body>'+"\n";
+						fin += '</html>';
+
+						callback(fin);
+						return;
+					}
+
+				},
+				function(){
+					rlv();
+				}
+			);
+
+		}); })
+		.then(function(){ return new Promise(function(rlv, rjt){
 			if( data.fnc == 'loadSrc' ){
 				// モジュールコードを取得
 				getModuleCode( rtn.moduleRealpath, function(src){
@@ -100,6 +180,8 @@ module.exports = function( data, callback, main, socket ){
 			rlv();
 		}); })
 	;
+
+
 
 	/**
 	 * モジュールコードを取得する
@@ -153,186 +235,10 @@ module.exports = function( data, callback, main, socket ){
 	function buildPreviewHtml( moduleRealpath, callback ){
 		var html = '',
 			loaderHtml = '',
-			moduleHtml = '',
-			htmlFilename = '',
-			infoJson = {},
-			uiModel = {}
+			moduleHtml = ''
 		;
 
-		/**
-		 * モジュールデータからUI要素を抽出する
-		 * @param  {[type]} code [description]
-		 * @return {[type]}      [description]
-		 */
-		function extractUiModel(code, htmlFilename, callback){
-			if( htmlFilename == 'template.html' ){
-				// TODO: モジュールデータからUI要素を抽出する
-				callback({});
-				return;
-			}else if( htmlFilename == 'template.html.twig' ){
-				callback(code.infoJson.interface);
-			}
-			return;
-		}
-		function bindTemplate(template, uiModel, data, htmlFilename, callback){
-			if( htmlFilename == 'template.html' ){
-				var nameSpace = {'vars':{}};
-				function bindData(src, uiModel, data){
-					var rtn = '';
-					while( 1 ){
-						if( !src.match( new RegExp('^((?:.|\r|\n)*?)\\{\\&((?:.|\r|\n)*?)\\&\\}((?:.|\r|\n)*)$') ) ){
-							rtn += src;
-							break;
-						}
-						rtn += RegExp.$1;
-						field = RegExp.$2;
-						try{
-							field = JSON.parse( field );
-						}catch(e){
-							field = {'input':{
-								'type':'html',
-								'name':'__error__'
-							}};
-						}
-						src = RegExp.$3;
-
-						if( typeof(field) == typeof('') ){
-							// end系：無視
-						}else if( field.input ){
-							// input field
-							var tmpVal = ' test text ';
-							// if( px2dtGuiEditor.fieldDefinitions[field.input.type] ){
-							// 	// フィールドタイプ定義を呼び出す
-							// 	tmpVal += px2dtGuiEditor.fieldDefinitions[field.input.type].bind( fieldData[field.input.name], mode, field.input );
-							// }else{
-							// 	// ↓未定義のフィールドタイプの場合のデフォルトの挙動
-							// 	tmpVal += px2dtGuiEditor.fieldBase.bind( fieldData[field.input.name], mode, field.input );
-							// }
-							if( !field.input.hidden ){//← "hidden": true だったら、非表示(=出力しない)
-								rtn += tmpVal;
-							}
-							nameSpace.vars[field.input.name] = {
-								fieldType: "input", type: field.input.type, val: tmpVal
-							};
-
-						}else if( field.module ){
-							// module field
-							rtn += '<p>include module</p>';
-							// rtn += fieldData[field.module.name].join('');
-
-						}else if( field.loop ){
-							// loop field
-							// var tmpSearchResult = searchEndTag( src, 'loop' );
-							// rtn += fieldData[field.loop.name].join('');
-							// src = tmpSearchResult.nextSrc;
-
-						}else if( field.if ){
-							// if field
-							// is_set に指定されたフィールドに値があったら、という評価ロジックを取り急ぎ実装。
-							// もうちょっとマシな条件の書き方がありそうな気がするが、あとで考える。
-							// → 2015-04-25: cond のルールを追加。
-							// var tmpSearchResult = searchEndTag( src, 'if' );
-							// var boolResult = false;
-							// src = '';
-							// if( field.if.cond && typeof(field.if.cond) == typeof([]) ){
-							// 	// cond に、2次元配列を受け取った場合。
-							// 	// 1次元目は or 条件、2次元目は and 条件で評価する。
-							// 	for( var condIdx in field.if.cond ){
-							// 		var condBool = true;
-							// 		for( var condIdx2 in field.if.cond[condIdx] ){
-							// 			var tmpCond = field.if.cond[condIdx][condIdx2];
-							// 			if( tmpCond.match( new RegExp('^([\\s\\S]*?)\\:([\\s\\S]*)$') ) ){
-							// 				var tmpMethod = px.php.trim(RegExp.$1);
-							// 				var tmpValue = px.php.trim(RegExp.$2);
-							//
-							// 				if( tmpMethod == 'is_set' ){
-							// 					if( !nameSpace.vars[tmpValue] || !px.php.trim(nameSpace.vars[tmpValue].val).length ){
-							// 						condBool = false;
-							// 						break;
-							// 					}
-							// 				}else if( tmpMethod == 'is_mode' ){
-							// 					if( tmpValue != mode ){
-							// 						condBool = false;
-							// 						break;
-							// 					}
-							// 				}
-							// 			}else if( tmpCond.match( new RegExp('^([\\s\\S]*?)(\\!\\=|\\=\\=)([\\s\\S]*)$') ) ){
-							// 				var tmpValue = px.php.trim(RegExp.$1);
-							// 				var tmpOpe = px.php.trim(RegExp.$2);
-							// 				var tmpDiff = px.php.trim(RegExp.$3);
-							// 				if( tmpOpe == '==' ){
-							// 					if( nameSpace.vars[tmpValue].val != tmpDiff ){
-							// 						condBool = false;
-							// 						break;
-							// 					}
-							// 				}else if( tmpOpe == '!=' ){
-							// 					if( nameSpace.vars[tmpValue].val == tmpDiff ){
-							// 						condBool = false;
-							// 						break;
-							// 					}
-							// 				}
-							// 			}
-							//
-							// 		}
-							// 		if( condBool ){
-							// 			boolResult = true;
-							// 			break;
-							// 		}
-							// 	}
-							// }
-							// if( nameSpace.vars[field.if.is_set] && px.php.trim(nameSpace.vars[field.if.is_set].val).length ){
-							// 	boolResult = true;
-							// }
-							// if( boolResult ){
-							// 	src += tmpSearchResult.content;
-							// }
-							// src += tmpSearchResult.nextSrc;
-
-						}else if( field.echo ){
-							// echo field
-							if( nameSpace.vars[field.echo.ref] && nameSpace.vars[field.echo.ref].val ){
-								rtn += nameSpace.vars[field.echo.ref].val;
-							}
-
-						}
-
-					}
-					return rtn;
-				}
-				template = bindData(template, uiModel, data);
-				callback(template);
-			}else if( htmlFilename == 'template.html.twig' ){
-				socket.send('twig',
-					{
-						'data':data,
-						'template': template
-					} ,
-					function(result){
-						console.log(result);
-						callback(result);
-					}
-				);
-			}
-
-			return;
-		}
-
 		new Promise(function(rlv){rlv();})
-			.then(function(){ return new Promise(function(rlv, rjt){
-				getModuleCode( moduleRealpath, function(code){
-					moduleHtml = code.html.src;
-					htmlFilename = code.html.filename;
-					try {
-						infoJson = JSON.parse(code.infoJson.src);
-					} catch (e) {
-					}
-					extractUiModel(code, htmlFilename, function(result){
-						// モジュールコードからUIモデルを抽出する
-						uiModel = result;
-						rlv();
-					});
-				});
-			}); })
 
 			.then(function(){ return new Promise(function(rlv, rjt){
 				px2proj.query(
@@ -347,11 +253,16 @@ module.exports = function( data, callback, main, socket ){
 			}); })
 
 			.then(function(){ return new Promise(function(rlv, rjt){
-				// テンプレートにデータをはめてプレビューコードを完成させる
-				bindTemplate(moduleHtml, uiModel, {}, htmlFilename, function(result){
-					moduleHtml = result;
-					rlv();
-				});
+				// console.log(broccoli);
+				broccoli.buildHtml(
+					{},
+					function(htmls){
+						// console.log(htmls);
+						moduleHtml = htmls['main'];
+						rlv();
+					}
+				);
+
 			}); })
 
 			.then(function(){ return new Promise(function(rlv, rjt){
@@ -372,6 +283,7 @@ module.exports = function( data, callback, main, socket ){
 				html += '</body>'+"\n";
 				html += '</html>';
 				rlv();
+
 			}); })
 
 			.then(function(){ return new Promise(function(rlv, rjt){

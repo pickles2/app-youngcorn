@@ -13399,7 +13399,8 @@ window.cont = new (function(){
 							'contents_area_selector': data.projectInfo.config.plugins.px2dt.contents_area_selector,
 							'contents_bowl_name_by': data.projectInfo.config.plugins.px2dt.contents_bowl_name_by,
 							'customFields': {
-								'table': window.BroccoliHtmlEditorTableField
+								'table': window.BroccoliHtmlEditorTableField,
+								'psd': window.BroccoliPSDField
 							},
 							'gpiBridge': function(api, options, callback){
 								// GPI(General Purpose Interface) Bridge

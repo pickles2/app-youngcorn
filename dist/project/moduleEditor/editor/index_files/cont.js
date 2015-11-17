@@ -13357,7 +13357,7 @@ window.cont = new (function(){
 		 * initialize
 		 */
 		main.init(function(){
-			it79.fnc({}, [
+			it79.fnc(data, [
 				function(it1, data){
 					// 編集中は Keypress の監視を停止する。
 					$('textarea')
@@ -13402,9 +13402,8 @@ window.cont = new (function(){
 						}
 					);
 				} ,
-				function(it1, _data){
+				function(it1, data){
 					// 描画
-					data = _data;
 
 					// info.json
 					if( data.src.infoJson ){
@@ -13494,8 +13493,7 @@ window.cont = new (function(){
 
 					it1.next(data);
 				} ,
-				function(it1, _data){
-					data = _data;
+				function(it1, data){
 					console.log(data);
 					console.log('Started!');
 				}
@@ -13526,25 +13524,24 @@ window.cont = new (function(){
 		var doc = $iframe.get(0).document;
 
 		var html = '';
-		this.save(function(){
-			main.socket.send('moduleEditor',
-				{
-					'fnc': 'generatePreviewHTML' ,
-					'projectIdx': data.projectIdx ,
-					'packageId': data.packageId ,
-					'moduleId': data.moduleId
-				},
-				function(result){
-					console.log( result );
-					doc.write(result.html);
-					doc.close();
+		main.socket.send('moduleEditor',
+			{
+				'fnc': 'generatePreviewHTML' ,
+				'projectIdx': data.projectIdx ,
+				'packageId': data.packageId ,
+				'moduleId': data.moduleId
+			},
+			function(result){
+				console.log( result );
+				doc.write(result.html);
+				doc.close();
 
-					setTimeout(function(){
-						callback();
-					}, 0);
-				}
-			);
-		});
+				setTimeout(function(){
+					callback();
+				}, 0);
+			}
+		);
+
 		return this;
 	}
 

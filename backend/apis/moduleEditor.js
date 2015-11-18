@@ -81,7 +81,12 @@ module.exports = function( data, callback, main, socket ){
 			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/preview_files/resources/');
 			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/');
 			fs.writeFileSync(rtn.moduleRealpath+'/_preview/preview.html', '');
-			fs.writeFileSync(rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/data.json', JSON.stringify({
+			var json = null;
+			try {
+				json = fsx.readJsonSync(rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/data.json');
+			} catch (e) {
+			}
+			json = json || {
 				'bowl':{
 					'main':{
 						'modId': '_sys/root',
@@ -96,7 +101,8 @@ module.exports = function( data, callback, main, socket ){
 						}
 					}
 				}
-			}));
+			};
+			fs.writeFileSync(rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/data.json', JSON.stringify(json, null, 1));
 			// console.log(rtn.packageId);
 			var paths_module_template = {};
 			paths_module_template[''+rtn.packageId] = rtn.packageRealpath;

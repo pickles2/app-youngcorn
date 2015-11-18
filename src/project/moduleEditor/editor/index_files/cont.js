@@ -109,6 +109,13 @@ window.cont = new (function(){
 						}
 					);
 				} ,
+				// function(it1, data){
+				// 	// editWindow.js をロード
+				// 	// _this.editWindow = new (require( './editWindow.js' ))(broccoli);
+				// 	_this.editWindow = new (require( '../project/moduleEditor/editor/index_files/editWindow.js' ))(broccoli);
+				// 		// ↑なぜ、この相対パスで繋がるのだ・・・？
+				// 	it1.next(data);
+				// } ,
 				function(it1, data){
 					// 描画
 
@@ -166,10 +173,19 @@ window.cont = new (function(){
 						;
 					}
 
-					_this.updatePreview(function(){
+					it1.next(data);
+				} ,
+				function(it1, data){
+					// 編集画面を更新
+					_this.refreshEditWindow(function(){
+					});
+					it1.next(data);
+				} ,
+				function(it1, data){
+					// プレビュー画面を更新
+					_this.refreshPreview(function(){
 						it1.next(data);
 					});
-
 				} ,
 				function(it1, data){
 					// イベント処理
@@ -189,9 +205,13 @@ window.cont = new (function(){
 								'moduleId': data.moduleId
 							},
 							function(result){
-								console.log( result );
 								// alert( '保存しました。' );
-								_this.updatePreview( function(){} );
+								// console.log( result );
+								_this.refreshEditWindow(function(){
+									_this.refreshPreview( function(){
+										// console.log('refresh done');
+									} );
+								});
 							}
 						);
 
@@ -221,14 +241,50 @@ window.cont = new (function(){
 	}
 
 	/**
+	 * 編集ウィンドウを更新する。
+	 * @param  {Function} callback コールバック関数
+	 * @return {Object}            this
+	 */
+	this.refreshEditWindow = function(callback){
+		callback = callback||function(){};
+		var docPreview = $('.cont_edit_window').get(0);
+		var $doc = $(docPreview);
+
+		broccoli.editWindow.init('/bowl.main/fields.main@0', docPreview, function(){
+
+			it79.fnc({},[
+				function(it1, data){
+					// コンテンツデータを保存
+					broccoli.saveContents(function(){
+						it1.next(data);
+					});
+				} ,
+				function(it1, data){
+					// 画面を再描画
+					_this.refreshPreview(function(){
+						it1.next(data);
+					});
+				} ,
+				function(it1, data){
+					console.log('editInstance done.');
+					callback();
+				}
+			]);
+
+		});
+
+		return this;
+	}
+
+	/**
 	 * プレビューを更新する。
 	 * @param  {Function} callback コールバック関数
 	 * @return {Object}            this
 	 */
-	this.updatePreview = function(callback){
+	this.refreshPreview = function(callback){
 		callback = callback||function(){};
 		var $iframe = $($('iframe.cont_preview').get(0).contentWindow);
-		var doc = $iframe.get(0).document;
+		var docPreview = $iframe.get(0).document;
 
 		var html = '';
 		main.socket.send('moduleEditor',
@@ -239,9 +295,9 @@ window.cont = new (function(){
 				'moduleId': data.moduleId
 			},
 			function(result){
-				console.log( result );
-				doc.write(result.html);
-				doc.close();
+				// console.log( result );
+				docPreview.write(result.html);
+				docPreview.close();
 
 				setTimeout(function(){
 					callback();

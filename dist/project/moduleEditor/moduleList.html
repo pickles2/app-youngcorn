@@ -94,7 +94,7 @@
 				<div class="panel-body">
 					<div class="list-group">
 						{% for module in category.modules %}
-							<a href="./editor/?projectIdx={{projectIdx}}&amp;packageId={{packageId}}&amp;moduleId={{module.moduleId}}" class="list-group-item" onclick="cont.openEditor(this.href);return false;">
+							<a href="./editor/?projectIdx={{projectIdx}}&amp;packageId={{packageId}}&amp;moduleId={{module.moduleId}}" class="list-group-item" target="_blank" onclick="/* cont.openEditor(this.href);return false; */">
 								<div>{{module.moduleName}}</div>
 							</a>
 						{% endfor %}

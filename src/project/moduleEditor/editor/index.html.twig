@@ -37,7 +37,11 @@
 			<div class="col-xs-3">
 				<div>icon</div>
 			</div>
-			<div class="col-xs-9">
+			<div class="col-xs-3">
+				<div>preview params</div>
+				<div><iframe src="about:blank" class="cont_edit_window"></iframe></div>
+			</div>
+			<div class="col-xs-6">
 				<div>preview</div>
 				<div><iframe src="about:blank" class="cont_preview"></iframe></div>
 			</div>
@@ -53,6 +57,16 @@
 
 
 {% block foot %}
+	<!-- broccoli-html-editor -->
+	<link rel="stylesheet" href="/libs/broccoli-html-editor/client/dist/broccoli.css" />
+	<script src="/libs/broccoli-html-editor/client/dist/broccoli.js"></script>
+
+	<!-- broccoli-html-editor--table-field -->
+	<script src="/libs/broccoli-html-editor--table-field/dist/broccoli-html-editor--table-field.js"></script>
+
+	<!-- broccoli-psd-field -->
+	<script src="/libs/broccoli-psd-field/dist/broccoli-psd-field.js"></script>
+
 	<!-- local -->
 	<script src="./index_files/cont.js"></script>
 	<script>

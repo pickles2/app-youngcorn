@@ -13351,6 +13351,7 @@ window.cont = new (function(){
 	var it79 = require('iterate79');
 	var php = require('phpjs');
 	var data = {};
+	var broccoli = new Broccoli();
 
 	this.init = function(){
 		/**
@@ -13398,6 +13399,60 @@ window.cont = new (function(){
 							// data.projectInfo = result.projectInfo;
 							// data.config = result.config;
 							// data.path_homedir = result.path_homedir;
+							it1.next(data);
+						}
+					);
+				} ,
+				function(it1, data){
+					// broccoli-html-editor standby.
+					// console.log('broccoli init();');
+					broccoli.init(
+						{
+							'elmCanvas': document.createElement('div'),
+							'elmModulePalette': document.createElement('div'),
+							'elmInstanceTreeView': document.createElement('div'),
+							'elmInstancePathView': document.createElement('div'),
+							'contents_area_selector': '[data-broccoli-bowl]',
+							'contents_bowl_name_by': 'data-broccoli-bowl',
+							'customFields': {
+								'table': window.BroccoliHtmlEditorTableField,
+								'psd': window.BroccoliPSDField
+							},
+							'gpiBridge': function(api, options, callback){
+								// GPI(General Purpose Interface) Bridge
+								// broccoliは、バックグラウンドで様々なデータ通信を行います。
+								// GPIは、これらのデータ通信を行うための汎用的なAPIです。
+								main.socket.send(
+									'moduleEditor',
+									{
+										'fnc': 'gpiBridge' ,
+										'projectIdx': php.intval($.url(window.location.href).param('projectIdx')),
+										'packageId': php.trim($.url(window.location.href).param('packageId')),
+										'moduleId': php.trim($.url(window.location.href).param('moduleId')),
+										'bridge': {
+											'api': api ,
+											'options': options
+										}
+									} ,
+									function(rtn){
+										// console.log('----------------- gpi returns:');
+										// console.log(rtn);
+										callback(rtn);
+									}
+								);
+								return;
+							}
+						} ,
+						function(){
+							// 初期化が完了すると呼びだされるコールバック関数です。
+
+							// $(window).resize(function(){
+							// 	// このメソッドは、canvasの再描画を行います。
+							// 	// ウィンドウサイズが変更された際に、UIを再描画するよう命令しています。
+							// 	onWindowResized();
+							// }).resize();
+
+							console.log('broccoli init(); - done.');
 							it1.next(data);
 						}
 					);
@@ -13494,7 +13549,7 @@ window.cont = new (function(){
 					it1.next(data);
 				} ,
 				function(it1, data){
-					console.log(data);
+					// console.log(data);
 					console.log('Started!');
 				}
 			]);

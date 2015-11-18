@@ -73,7 +73,7 @@ module.exports = function( data, callback, main, socket ){
 			// broccoli setup.
 			broccoli = new Broccoli();
 
-			console.log(rtn);
+			// console.log(rtn);
 			// console.log(broccoli);
 			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/');
 			// console.log(3456789);
@@ -100,7 +100,7 @@ module.exports = function( data, callback, main, socket ){
 			// console.log(rtn.packageId);
 			var paths_module_template = {};
 			paths_module_template[''+rtn.packageId] = rtn.packageRealpath;
-			console.log(paths_module_template);
+			// console.log(paths_module_template);
 			broccoli.init(
 				{
 					'paths_module_template': paths_module_template ,
@@ -169,6 +169,21 @@ module.exports = function( data, callback, main, socket ){
 					rtn.html = html;
 					rlv();
 				});
+
+			}else if(data.fnc == 'gpiBridge'){
+				// console.log('----------------- gpi start:');
+				broccoli.gpi(
+					data.bridge.api,
+					data.bridge.options,
+					function(result){
+						rtn = result;
+						// console.log('----------------- gpi returns:');
+						// console.log(rtn);
+						rlv();
+						return;
+					}
+				);
+				return ;
 
 			}else{
 				rjt();return;

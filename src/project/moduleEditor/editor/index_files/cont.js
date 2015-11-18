@@ -208,10 +208,11 @@ window.cont = new (function(){
 								// alert( '保存しました。' );
 								// console.log( result );
 								_this.refreshEditWindow(function(){
-									_this.refreshPreview( function(){
-										// console.log('refresh done');
-									} );
+									console.log('refresh EditWindow done.');
 								});
+								_this.refreshPreview( function(){
+									console.log('refresh Preview done.');
+								} );
 							}
 						);
 
@@ -247,31 +248,37 @@ window.cont = new (function(){
 	 */
 	this.refreshEditWindow = function(callback){
 		callback = callback||function(){};
-		var docPreview = $('.cont_edit_window').get(0);
-		var $doc = $(docPreview);
+		var $doc = $('.cont_edit_window');
+		$doc.html('');
 
-		broccoli.editWindow.init('/bowl.main/fields.main@0', docPreview, function(){
+		setTimeout(function(){
+			broccoli.contentsSourceData.init(function(){
+				broccoli.editWindow.init('/bowl.main/fields.main@0', $doc.get(0), function(){
 
-			it79.fnc({},[
-				function(it1, data){
-					// コンテンツデータを保存
-					broccoli.saveContents(function(){
-						it1.next(data);
-					});
-				} ,
-				function(it1, data){
-					// 画面を再描画
-					_this.refreshPreview(function(){
-						it1.next(data);
-					});
-				} ,
-				function(it1, data){
-					console.log('editInstance done.');
-					callback();
-				}
-			]);
+					it79.fnc({},[
+						function(it1, data){
+							// コンテンツデータを保存
+							broccoli.saveContents(function(){
+								it1.next(data);
+							});
+						} ,
+						function(it1, data){
+							// 画面を再描画
+							_this.refreshPreview(function(){
+								it1.next(data);
+							});
+						} ,
+						function(it1, data){
+							console.log('editInstance done.');
+							callback();
+						}
+					]);
 
-		});
+				});
+
+			});
+
+		}, 200);
 
 		return this;
 	}

@@ -69,44 +69,16 @@ module.exports = function( data, callback, main, socket ){
 			rtn.moduleRealpath = path.resolve( rtn.packageRealpath, rtn.categoryId, rtn.moduleId );
 			rlv();
 		}); })
+
 		.then(function(){ return new Promise(function(rlv, rjt){
 			// broccoli setup.
 			broccoli = new Broccoli();
-
 			// console.log(rtn);
 			// console.log(broccoli);
-			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/');
-			// console.log(3456789);
-			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/preview_files/');
-			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/preview_files/resources/');
-			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/');
-			fs.writeFileSync(rtn.moduleRealpath+'/_preview/preview.html', '');
-			var json = null;
-			try {
-				json = fsx.readJsonSync(rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/data.json');
-			} catch (e) {
-			}
-			json = json || {
-				'bowl':{
-					'main':{
-						'modId': '_sys/root',
-						'fields':{
-							'main':[
-								{
-									'modId': data.moduleId,
-									'fields': {
-									}
-								}
-							]
-						}
-					}
-				}
-			};
-			fs.writeFileSync(rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/data.json', JSON.stringify(json, null, 1));
-			// console.log(rtn.packageId);
 			var paths_module_template = {};
 			paths_module_template[''+rtn.packageId] = rtn.packageRealpath;
 			// console.log(paths_module_template);
+
 			broccoli.init(
 				{
 					'paths_module_template': paths_module_template ,
@@ -152,6 +124,81 @@ module.exports = function( data, callback, main, socket ){
 			);
 
 		}); })
+
+		.then(function(){ return new Promise(function(rlv, rjt){
+
+			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/');
+			// console.log(3456789);
+			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/preview_files/');
+			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/preview_files/resources/');
+			fsx.ensureDirSync(rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/');
+			fs.writeFileSync(rtn.moduleRealpath+'/_preview/preview.html', '');
+			var json = null;
+			try {
+				json = fsx.readJsonSync(rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/data.json');
+			} catch (e) {
+			}
+			json = json || {
+				'bowl':{
+					'main':{
+						'modId': '_sys/root',
+						'fields':{
+							'main':[
+								{
+									'modId': data.moduleId,
+									'fields': {
+									}
+								}
+							]
+						}
+					}
+				}
+			};
+
+			// console.log(data.moduleId);
+			// console.log(broccoli);
+			// console.log(broccoli.contentsSourceData);
+			// console.log(broccoli.getModule);
+			// console.log(broccoli.contentsSourceData.getModule);
+			broccoli.getModule( data.moduleId, null, function(mod){
+				// console.log(mod.fields);
+				// 削除されたフィールドを削除
+				for( var idx in json.bowl.main.fields.main[0].fields ){
+					if( !mod.fields[idx] ){
+						json.bowl.main.fields.main[0].fields[idx] = undefined;
+						delete(json.bowl.main.fields.main[0].fields[idx]);
+						console.log(json.bowl.main.fields.main[0].fields[idx]);
+					}
+				}
+				// console.log(json.bowl.main.fields.main[0].fields);
+
+				for( var idx in mod.fields ){
+					if( mod.fields[idx].fieldType == 'module' ){
+						json.bowl.main.fields.main[0].fields[idx] = [
+							{
+								'modId': '_sys/html',
+								'fields': {
+									'main': '<div style="border:1px dotted #ddd; color: #999; background: #eee; padding:1em;">'
+											+'<h2>Dummy Module Contents</h2>'
+											+'<p>moduleフィールドに仮適用されたダミーのコンテンツです。</p>'
+											+'</div>'
+								}
+							}
+						];
+					}else if( mod.fields[idx].fieldType == 'module' ){
+						// TODO: 未実装
+					}
+				}
+
+
+				fs.writeFileSync( rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/data.json', JSON.stringify(json, null, 1) );
+				rlv();
+			} );
+			// console.log(mod);
+
+
+		}); })
+
 		.then(function(){ return new Promise(function(rlv, rjt){
 			if( data.fnc == 'loadSrc' ){
 				// モジュールコードを取得

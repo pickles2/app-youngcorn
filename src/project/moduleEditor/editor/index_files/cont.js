@@ -253,28 +253,53 @@ window.cont = new (function(){
 
 		setTimeout(function(){
 			broccoli.contentsSourceData.init(function(){
-				broccoli.editWindow.init('/bowl.main/fields.main@0', $doc.get(0), function(){
+				main.socket.send('moduleEditor',
+					{
+						'fnc': 'getPreviewInstances' ,
+						'projectIdx': data.projectIdx ,
+						'packageId': data.packageId ,
+						'moduleId': data.moduleId
+					},
+					function(previewInstances){
+						console.log(previewInstances);
 
-					it79.fnc({},[
-						function(it1, data){
-							// コンテンツデータを保存
-							broccoli.saveContents(function(){
-								it1.next(data);
-							});
-						} ,
-						function(it1, data){
-							// 画面を再描画
-							_this.refreshPreview(function(){
-								it1.next(data);
-							});
-						} ,
-						function(it1, data){
-							console.log('editInstance done.');
-							callback();
-						}
-					]);
+						it79.ary(
+							previewInstances ,
+							function(it2, row, idx){
+								// console.log(row);
+								broccoli.editWindow.init(row, $doc.get(0), function(){
 
-				});
+									it79.fnc({},[
+										function(it1, data){
+											// コンテンツデータを保存
+											broccoli.saveContents(function(){
+												it1.next(data);
+											});
+										} ,
+										function(it1, data){
+											// 画面を再描画
+											_this.refreshPreview(function(){
+												it1.next(data);
+											});
+										} ,
+										function(it1, data){
+											console.log('editInstance ' + row + ' done.');
+											callback();
+										}
+									]);
+
+								});
+								setTimeout(function(){
+									it2.next();
+								}, 100);
+
+							},
+							function(){
+								console.log('editWindow standby done.');
+							}
+						);
+					}
+				);
 
 			});
 

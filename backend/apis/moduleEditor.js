@@ -13,6 +13,8 @@ module.exports = function( data, callback, main, socket ){
 		broccoli,
 		px2proj;
 
+	var previewInstances = ['/bowl.main/fields.main@0'];
+
 	new Promise(function(rlv){rlv();})
 		.then(function(){ return new Promise(function(rlv, rjt){
 			// プロジェクト情報を取得する
@@ -87,8 +89,8 @@ module.exports = function( data, callback, main, socket ){
 					'pathResourceDir': '/preview_files/resources/',
 					'realpathDataDir': rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/',
 					'customFields': {
-						'table': require('broccoli-html-editor--table-field'),
-						'psd': require('broccoli-psd-field')
+						'table': require('broccoli-html-editor--table-field')
+						// 'psd': require('broccoli-psd-field')
 					} ,
 					'bindTemplate': function(htmls, callback){
 						var fin = '';
@@ -161,35 +163,62 @@ module.exports = function( data, callback, main, socket ){
 			// console.log(broccoli.getModule);
 			// console.log(broccoli.contentsSourceData.getModule);
 			broccoli.getModule( data.moduleId, null, function(mod){
-				// console.log(mod.fields);
-				// 削除されたフィールドを削除
-				for( var idx in json.bowl.main.fields.main[0].fields ){
-					if( !mod.fields[idx] ){
-						json.bowl.main.fields.main[0].fields[idx] = undefined;
-						delete(json.bowl.main.fields.main[0].fields[idx]);
-						console.log(json.bowl.main.fields.main[0].fields[idx]);
-					}
-				}
-				// console.log(json.bowl.main.fields.main[0].fields);
+				// テストプレビュー用のデータの調整
 
-				for( var idx in mod.fields ){
-					if( mod.fields[idx].fieldType == 'module' ){
-						json.bowl.main.fields.main[0].fields[idx] = [
-							{
-								'modId': '_sys/html',
-								'fields': {
-									'main': '<div style="border:1px dotted #ddd; color: #999; background: #eee; padding:1em;">'
-											+'<h2>Dummy Module Contents</h2>'
-											+'<p>moduleフィールドに仮適用されたダミーのコンテンツです。</p>'
-											+'</div>'
+				function makeSampleData(contentsData, subModName, instancePath){
+					var tmpMod = mod;
+					if(subModName){
+						tmpMod = mod.subModule[subModName];
+					}
+					// console.log('--- makeSampleData() ---');
+					// console.log(subModName);
+					// console.log(tmpMod.fields);
+					// console.log(contentsData);
+
+					// 削除されたフィールドを削除
+					for( var idx in contentsData.fields ){
+						if( !tmpMod.fields[idx] ){
+							contentsData.fields[idx] = undefined;
+							delete(contentsData.fields[idx]);
+							console.log(contentsData.fields[idx]);
+						}
+					}
+					// console.log(contentsData.fields);
+
+					// moduleフィールド・loopフィールドの値の補完
+					for( var idx in tmpMod.fields ){
+						if( tmpMod.fields[idx].fieldType == 'module' ){
+							contentsData.fields[idx] = [
+								{
+									'modId': '_sys/html',
+									'fields': {}
 								}
-							}
-						];
-					}else if( mod.fields[idx].fieldType == 'module' ){
-						// TODO: 未実装
+							];
+							contentsData.fields[idx][0].fields[tmpMod.fields[idx].name] = ''
+								+ '<div style="border:1px dotted #ddd; color: #999; background: #eee; padding:1em;">'
+								+ '<h2>Dummy Module Contents</h2>'
+								+ '<p>moduleフィールドに仮適用されたダミーのコンテンツです。</p>'
+								+ '</div>'
+							;
+						}else if( tmpMod.fields[idx].fieldType == 'loop' ){
+							// console.log(tmpMod);
+							// console.log(tmpMod.id);
+							// console.log(tmpMod.fields[idx]);
+							contentsData.fields[idx] = contentsData.fields[idx]||[
+								{
+									"modId": tmpMod.id,
+									"fields": {},
+									"subModName": tmpMod.fields[idx].name
+								}
+							];
+							var nextInstancePath = instancePath+'/fields.'+tmpMod.fields[idx].name+'@0';
+							previewInstances.push(nextInstancePath);
+							makeSampleData(contentsData.fields[idx][0], tmpMod.fields[idx].name, nextInstancePath);
+						}
 					}
-				}
 
+				}//makeSampleData()
+				makeSampleData( json.bowl.main.fields.main[0], null, previewInstances[0] );
 
 				fs.writeFileSync( rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/data.json', JSON.stringify(json, null, 1) );
 				rlv();
@@ -222,6 +251,12 @@ module.exports = function( data, callback, main, socket ){
 					rtn.html = html;
 					rlv();
 				});
+
+			}else if(data.fnc == 'getPreviewInstances'){
+				rtn = previewInstances;
+				// console.log(rtn);
+				rlv();
+				return ;
 
 			}else if(data.fnc == 'gpiBridge'){
 				// console.log('----------------- gpi start:');

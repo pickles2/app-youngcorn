@@ -15,6 +15,7 @@
     "baobab-fw": "git://github.com/tomk79/BaobabFW.git",
     "broccoli-html-editor": "git://github.com/pickles2/broccoli-html-editor.git",
     "broccoli-html-editor--table-field": "git://github.com/tomk79/broccoli-html-editor--table-field.git",
+    "broccoli-field-psd": "git://github.com/pickles2/broccoli-field-psd.git",
     "desktop-utils": "git://github.com/tomk79/node-desktop-utils.git",
     "es6-promise": "^3.0.2",
     "express": "^4.13.0",

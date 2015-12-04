@@ -60,7 +60,7 @@ window.cont = new (function(){
 							'contents_bowl_name_by': 'data-px2-contents-theme-editor',
 							'customFields': {
 								'table': window.BroccoliHtmlEditorTableField,
-								'psd': window.BroccoliPSDField
+								'psd': window.BroccoliFieldPSD
 							},
 							'gpiBridge': function(api, options, callback){
 								// GPI(General Purpose Interface) Bridge

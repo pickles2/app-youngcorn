@@ -80,8 +80,7 @@ module.exports = function( data, callback, main, socket ){
 					'pathResourceDir': data.pathResourceDir,
 					'realpathDataDir': data.realpathDataDir,
 					'customFields': {
-						'table': require('broccoli-html-editor--table-field'),
-						'image-editor': require('broccoli-field-image-editor')
+						'table': require('broccoli-field-table')
 					} ,
 					'bindTemplate': function(htmls, callback){
 						var fin = '';

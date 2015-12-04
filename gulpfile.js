@@ -87,11 +87,8 @@ gulp.task("broccoli-client", function() {
 	gulp.src(["node_modules/broccoli-html-editor/client/dist/*"])
 		.pipe(gulp.dest( './dist/libs/broccoli-html-editor/client/dist/' ))
 	;
-	gulp.src(["node_modules/broccoli-html-editor--table-field/dist/*"])
-		.pipe(gulp.dest( './dist/libs/broccoli-html-editor--table-field/dist/' ))
-	;
-	gulp.src(["node_modules/broccoli-field-image-editor/dist/**/*"])
-	  .pipe(gulp.dest("./dist/libs/broccoli-field-image-editor/dist/"))
+	gulp.src(["node_modules/broccoli-field-table/dist/*"])
+	  .pipe(gulp.dest( './dist/libs/broccoli-field-table/dist/' ))
 	;
 });
 

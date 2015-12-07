@@ -13409,7 +13409,8 @@ window.cont = new (function(){
 							'customFields': {
 								'table': window.BroccoliHtmlEditorTableField,
 								'image-editor': window.BroccoliFieldImageEditor,
-								'psd': window.BroccoliFieldPSD
+								'psd': window.BroccoliFieldPSD,
+								'table': window.BroccoliFieldTable
 							},
 							'gpiBridge': function(api, options, callback){
 								// GPI(General Purpose Interface) Bridge

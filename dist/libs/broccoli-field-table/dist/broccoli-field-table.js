@@ -23584,7 +23584,7 @@ module.exports = phpjs;
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./build/npm":9}],11:[function(require,module,exports){
 (function(window){
-	window.BroccoliHtmlEditorTableField = require('../libs/main.js');
+	window.BroccoliFieldTable = require('../libs/main.js');
 })(window);
 
 },{"../libs/main.js":1}]},{},[11])

@@ -82,7 +82,8 @@ module.exports = function( data, callback, main, socket ){
 					'customFields': {
 						'table': require('broccoli-html-editor--table-field'),
 						'image-editor': require('broccoli-field-image-editor'),
-						'psd': require('broccoli-field-psd')
+						'psd': require('broccoli-field-psd'),
+						'table': require('broccoli-field-table')
 					} ,
 					'bindTemplate': function(htmls, callback){
 						var fin = '';

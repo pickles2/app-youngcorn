@@ -1,4 +1,1011 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = function(broccoli){
+
+	require('m-util');
+	var it79 = require('iterate79');
+	var php = require('phpjs');
+	var resouce = require('br-resouce');
+	var mLog = require('m-log');
+	var _ = require('underscore');
+
+	var _resMgr = broccoli.resourceMgr;
+	var _imgDummy = 'data:image/png;base64,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';
+	var _this = this;
+
+	/**
+	 * エディタUIを生成
+	 */
+	this.mkEditor = function( mod, data, elm, callback ){
+		var rtn = $('<div>');
+		var htmlImgEditor = '			<div class="nav-box">		    <div class="jCrop-trim-group">		      <canvas id="jCrop-original-canvas" width="0" height="0" style="display:none;"></canvas><a class="button-M btn_icon_readfile jCrop-restore">元画像を読込み</a>		      <label>		        <input type="checkbox" checked="" class="jCrop-showClickable"/><a class="button-M btn_icon_eye_on">矩形エリア確認</a>		      </label><a class="button-M btn_icon_cut jCrop-trim">切り取り</a>					<div class="button-group"><a class="button-S btn_icon_minimum jCrop-minimum">最小</a><a class="button-S btn_icon_maximum jCrop-maximum">最大</a></div>					<div class="button-group"><a class="button-S btn_icon_horizontal_center jCrop-horizontal-center">横中央</a><a class="button-S btn_icon_vertical_center jCrop-vertical-middle">縦中央</a><a class="button-S btn_icon_center jCrop-center">中央</a></div>					<div class="button-group"><a class="button-S btn_icon_horizotal_split jCrop-hSplit">横分割</a><a class="button-S btn_icon_vertical_split jCrop-vSplit">縦分割</a></div>		      <div class="jCrop-trim-prevew">		        <h3>プレビュー</h3>		        <div class="jCrop-origin-imgSize">		          <div class="dialog">		            <div class="dialog-message">この画像でよろしいですか？</div>		            <div class="dialog-btns"><a class="button-S jCrop-reset-trim">いいえ</a><a class="button-S jCrop-commit">はい</a></div>		          </div>		          <canvas id="jCrop-work-canvas" width="0" height="0" style="display:block;"></canvas>		        </div>		      </div><a class="button-M btn_icon_fix jCrop-autofix">自動調整マクロ</a>		    </div>		  </div>		  <div id="jCrop-interface" class="page-interface"><%= imageData %></div>		  <div class="nav-box">		    <div id="text-inputs">		      <h3>矩形エリア</h3>		      <div class="input-rect-area">		        <div class="input-rect-group">		          <div class="border-vertical"></div>		          <div class="border-horizontal"></div><span class="input-group"><b>X</b>		            <input id="crop-x" type="number" name="cx" style="width:4em" class="span1"/></span><span class="input-group"><b>Y</b>		            <input id="crop-y" type="number" name="cy" style="width:4em" class="span1"/></span><span class="input-group"><b>W</b>		            <input id="crop-w" type="number" name="cw" style="width:4em" class="span1"/></span><span class="input-group"><b>H</b>		            <input id="crop-h" type="number" name="ch" style="width:4em" class="span1"/></span>		        </div>		      </div>		    </div>		  </div>		  <div class="nav-box">		    <div id="text-inputs">		      <h3>リンク一覧</h3>		      <div class="jCrop-link-group">		        <input type="hidden" name="linkId" value=""/>		        <input type="text" name="linkName" value="" placeholder="ラベル" style="width:12em;"/>		        <input type="text" name="linkURL" value="" placeholder="http://www.imjp.co.jp" style="width:36em;"/><a class="button-L btn_icon_link jCrop-addLink">矩形エリアをリンクに設定</a>		      </div>		      <ul id="jCrop-link" style="padding:0;"></ul>		    </div>		  </div>		  <h3 class="readonly">rect</h3>		  <input id="jCrop-rect" type="text" style="width:100%;" readonly="readonly"/>		  <h3 class="readonly">base64</h3>		  <input id="jCrop-imgBase64" type="text" style="width:100%;" readonly="readonly"/>					<script>			function JcropWaiting(){			  try{					JcropLib(jQuery);					JcropEditorLib(<%= rectData %>, <%= editData %>);			  }catch (e){					setTimeout(JcropWaiting,200);				}				return;			}			JcropWaiting();			</script>';
+		// var htmlImgEditor = (function() {/*
+		// 	<div class="nav-box">
+		//     <div class="jCrop-trim-group">
+		//       <canvas id="jCrop-original-canvas" width="0" height="0" style="display:none;"></canvas><a class="button-M btn_icon_readfile jCrop-restore">元画像を読込み</a>
+		//       <label>
+		//         <input type="checkbox" checked="" class="jCrop-showClickable"/><a class="button-M btn_icon_eye_on">矩形エリア確認</a>
+		//       </label><a class="button-M btn_icon_cut jCrop-trim">切り取り</a>
+		// 			<div class="button-group"><a class="button-S btn_icon_minimum jCrop-minimum">最小</a><a class="button-S btn_icon_maximum jCrop-maximum">最大</a></div>
+		// 			<div class="button-group"><a class="button-S btn_icon_horizontal_center jCrop-horizontal-center">横中央</a><a class="button-S btn_icon_vertical_center jCrop-vertical-middle">縦中央</a><a class="button-S btn_icon_center jCrop-center">中央</a></div>
+		// 			<div class="button-group"><a class="button-S btn_icon_horizotal_split jCrop-hSplit">横分割</a><a class="button-S btn_icon_vertical_split jCrop-vSplit">縦分割</a></div>
+		//       <div class="jCrop-trim-prevew">
+		//         <h3>プレビュー</h3>
+		//         <div class="jCrop-origin-imgSize">
+		//           <div class="dialog">
+		//             <div class="dialog-message">この画像でよろしいですか？</div>
+		//             <div class="dialog-btns"><a class="button-S jCrop-reset-trim">いいえ</a><a class="button-S jCrop-commit">はい</a></div>
+		//           </div>
+		//           <canvas id="jCrop-work-canvas" width="0" height="0" style="display:block;"></canvas>
+		//         </div>
+		//       </div><a class="button-M btn_icon_fix jCrop-autofix">自動調整マクロ</a>
+		//     </div>
+		//   </div>
+		//   <div id="jCrop-interface" class="page-interface"><%= imageData %></div>
+		//   <div class="nav-box">
+		//     <div id="text-inputs">
+		//       <h3>矩形エリア</h3>
+		//       <div class="input-rect-area">
+		//         <div class="input-rect-group">
+		//           <div class="border-vertical"></div>
+		//           <div class="border-horizontal"></div><span class="input-group"><b>X</b>
+		//             <input id="crop-x" type="number" name="cx" style="width:4em" class="span1"/></span><span class="input-group"><b>Y</b>
+		//             <input id="crop-y" type="number" name="cy" style="width:4em" class="span1"/></span><span class="input-group"><b>W</b>
+		//             <input id="crop-w" type="number" name="cw" style="width:4em" class="span1"/></span><span class="input-group"><b>H</b>
+		//             <input id="crop-h" type="number" name="ch" style="width:4em" class="span1"/></span>
+		//         </div>
+		//       </div>
+		//     </div>
+		//   </div>
+		//   <div class="nav-box">
+		//     <div id="text-inputs">
+		//       <h3>リンク一覧</h3>
+		//       <div class="jCrop-link-group">
+		//         <input type="hidden" name="linkId" value=""/>
+		//         <input type="text" name="linkName" value="" placeholder="ラベル" style="width:12em;"/>
+		//         <input type="text" name="linkURL" value="" placeholder="http://www.imjp.co.jp" style="width:36em;"/><a class="button-L btn_icon_link jCrop-addLink">矩形エリアをリンクに設定</a>
+		//       </div>
+		//       <ul id="jCrop-link" style="padding:0;"></ul>
+		//     </div>
+		//   </div>
+		//   <h3 class="readonly">rect</h3>
+		//   <input id="jCrop-rect" type="text" style="width:100%;" readonly="readonly"/>
+		//   <h3 class="readonly">base64</h3>
+		//   <input id="jCrop-imgBase64" type="text" style="width:100%;" readonly="readonly"/>
+		//
+		// 	<script>
+		// 	function JcropWaiting(){
+		// 	  try{
+		// 			JcropLib(jQuery);
+		// 			JcropEditorLib(<%= rectData %>, <%= editData %>);
+		// 	  }catch (e){
+		// 			setTimeout(JcropWaiting,200);
+		// 		}
+		// 		return;
+		// 	}
+		// 	JcropWaiting();
+		// 	</script>
+		// */}).toString().uHereDoc();
+
+		var _htmlImgEditor = _.template(htmlImgEditor);
+		var _this = this;
+		var $DL_link = "", DL_file = "";
+		if( typeof(data) !== typeof({}) ){ data = {}; }
+
+		// console.log('data',data);
+
+		if( typeof(data.resKeyOrgPng) !== typeof('') ){
+			data.resKeyOrgPng = '';
+		}
+		// if( typeof(data.original) !== typeof({}) ){ data.original = {}; }
+		_resMgr.getResource( data.resKeyOrgPng, function(res){
+			// var PngPath = 'data:'+res.type+';base64,' + res.base64;
+			// if( !res.base64 ){
+			// 	// ↓ ダミーの Sample Image
+			// 	PngPath = _imgDummy;
+			// }
+		});
+
+		/****************
+		 * resKey
+		 ****************/
+		if( typeof(data.resKey) !== typeof('') ){
+			data.resKey = '';
+		}else{
+			_resMgr.getResource( data.resKey, function(res){
+				if(typeof res.base64 !== "undefined"){
+					/* for Browser */
+					// DL_file = res.publicFilename + '.' + res.ext;
+					// var DL_data = 'data:' +res.type + ';base64,'+ res.base64;
+					// DL_link = '<a href="' + DL_data + '" download="' + res.publicFilename + '">' + "Download" + '</a>';
+
+					/* for node-webkit */
+					DL_file = res.publicFilename + '.' + res.ext;
+					var DL_data = res.base64;
+					$DL_link = $('<div data-psd-info>');
+					$DL_link.html('')
+					.append($('<input type="button" class="download" value="Download" />')
+						.attr({
+							'data-psd-resKey': data.resKey
+						})
+						.click(function(){
+							var resKey = $(this).attr('data-psd-resKey');
+							var $chooser = $('#nw_download');
+							$chooser.nwsaveas = DL_file;
+							// console.log('chooser', $chooser);
+							$chooser.click();
+							$chooser.bind('change', function(evt){
+								// console.log('evt', evt);
+						    // $chooser.addEventListener("change", function(evt) {
+						    var dlFilePath = $(this).val();
+						    $chooser.nwdirectory = dlFilePath;
+						    // console.log('directory', dlFilePath);
+						    $(this).val('');
+						    // console.log("white");
+						    _this.callGpi(
+						      {
+						        'api': 'openOuternalEditor',
+						        'data': {'base64': DL_data, 'dlFilePath': dlFilePath + '/'+ DL_file}
+						      } ,
+						      function(output){
+						        return;
+						      }
+						    );
+							});
+						})
+					).append($('<input id="nw_download" type="file" style="display:none" nwworkingdir="" nwsaveas="" nwdirectory="" />'));
+				}
+			});
+		}
+		/****************
+		 * resKeyRect
+		 ****************/
+		 var rectData = "";
+		 if( typeof(data.resKeyRect) !== typeof('') ){
+			 data.resKeyRect = '';
+		 }
+		 _resMgr.getResource( data.resKeyRect, function(res){
+			rectData = res.base64;
+			if(!res.base64){
+				rectData = '{"x":0,"y":0,"w":100,"h":100}';
+			}else{
+				eval("rectData = JSON.parse(res.base64)");
+				if(rectData === ""){
+					rectData = '{"x":0,"y":0,"w":0,"h":0}';
+				}
+			}
+		});
+		/****************
+		 * resKeyEditData
+		 ****************/
+		 var editData;
+		 if( typeof(data.resKeyEditData) !== typeof('') ){
+			 data.resKeyEditData = '';
+		 }
+		 _resMgr.getResource( data.resKeyEditData, function(res){
+			if(!res.base64){
+				editData = '[]';
+			}else{
+				// console.log('load editData!');
+				editData = res.base64;
+				// console.log('load editData', editData);
+			}
+		});
+
+
+		/****************
+		 * resKeyEditPng
+		 ****************/
+		if( typeof(data.resKeyEditPng) !== typeof('') ){
+			data.resKeyEditPng = '';
+		}
+		// ↓ ダミーの Sample Image
+		var editPng, PngPath = _imgDummy;
+		_resMgr.getResource( data.resKeyEditPng, function(res){
+			if(res.base64 != null){
+				PngPath = 'data:'+res.type+';base64,' + res.base64;
+			}
+			editPng = PngPath;
+		});
+		/****************
+		 * resKeyOrgPng
+		 ****************/
+		 if( typeof(data.resKeyOrgPng) !== typeof('') ){
+ 			data.resKeyOrgPng = '';
+ 		}
+ 		var orgPng;
+ 		_resMgr.getResource( data.resKeyOrgPng, function(res){
+ 			if(!res.base64){
+ 				orgPng = _imgDummy;
+ 			}else{
+ 				orgPng = 'data:'+res.type+';base64,' + res.base64;
+ 			}
+			var $img = $('<img id="jCrop-target" class="img_editor-img">');
+			var $btnOK = $('.btn-primary');
+			$img.attr({
+				"src": PngPath ,
+				"data-size": res.size ,
+				"data-extension": res.ext,
+				"data-mime-type": res.type,
+				"data-base64": res.base64
+			});
+			rtn.append( $('<input>')
+				.attr({
+					"name":mod.name ,
+					"type":"file",
+					"webkitfile":"webkitfile",
+					"accept":"image/png,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+				})
+				.css({'width':'100%'})
+				.bind('click', function(e){
+					$(this).val('');
+				})
+				.bind('change', function(e){
+					// console.log('change file val:', $(this).val());
+					if($(this).val() == null || $(this).val() === ''){
+						return;
+					}
+					var fileInfo = e.target.files[0];
+					var realpathSelected = $(this).val();
+					var resInfo = new resouce();
+
+					// console.log('fileInfo.type', fileInfo.type);
+
+					if( realpathSelected ){
+						if(fileInfo.type === 'image/png'){
+							// PNG
+							fileInfo.name
+							resInfo.readSelectedLocalFile(fileInfo, function(obj){
+								// $btnOK.prop('disabled', true); // ボタン無効化
+								var $dom = $(elm);
+								if( typeof(data) !== typeof({}) ){
+									data = {};
+								}
+								if( typeof(data.resKey) !== typeof('') ){
+									data.resKey = '';
+								}
+								it79.fnc(
+									data,
+									[
+										// 画像登録
+										function(it1, data){
+											_resMgr.getResource(data.resKey, function(result){
+												if( result === false ){
+													_resMgr.addResource(function(newResKey){
+														data.resKey = newResKey;
+														it1.next(data);
+													});
+													return;
+												}
+												it1.next(data);
+											});
+										} ,
+										function(it1, data){
+											// HTML一旦削除して作り直し
+											$img.attr({
+												"src": obj.dataUri
+											});
+											// console.log('editData', editData);
+											$('.jCrop-editor').empty().append($(_htmlImgEditor({
+												'imageData': $img[0].outerHTML,
+												'rectData': rectData,
+												'editData': editData
+											})));
+											resInfo.base64 = obj.base64;
+											data.base64 = obj.base64;
+											_resMgr.updateResource( data.resKey, resInfo, function(){
+												_resMgr.getResourcePublicPath( data.resKey, function(publicPath){
+													data.path = publicPath;
+													_resMgr.resetBinFromBase64( data.resKey, function(){
+														$elem = $("[data-broccoli-edit-window-field-name='image_src']");
+
+														// resKey, path一時保存
+														$elem.data('resKey', data.resKey);
+														$elem.data('path', data.path);
+
+														it1.next(data);
+													});
+												});
+											} );
+											return;
+										} ,
+										// /画像更新
+										function(it1, data){
+											_this.callGpi(
+												{
+													'api': 'savePNG',
+													'data': data
+												},
+												function(result){
+													console.log("PNG result");
+													$btnOK.prop('disabled', false); // ボタン無効化解除
+													$elem = $("[data-broccoli-edit-window-field-name='image_src']");
+													$elem.data('resKeyOrgPng', result.resKeyOrgPng);
+													$elem.data('PngPath', result.PngPath);
+													$elem.data('PngInfo', result.PngInfo);
+
+													$elem.data('resKeyHtml', result.resKeyHtml);
+													$elem.data('HtmlPath', result.HtmlPath);
+													$elem.data('isChanged', true);
+													// console.log('clientXX', result.PngInfo);
+													var base64Png = 'data:image/png;base64,' + result.PngInfo.base64;
+													$('.img_editor-img').attr({"src": base64Png});
+													// console.log(result);
+
+													// 直接値を書き込む
+													$('#jCrop-imgBase64').val(base64Png);
+
+													it1.next(data);
+												}
+											);
+										} ,
+										function(it1, data){
+											callback(data);
+											it1.next(data);
+										}
+									]
+								);
+							});
+
+						// /PNG
+					} else if(fileInfo.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'){
+						// PPTX
+							resInfo.readSelectedLocalFile(fileInfo, function(obj){
+								$btnOK.prop('disabled', true); // ボタン無効化
+								var $dom = $(elm);
+								if( typeof(data) !== typeof({}) ){
+									data = {};
+								}
+								if( typeof(data.resKey) !== typeof('') ){
+									data.resKey = '';
+								}
+								it79.fnc(
+									data,
+									[
+										// PSD登録
+										function(it1, data){
+											_resMgr.getResource(data.resKey, function(result){
+												if( result === false ){
+													_resMgr.addResource(function(newResKey){
+														data.resKey = newResKey;
+														it1.next(data);
+													});
+													return;
+												}
+												it1.next(data);
+											});
+										} ,
+										function(it1, data){
+											// resInfo.src = obj.dataUri;
+											resInfo.base64 = obj.base64;
+											_resMgr.updateResource( data.resKey, resInfo, function(){
+												_resMgr.getResourcePublicPath( data.resKey, function(publicPath){
+													data.path = publicPath;
+													_resMgr.resetBinFromBase64( data.resKey, function(){
+														$elem = $("[data-broccoli-edit-window-field-name='image_src']");
+														$elem.data('resKey', data.resKey);
+														it1.next(data);
+													});
+												});
+											} );
+											return;
+										} ,
+										// /PSD登録
+										function(it1, data){
+											_this.callGpi(
+												{
+													'api': 'convertPPTX',
+													'data': data
+												},
+												function(result){
+													console.log("PPTX result");
+													$btnOK.prop('disabled', false); // ボタン無効化解除
+													$elem = $("[data-broccoli-edit-window-field-name='image_src']");
+													$elem.data('resKeyOrgPng', result.resKeyOrgPng);
+													$elem.data('PngPath', result.PngPath);
+													$elem.data('PngInfo', result.PngInfo);
+													$elem.data('isChanged', true);
+													// console.log(result.PngInfo);
+													var base64Png = 'data:image/png;base64,' + result.PngInfo.base64;
+													// console.log('base64Pngx2', base64Png);
+
+													// HTML一旦削除して作り直し
+													$img.attr({
+														"src": base64Png
+													});
+													$('.jCrop-editor').empty().append($(_htmlImgEditor({
+														'imageData': $img[0].outerHTML,
+														'rectData': rectData,
+														'editData': editData
+													})));
+													resInfo.base64 = obj.base64;
+													_resMgr.updateResource( data.resKey, resInfo, function(){
+														_resMgr.getResourcePublicPath( data.resKey, function(publicPath){
+															data.path = publicPath;
+															_resMgr.resetBinFromBase64( data.resKey, function(){
+																$elem = $("[data-broccoli-edit-window-field-name='image_src']");
+
+																// resKey, path一時保存
+																$elem.data('resKey', data.resKey);
+																$elem.data('path', data.path);
+
+																it1.next(data);
+															});
+														});
+													} );
+
+													// console.log(result);
+													it1.next(data);
+												}
+											);
+										} ,
+										function(it1, data){
+											callback(data);
+											it1.next(data);
+										}
+									]
+								);
+							});
+							// PPTX
+					}else if(fileInfo.type === 'image/vnd.adobe.photoshop'){
+							// PSD
+							resInfo.readSelectedLocalFile(fileInfo, function(obj){
+								$btnOK.prop('disabled', true); // ボタン無効化
+								var $dom = $(elm);
+								if( typeof(data) !== typeof({}) ){
+									data = {};
+								}
+								if( typeof(data.resKey) !== typeof('') ){
+									data.resKey = '';
+								}
+								it79.fnc(
+									data,
+									[
+										// PSD登録
+										function(it1, data){
+											_resMgr.getResource(data.resKey, function(result){
+												if( result === false ){
+													_resMgr.addResource(function(newResKey){
+														data.resKey = newResKey;
+														it1.next(data);
+													});
+													return;
+												}
+												it1.next(data);
+											});
+										} ,
+										function(it1, data){
+											// resInfo.src = obj.dataUri;
+											resInfo.base64 = obj.base64;
+											_resMgr.updateResource( data.resKey, resInfo, function(){
+												_resMgr.getResourcePublicPath( data.resKey, function(publicPath){
+													data.path = publicPath;
+													_resMgr.resetBinFromBase64( data.resKey, function(){
+														$elem = $("[data-broccoli-edit-window-field-name='image_src']");
+														$elem.data('resKey', data.resKey);
+														it1.next(data);
+													});
+												});
+											} );
+											return;
+										} ,
+										// /PSD登録
+										function(it1, data){
+											_this.callGpi(
+												{
+													'api': 'convertPSD',
+													'data': data
+												},
+												function(result){
+													console.log("PSD result");
+													$btnOK.prop('disabled', false); // ボタン無効化解除
+													$elem = $("[data-broccoli-edit-window-field-name='image_src']");
+													$elem.data('resKeyOrgPng', result.resKeyOrgPng);
+													$elem.data('PngPath', result.PngPath);
+													$elem.data('PngInfo', result.PngInfo);
+
+													$elem.data('resKeyHtml', result.resKeyHtml);
+													$elem.data('HtmlPath', result.HtmlPath);
+													$elem.data('isChanged', true);
+													// console.log(result.PngInfo);
+													var base64Png = 'data:image/png;base64,' + result.PngInfo.base64;
+													$('.img_editor-img').attr({"src": base64Png});
+													// console.log(result);
+													it1.next(data);
+												}
+											);
+										} ,
+										function(it1, data){
+											callback(data);
+											it1.next(data);
+										}
+									]
+								);
+							});
+						// /PSD
+					}else{
+						console.log('unknown fileType.');
+					}
+				}
+				})
+			);
+			rtn.append(
+					$('<div>')
+						.append( $('<span>')
+							.text('ファイル名')
+						)
+						.append( $('<input>')
+							.attr({
+								"name":mod.name+'-publicFilename' ,
+								"type":"text",
+								"placeholder": "file name",
+								"readonly": "readonly"
+							}).val(DL_file)
+							// .val( (typeof(res.publicFilename)==typeof('') ? res.publicFilename : '') )
+				)
+			);
+			rtn.append(
+					$('<div>').append($DL_link)
+			);
+			// console.log('rectData######', rectData);
+			rtn.append(
+				$('<div class="jCrop-editor">').append($(_htmlImgEditor({
+				'imageData': $img[0].outerHTML,
+				'rectData': rectData,
+				'editData': editData
+			}))));
+			$(elm).html(rtn);
+
+			var img_real_w, img_real_h;
+			$("<img/>") // Make in memory copy of image to avoid css issues
+				.attr("src", orgPng)
+				.load(function() {
+					var org_canvas = $("#jCrop-original-canvas")[0];
+					$(org_canvas).attr('width', this.width);
+					$(org_canvas).attr('height', this.height);
+					if (!org_canvas || !org_canvas.getContext) {return false;}
+					var org_ctx = org_canvas.getContext('2d');
+					$(org_canvas).css('display', 'block'); // FIXED display:noneのcanvasにdrawImageできない？
+					org_ctx.drawImage(this, 0, 0);
+					$(org_canvas).css('display', 'none');
+				});
+
+			var work_canvas = $("#jCrop-work-canvas")[0];
+			if (!work_canvas || !work_canvas.getContext) {return false;}
+			var work_ctx = work_canvas.getContext('2d');
+			var img1 = new Image();
+			img1.src = editPng;
+			work_ctx.drawImage(img1, 0, 0);
+
+			// console.log('【PNG】', editPng, orgPng);
+
+			setTimeout(function(){ callback(); }, 0);
+		} );
+		return;
+	}
+
+	/**
+	 * データを複製する
+	 */
+	this.duplicateData = function( data, callback ){
+		data = JSON.parse( JSON.stringify( data ) );
+		it79.fnc(
+			data,
+			[
+				function(it1, data){
+					_resMgr.duplicateResource( data.resKey, function(newResKey){
+						data.resKey = newResKey;
+						it1.next(data);
+					} );
+				} ,
+				function(it1, data){
+					_resMgr.getResourcePublicPath( data.resKey, function(publicPath){
+						data.PngPath = publicPath;
+						it1.next(data);
+					} );
+				} ,
+				function(it1, data){
+					callback(data);
+					it1.next(data);
+				}
+			]
+		);
+		return;
+	}
+
+	/**
+	 * エディタUIで編集した内容を保存
+	 */
+	this.saveEditorContent = function( elm, data, mod, callback ){
+		var resInfo;
+		var linkData = [];
+		var $dom = $(elm);
+		$.each($('#jCrop-link li'), function(i,v){
+			var data = {
+				'x':parseInt($(v).find('input[name="cx"]').val()),
+				'y':parseInt($(v).find('input[name="cy"]').val()),
+				'w':parseInt($(v).find('input[name="cw"]').val()),
+				'h':parseInt($(v).find('input[name="ch"]').val()),
+				'color': $(v).find('input[name="color"]').val(),
+				'label': $(v).find('input[name="linkName"]').val(),
+				'url':   $(v).find('input[name="linkURL"]').val(),
+				'target':$(v).find('input[name="linkTarget"]').prop('checked')
+			};
+			linkData.push(data);
+		});
+		var rect = $('#jCrop-rect').val();
+		var b64Img = $('#jCrop-imgBase64').val();
+
+
+		it79.fnc(
+			data,
+			[
+				/****************
+				 * resKeyOrgPng
+				 ****************/
+				function(it1, data){
+					// if($dom.data('isChanged') !== true){it1.next(data); return; } //スキップ処理
+					_resMgr.getResource(data.resKeyOrgPng, function(result){
+						if( result === false ){
+							_resMgr.addResource(function(newResKey){
+								data.resKeyOrgPng = newResKey;
+								it1.next(data);
+							});
+							return;
+						}
+						it1.next(data);
+						return;
+					});
+				} ,
+				function(it1, data){
+					// if($dom.data('isChanged') !== true){it1.next(data); return; } //スキップ処理
+					_resMgr.getResource(data.resKeyOrgPng, function(res){
+						resInfo = res;
+						it1.next(data);
+					});
+					return;
+				} ,
+				function(it1, data){
+					// if($dom.data('isChanged') !== true){it1.next(data); return; } //スキップ処理
+					resInfo.ext = 'png';
+					resInfo.type = 'image/png';
+					resInfo.size = 0;
+					resInfo.base64 = $('#jCrop-original-canvas')[0].toDataURL().replace(new RegExp('^data\\:[^\\;]*\\;base64\\,'), '');
+					if(resInfo.base64 === 'data:,'){
+						// console.log("オリジナルに登録されていない場合")
+						resInfo.base64 = $('canvas').get(2).toDataURL().replace(new RegExp('^data\\:[^\\;]*\\;base64\\,'), '');
+					}
+					// console.log('resInfo.base64', resInfo.base64);
+
+					resInfo.isPrivateMaterial = false;
+					resInfo.publicFilename = $dom.find('input[name='+mod.name+'-publicFilename]').val();
+					_resMgr.updateResource( data.resKeyOrgPng, resInfo, function(result){
+						_resMgr.getResourcePublicPath( data.resKeyOrgPng, function(publicPath){
+							data.OrgPngPath = publicPath;
+							_resMgr.resetBinFromBase64(data.resKeyOrgPng, function() {
+								it1.next(data);
+							});
+						} );
+					} );
+					return;
+				},
+				/****************
+				 * resKeyEditPng
+				 ****************/
+				function(it1, data){
+					// if($dom.data('isChanged') !== true){it1.next(data); return; } //スキップ処理
+					_resMgr.getResource(data.resKeyEditPng, function(result){
+						if( result === false ){
+							_resMgr.addResource(function(newResKey){
+								data.resKeyEditPng = newResKey;
+								it1.next(data);
+							});
+							return;
+						}
+						it1.next(data);
+						return;
+					});
+				} ,
+				function(it1, data){
+					// if($dom.data('isChanged') !== true){it1.next(data); return; } //スキップ処理
+					_resMgr.getResource(data.resKeyEditPng, function(res){
+						resInfo = res;
+						it1.next(data);
+					});
+					return;
+				} ,
+				function(it1, data){
+					// if($dom.data('isChanged') !== true){it1.next(data); return; } //スキップ処理
+					resInfo.ext = 'png';
+					resInfo.type = 'image/png';
+					resInfo.size = 0;
+					resInfo.base64 = $('#jCrop-work-canvas')[0].toDataURL().replace(new RegExp('^data\\:[^\\;]*\\;base64\\,'), '');
+					if(resInfo.base64 === 'data:,'){
+						// console.log("空の場合は、originalを使う")
+						resInfo.base64 = $('#jCrop-original-canvas')[0].toDataURL().replace(new RegExp('^data\\:[^\\;]*\\;base64\\,'), '');
+					}
+					if(resInfo.base64 === 'data:,'){
+						// console.log("オリジナルに登録されていない場合")
+						resInfo.base64 = $('canvas').get(2).toDataURL().replace(new RegExp('^data\\:[^\\;]*\\;base64\\,'), '');
+					}
+					// console.log('resInfo.base64', resInfo.base64);
+
+					resInfo.isPrivateMaterial = false;
+					// resInfo.publicFilename = $dom.find('input[name='+mod.name+'-publicFilename]').val();
+					_resMgr.updateResource( data.resKeyEditPng, resInfo, function(result){
+						_resMgr.getResourcePublicPath( data.resKeyEditPng, function(publicPath){
+							data.EditPngPath = publicPath;
+							_resMgr.resetBinFromBase64(data.resKeyEditPng, function() {
+								it1.next(data);
+							});
+						} );
+					} );
+					return;
+				},
+				/****************
+				 * resKeyRect
+				 ****************/
+				function(it1, data){
+					_resMgr.getResource(data.resKeyRect, function(result){
+						if( result === false ){
+							_resMgr.addResource(function(newResKey){
+								data.resKeyRect = newResKey;
+								it1.next(data);
+							});
+							return;
+						}
+						it1.next(data);
+						return;
+					});
+				} ,
+				function(it1, data){
+					_resMgr.getResource(data.resKeyRect, function(res){
+						resInfo = res;
+						it1.next(data);
+					});
+					return;
+				} ,
+				function(it1, data){
+					resInfo.ext = 'json';
+					resInfo.isPrivateMaterial = false;
+					resInfo.base64 = JSON.stringify($('#jCrop-rect').val()).toString('base64');
+					_resMgr.updateResource( data.resKeyRect, resInfo, function(result){
+						_resMgr.getResourcePublicPath( data.resKeyRect, function(publicPath){
+							_resMgr.resetBinFromBase64(data.resKeyRect, function() {
+								it1.next(data);
+							});
+						} );
+					} );
+					return;
+				},
+				/****************
+				 * resKeyEditData
+				 ****************/
+				function(it1, data){
+					_resMgr.getResource(data.resKeyEditData, function(result){
+						if( result === false ){
+							_resMgr.addResource(function(newResKey){
+								data.resKeyEditData = newResKey;
+								it1.next(data);
+							});
+							return;
+						}
+						it1.next(data);
+						return;
+					});
+				} ,
+				function(it1, data){
+					_resMgr.getResource(data.resKeyEditData, function(res){
+						resInfo = res;
+						it1.next(data);
+					});
+					return;
+				} ,
+				function(it1, data){
+					resInfo.ext = 'json';
+					resInfo.isPrivateMaterial = false;
+					console.log('linkData', linkData);
+					resInfo.base64 = JSON.stringify(linkData).toString('base64');
+					_resMgr.updateResource( data.resKeyEditData, resInfo, function(result){
+						_resMgr.getResourcePublicPath( data.resKeyEditData, function(publicPath){
+							_resMgr.resetBinFromBase64(data.resKeyEditData, function() {
+								it1.next(data);
+							});
+						} );
+					} );
+					return;
+				},
+				/****************
+				 * resKeyHtml
+				 ****************/
+				function(it1, data){
+					_resMgr.getResource(data.resKeyHtml, function(result){
+						if( result === false ){
+							_resMgr.addResource(function(newResKey){
+								data.resKeyHtml = newResKey;
+								it1.next(data);
+							});
+							return;
+						}
+						it1.next(data);
+						return;
+					});
+				} ,
+				function(it1, data){
+					_resMgr.getResource(data.resKeyHtml, function(res){
+						resInfo = res;
+						it1.next(data);
+					});
+					return;
+				} ,
+				function(it1, data){
+					resInfo.ext = 'html';
+					resInfo.isPrivateMaterial = false;
+
+					var jsonRect = JSON.parse($('#jCrop-rect').val())
+					var psdWidth = jsonRect.w; // 画像サイズ
+					var psdHeight = jsonRect.h; // 画像サイズ
+					var linkHtml = '';
+					for (var r in linkData) {
+						var link_data = linkData[r];
+						var rect_top = Math.uFloor(link_data.y / psdHeight * 100, 3) + '%';
+						var rect_left = Math.uFloor(link_data.x  / psdWidth * 100, 3) + '%';
+						var rect_width = Math.uFloor(link_data.w  / psdWidth * 100, 3) + '%';
+						var rect_height =  Math.uFloor(link_data.h / psdHeight * 100, 3) + '%';
+						var link_target = "";
+						if(link_data.target){link_target='target="_blank"';}
+						linkHtml += '<a href="' + link_data.url + '" ' + link_target + ' class="img_link" style="display:block; position:absolute; top:' + rect_top + '; left:' + rect_left + '; width:' + rect_width + '; height:' + rect_height + ';"></a>' + "\n";
+					}
+
+					var htmlTmpl = '<style>.psdrb_html_generator .img_link{opacity:0; background:rgba(204,204,204,0.7);}</style><div class="psdrb_html_generator" style="position:relative;margin:0;padding:0;<%= maxWidth %>;"><img src="<%- imgFile %>" alt=""><%= link_html %></div>';
+// 					var htmlTmpl = (function() {/*
+// <style>
+// .psdrb_html_generator .img_link{opacity:0; background:rgba(204,204,204,0.7);}
+// </style>
+// <div class="psdrb_html_generator" style="position:relative;margin:0;padding:0;<%= maxWidth %>;">
+// <img src="<%- imgFile %>" alt="">
+// <%= link_html %>
+// </div>
+// */}).toString().uHereDoc();
+					var _htmlTmpl = _.template(htmlTmpl);
+					var html = _htmlTmpl({
+						'link_html': _.unescape(linkHtml),
+						'imgFile': data.EditPngPath,
+						'maxWidth': 'max-width:' + psdWidth + "px"
+					});
+					resInfo.base64 = html;
+					_resMgr.updateResource( data.resKeyHtml, resInfo, function(result){
+						_resMgr.getResourcePublicPath( data.resKeyHtml, function(publicPath){
+							data.HtmlPath = publicPath;
+							_resMgr.resetBinFromBase64(data.resKeyHtml, function() {
+								it1.next(data);
+							});
+						} );
+					} );
+					return;
+				},
+				function(it1, data){
+					// オリジナルの保存
+					data.resKey = $dom.data('resKey');
+					data.path = $dom.data('path');
+					_resMgr.getResource(data.resKey,function(){
+						callback(data);
+						it1.next(data);
+					});
+				}
+			]
+		);
+		return;
+	}// this.saveEditorContent()
+}
+
+},{"br-resouce":2,"iterate79":4,"m-log":5,"m-util":19,"phpjs":21,"underscore":22}],2:[function(require,module,exports){
+module.exports = function() {
+  this.ext;
+  this.type;
+  this.size;
+  this.base64;
+  this.isPrivateMaterial = false;
+  this.publicFilename;
+
+  // クライアント側の選択ファイルからResourceDbを作成
+  this.readSelectedLocalFile = function(fileInfo, callback) {
+    require('m-util');
+    this.publicFilename = (fileInfo.name).uGetFileName();
+    this.size = fileInfo.size;
+    this.ext = (fileInfo.name).uGetFileExt();
+    this.type = fileInfo.type;
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+      dataUri = evt.target.result;
+      callback({
+        dataUri: dataUri,
+        base64: (dataUri).replace(new RegExp('^data\\:[^\\;]*\\;base64\\,'), '')
+      });
+    }
+    reader.onerror = function(error) {
+      console.log(error);
+    };
+    reader.readAsDataURL(fileInfo);
+  }
+
+  // 要らないキーを削除
+  this.fixed = function(obj) {
+    var fixedObj = {};
+    for (k in obj) {
+      if (typeof obj[k] !== "undefined" || typeof obj[k] !== "function") {
+        fixedObj[k] = obj[k];
+      }
+    }
+    return fixedObj;
+  }
+}
+
+},{"m-util":19}],3:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            var source = ev.source;
+            if ((source === window || source === null) && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],4:[function(require,module,exports){
 /**
  * node-iterate79
  */
@@ -74,7 +1081,1015 @@
 
 })(exports);
 
-},{}],2:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
+module.exports = require('./libs/log');
+
+},{"./libs/log":6}],6:[function(require,module,exports){
+module.exports = new(function() {
+
+    'use strict';
+    var colors = require('colors');
+    var colorTheme = {
+        silly: 'rainbow',
+        info: 'white',
+        input: 'magenta',
+        verbose: ['yellow', 'bgBlue'],
+        prompt: ['grey', 'bold'],
+        data: 'grey',
+        help: 'blue',
+        warn: 'yellow',
+        debug: 'red',
+        error: ['red', 'underline']
+    }
+
+    this.setColorTheme = function(colorTheme) {
+      for(var i in colorTheme){
+        // console.log('i', i);
+        var theme = "";
+        if(typeof colorTheme[i] === 'string'){
+          theme = '"'+colorTheme[i] + '"';
+          eval('colors.setTheme({' + i + ':' + theme + '});');
+        }else{
+          var v = "";
+          var aryVal = (colorTheme[i]).toString().split(',');
+          for (var x=0; x < aryVal.length; x++){
+            if(x > 0) v += ',';
+            v += '"' + aryVal[x] + '"';
+          }
+          eval('theme = {' + i + ':['+ v +']}');
+          colors.setTheme(theme);
+        }
+      }
+    }
+    this.setColorTheme(colorTheme);
+    this.getColorTheme = function() {
+      return colorTheme;
+    }
+
+    var format = require('date-format');
+    var DateTimeformat = '[hh:mm:ss.SSS]';
+    this.setDateTimeformat = function(format) {
+      DateTimeformat = format;
+    }
+    this.getDateTimeformat = function() {
+      return DateTimeformat;
+    }
+    this.getTime = function(){
+      return format.asString(DateTimeformat, new Date());
+    }
+
+    var isDebuggable = true;
+    this.setDebuggable = function(bool) {
+      isDebuggable = bool;
+    }
+
+    // Always Output
+    this.out = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        console.log(n);
+    }
+    this.silly = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).silly);
+        }
+    }
+    this.info = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).info);
+        }
+    }
+    this.input = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).input);
+        }
+    }
+    this.verbose = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).verbose);
+        }
+    }
+    this.prompt = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).prompt);
+        }
+    }
+    this.data = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).data);
+        }
+    }
+    this.help = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).help);
+        }
+    }
+    this.warn = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).warn);
+        }
+    }
+    this.debug = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).debug);
+        }
+    }
+    this.error = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).error);
+        }
+    }
+})();
+
+},{"colors":11,"date-format":18}],7:[function(require,module,exports){
+/*
+
+The MIT License (MIT)
+
+Original Library 
+  - Copyright (c) Marak Squires
+
+Additional functionality
+ - Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+*/
+
+var colors = {};
+module['exports'] = colors;
+
+colors.themes = {};
+
+var ansiStyles = colors.styles = require('./styles');
+var defineProps = Object.defineProperties;
+
+colors.supportsColor = require('./system/supports-colors');
+
+if (typeof colors.enabled === "undefined") {
+  colors.enabled = colors.supportsColor;
+}
+
+colors.stripColors = colors.strip = function(str){
+  return ("" + str).replace(/\x1B\[\d+m/g, '');
+};
+
+
+var stylize = colors.stylize = function stylize (str, style) {
+  if (!colors.enabled) {
+    return str+'';
+  }
+
+  return ansiStyles[style].open + str + ansiStyles[style].close;
+}
+
+var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
+var escapeStringRegexp = function (str) {
+  if (typeof str !== 'string') {
+    throw new TypeError('Expected a string');
+  }
+  return str.replace(matchOperatorsRe,  '\\$&');
+}
+
+function build(_styles) {
+  var builder = function builder() {
+    return applyStyle.apply(builder, arguments);
+  };
+  builder._styles = _styles;
+  // __proto__ is used because we must return a function, but there is
+  // no way to create a function with a different prototype.
+  builder.__proto__ = proto;
+  return builder;
+}
+
+var styles = (function () {
+  var ret = {};
+  ansiStyles.grey = ansiStyles.gray;
+  Object.keys(ansiStyles).forEach(function (key) {
+    ansiStyles[key].closeRe = new RegExp(escapeStringRegexp(ansiStyles[key].close), 'g');
+    ret[key] = {
+      get: function () {
+        return build(this._styles.concat(key));
+      }
+    };
+  });
+  return ret;
+})();
+
+var proto = defineProps(function colors() {}, styles);
+
+function applyStyle() {
+  var args = arguments;
+  var argsLen = args.length;
+  var str = argsLen !== 0 && String(arguments[0]);
+  if (argsLen > 1) {
+    for (var a = 1; a < argsLen; a++) {
+      str += ' ' + args[a];
+    }
+  }
+
+  if (!colors.enabled || !str) {
+    return str;
+  }
+
+  var nestedStyles = this._styles;
+
+  var i = nestedStyles.length;
+  while (i--) {
+    var code = ansiStyles[nestedStyles[i]];
+    str = code.open + str.replace(code.closeRe, code.open) + code.close;
+  }
+
+  return str;
+}
+
+function applyTheme (theme) {
+  for (var style in theme) {
+    (function(style){
+      colors[style] = function(str){
+        if (typeof theme[style] === 'object'){
+          var out = str;
+          for (var i in theme[style]){
+            out = colors[theme[style][i]](out);
+          }
+          return out;
+        }
+        return colors[theme[style]](str);
+      };
+    })(style)
+  }
+}
+
+colors.setTheme = function (theme) {
+  if (typeof theme === 'string') {
+    try {
+      colors.themes[theme] = require(theme);
+      applyTheme(colors.themes[theme]);
+      return colors.themes[theme];
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  } else {
+    applyTheme(theme);
+  }
+};
+
+function init() {
+  var ret = {};
+  Object.keys(styles).forEach(function (name) {
+    ret[name] = {
+      get: function () {
+        return build([name]);
+      }
+    };
+  });
+  return ret;
+}
+
+var sequencer = function sequencer (map, str) {
+  var exploded = str.split(""), i = 0;
+  exploded = exploded.map(map);
+  return exploded.join("");
+};
+
+// custom formatter methods
+colors.trap = require('./custom/trap');
+colors.zalgo = require('./custom/zalgo');
+
+// maps
+colors.maps = {};
+colors.maps.america = require('./maps/america');
+colors.maps.zebra = require('./maps/zebra');
+colors.maps.rainbow = require('./maps/rainbow');
+colors.maps.random = require('./maps/random')
+
+for (var map in colors.maps) {
+  (function(map){
+    colors[map] = function (str) {
+      return sequencer(colors.maps[map], str);
+    }
+  })(map)
+}
+
+defineProps(colors, init());
+},{"./custom/trap":8,"./custom/zalgo":9,"./maps/america":12,"./maps/rainbow":13,"./maps/random":14,"./maps/zebra":15,"./styles":16,"./system/supports-colors":17}],8:[function(require,module,exports){
+module['exports'] = function runTheTrap (text, options) {
+  var result = "";
+  text = text || "Run the trap, drop the bass";
+  text = text.split('');
+  var trap = {
+    a: ["\u0040", "\u0104", "\u023a", "\u0245", "\u0394", "\u039b", "\u0414"],
+    b: ["\u00df", "\u0181", "\u0243", "\u026e", "\u03b2", "\u0e3f"],
+    c: ["\u00a9", "\u023b", "\u03fe"],
+    d: ["\u00d0", "\u018a", "\u0500" , "\u0501" ,"\u0502", "\u0503"],
+    e: ["\u00cb", "\u0115", "\u018e", "\u0258", "\u03a3", "\u03be", "\u04bc", "\u0a6c"],
+    f: ["\u04fa"],
+    g: ["\u0262"],
+    h: ["\u0126", "\u0195", "\u04a2", "\u04ba", "\u04c7", "\u050a"],
+    i: ["\u0f0f"],
+    j: ["\u0134"],
+    k: ["\u0138", "\u04a0", "\u04c3", "\u051e"],
+    l: ["\u0139"],
+    m: ["\u028d", "\u04cd", "\u04ce", "\u0520", "\u0521", "\u0d69"],
+    n: ["\u00d1", "\u014b", "\u019d", "\u0376", "\u03a0", "\u048a"],
+    o: ["\u00d8", "\u00f5", "\u00f8", "\u01fe", "\u0298", "\u047a", "\u05dd", "\u06dd", "\u0e4f"],
+    p: ["\u01f7", "\u048e"],
+    q: ["\u09cd"],
+    r: ["\u00ae", "\u01a6", "\u0210", "\u024c", "\u0280", "\u042f"],
+    s: ["\u00a7", "\u03de", "\u03df", "\u03e8"],
+    t: ["\u0141", "\u0166", "\u0373"],
+    u: ["\u01b1", "\u054d"],
+    v: ["\u05d8"],
+    w: ["\u0428", "\u0460", "\u047c", "\u0d70"],
+    x: ["\u04b2", "\u04fe", "\u04fc", "\u04fd"],
+    y: ["\u00a5", "\u04b0", "\u04cb"],
+    z: ["\u01b5", "\u0240"]
+  }
+  text.forEach(function(c){
+    c = c.toLowerCase();
+    var chars = trap[c] || [" "];
+    var rand = Math.floor(Math.random() * chars.length);
+    if (typeof trap[c] !== "undefined") {
+      result += trap[c][rand];
+    } else {
+      result += c;
+    }
+  });
+  return result;
+
+}
+
+},{}],9:[function(require,module,exports){
+// please no
+module['exports'] = function zalgo(text, options) {
+  text = text || "   he is here   ";
+  var soul = {
+    "up" : [
+      '̍', '̎', '̄', '̅',
+      '̿', '̑', '̆', '̐',
+      '͒', '͗', '͑', '̇',
+      '̈', '̊', '͂', '̓',
+      '̈', '͊', '͋', '͌',
+      '̃', '̂', '̌', '͐',
+      '̀', '́', '̋', '̏',
+      '̒', '̓', '̔', '̽',
+      '̉', 'ͣ', 'ͤ', 'ͥ',
+      'ͦ', 'ͧ', 'ͨ', 'ͩ',
+      'ͪ', 'ͫ', 'ͬ', 'ͭ',
+      'ͮ', 'ͯ', '̾', '͛',
+      '͆', '̚'
+    ],
+    "down" : [
+      '̖', '̗', '̘', '̙',
+      '̜', '̝', '̞', '̟',
+      '̠', '̤', '̥', '̦',
+      '̩', '̪', '̫', '̬',
+      '̭', '̮', '̯', '̰',
+      '̱', '̲', '̳', '̹',
+      '̺', '̻', '̼', 'ͅ',
+      '͇', '͈', '͉', '͍',
+      '͎', '͓', '͔', '͕',
+      '͖', '͙', '͚', '̣'
+    ],
+    "mid" : [
+      '̕', '̛', '̀', '́',
+      '͘', '̡', '̢', '̧',
+      '̨', '̴', '̵', '̶',
+      '͜', '͝', '͞',
+      '͟', '͠', '͢', '̸',
+      '̷', '͡', ' ҉'
+    ]
+  },
+  all = [].concat(soul.up, soul.down, soul.mid),
+  zalgo = {};
+
+  function randomNumber(range) {
+    var r = Math.floor(Math.random() * range);
+    return r;
+  }
+
+  function is_char(character) {
+    var bool = false;
+    all.filter(function (i) {
+      bool = (i === character);
+    });
+    return bool;
+  }
+  
+
+  function heComes(text, options) {
+    var result = '', counts, l;
+    options = options || {};
+    options["up"] =   typeof options["up"]   !== 'undefined' ? options["up"]   : true;
+    options["mid"] =  typeof options["mid"]  !== 'undefined' ? options["mid"]  : true;
+    options["down"] = typeof options["down"] !== 'undefined' ? options["down"] : true;
+    options["size"] = typeof options["size"] !== 'undefined' ? options["size"] : "maxi";
+    text = text.split('');
+    for (l in text) {
+      if (is_char(l)) {
+        continue;
+      }
+      result = result + text[l];
+      counts = {"up" : 0, "down" : 0, "mid" : 0};
+      switch (options.size) {
+      case 'mini':
+        counts.up = randomNumber(8);
+        counts.mid = randomNumber(2);
+        counts.down = randomNumber(8);
+        break;
+      case 'maxi':
+        counts.up = randomNumber(16) + 3;
+        counts.mid = randomNumber(4) + 1;
+        counts.down = randomNumber(64) + 3;
+        break;
+      default:
+        counts.up = randomNumber(8) + 1;
+        counts.mid = randomNumber(6) / 2;
+        counts.down = randomNumber(8) + 1;
+        break;
+      }
+
+      var arr = ["up", "mid", "down"];
+      for (var d in arr) {
+        var index = arr[d];
+        for (var i = 0 ; i <= counts[index]; i++) {
+          if (options[index]) {
+            result = result + soul[index][randomNumber(soul[index].length)];
+          }
+        }
+      }
+    }
+    return result;
+  }
+  // don't summon him
+  return heComes(text, options);
+}
+
+},{}],10:[function(require,module,exports){
+var colors = require('./colors');
+
+module['exports'] = function () {
+
+  //
+  // Extends prototype of native string object to allow for "foo".red syntax
+  //
+  var addProperty = function (color, func) {
+    String.prototype.__defineGetter__(color, func);
+  };
+
+  var sequencer = function sequencer (map, str) {
+      return function () {
+        var exploded = this.split(""), i = 0;
+        exploded = exploded.map(map);
+        return exploded.join("");
+      }
+  };
+
+  addProperty('strip', function () {
+    return colors.strip(this);
+  });
+
+  addProperty('stripColors', function () {
+    return colors.strip(this);
+  });
+
+  addProperty("trap", function(){
+    return colors.trap(this);
+  });
+
+  addProperty("zalgo", function(){
+    return colors.zalgo(this);
+  });
+
+  addProperty("zebra", function(){
+    return colors.zebra(this);
+  });
+
+  addProperty("rainbow", function(){
+    return colors.rainbow(this);
+  });
+
+  addProperty("random", function(){
+    return colors.random(this);
+  });
+
+  addProperty("america", function(){
+    return colors.america(this);
+  });
+
+  //
+  // Iterate through all default styles and colors
+  //
+  var x = Object.keys(colors.styles);
+  x.forEach(function (style) {
+    addProperty(style, function () {
+      return colors.stylize(this, style);
+    });
+  });
+
+  function applyTheme(theme) {
+    //
+    // Remark: This is a list of methods that exist
+    // on String that you should not overwrite.
+    //
+    var stringPrototypeBlacklist = [
+      '__defineGetter__', '__defineSetter__', '__lookupGetter__', '__lookupSetter__', 'charAt', 'constructor',
+      'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'toLocaleString', 'toString', 'valueOf', 'charCodeAt',
+      'indexOf', 'lastIndexof', 'length', 'localeCompare', 'match', 'replace', 'search', 'slice', 'split', 'substring',
+      'toLocaleLowerCase', 'toLocaleUpperCase', 'toLowerCase', 'toUpperCase', 'trim', 'trimLeft', 'trimRight'
+    ];
+
+    Object.keys(theme).forEach(function (prop) {
+      if (stringPrototypeBlacklist.indexOf(prop) !== -1) {
+        console.log('warn: '.red + ('String.prototype' + prop).magenta + ' is probably something you don\'t want to override. Ignoring style name');
+      }
+      else {
+        if (typeof(theme[prop]) === 'string') {
+          colors[prop] = colors[theme[prop]];
+          addProperty(prop, function () {
+            return colors[theme[prop]](this);
+          });
+        }
+        else {
+          addProperty(prop, function () {
+            var ret = this;
+            for (var t = 0; t < theme[prop].length; t++) {
+              ret = colors[theme[prop][t]](ret);
+            }
+            return ret;
+          });
+        }
+      }
+    });
+  }
+
+  colors.setTheme = function (theme) {
+    if (typeof theme === 'string') {
+      try {
+        colors.themes[theme] = require(theme);
+        applyTheme(colors.themes[theme]);
+        return colors.themes[theme];
+      } catch (err) {
+        console.log(err);
+        return err;
+      }
+    } else {
+      applyTheme(theme);
+    }
+  };
+
+};
+},{"./colors":7}],11:[function(require,module,exports){
+var colors = require('./colors');
+module['exports'] = colors;
+
+// Remark: By default, colors will add style properties to String.prototype
+//
+// If you don't wish to extend String.prototype you can do this instead and native String will not be touched
+//
+//   var colors = require('colors/safe);
+//   colors.red("foo")
+//
+//
+require('./extendStringPrototype')();
+},{"./colors":7,"./extendStringPrototype":10}],12:[function(require,module,exports){
+var colors = require('../colors');
+
+module['exports'] = (function() {
+  return function (letter, i, exploded) {
+    if(letter === " ") return letter;
+    switch(i%3) {
+      case 0: return colors.red(letter);
+      case 1: return colors.white(letter)
+      case 2: return colors.blue(letter)
+    }
+  }
+})();
+},{"../colors":7}],13:[function(require,module,exports){
+var colors = require('../colors');
+
+module['exports'] = (function () {
+  var rainbowColors = ['red', 'yellow', 'green', 'blue', 'magenta']; //RoY G BiV
+  return function (letter, i, exploded) {
+    if (letter === " ") {
+      return letter;
+    } else {
+      return colors[rainbowColors[i++ % rainbowColors.length]](letter);
+    }
+  };
+})();
+
+
+},{"../colors":7}],14:[function(require,module,exports){
+var colors = require('../colors');
+
+module['exports'] = (function () {
+  var available = ['underline', 'inverse', 'grey', 'yellow', 'red', 'green', 'blue', 'white', 'cyan', 'magenta'];
+  return function(letter, i, exploded) {
+    return letter === " " ? letter : colors[available[Math.round(Math.random() * (available.length - 1))]](letter);
+  };
+})();
+},{"../colors":7}],15:[function(require,module,exports){
+var colors = require('../colors');
+
+module['exports'] = function (letter, i, exploded) {
+  return i % 2 === 0 ? letter : colors.inverse(letter);
+};
+},{"../colors":7}],16:[function(require,module,exports){
+/*
+The MIT License (MIT)
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+*/
+
+var styles = {};
+module['exports'] = styles;
+
+var codes = {
+  reset: [0, 0],
+
+  bold: [1, 22],
+  dim: [2, 22],
+  italic: [3, 23],
+  underline: [4, 24],
+  inverse: [7, 27],
+  hidden: [8, 28],
+  strikethrough: [9, 29],
+
+  black: [30, 39],
+  red: [31, 39],
+  green: [32, 39],
+  yellow: [33, 39],
+  blue: [34, 39],
+  magenta: [35, 39],
+  cyan: [36, 39],
+  white: [37, 39],
+  gray: [90, 39],
+  grey: [90, 39],
+
+  bgBlack: [40, 49],
+  bgRed: [41, 49],
+  bgGreen: [42, 49],
+  bgYellow: [43, 49],
+  bgBlue: [44, 49],
+  bgMagenta: [45, 49],
+  bgCyan: [46, 49],
+  bgWhite: [47, 49],
+
+  // legacy styles for colors pre v1.0.0
+  blackBG: [40, 49],
+  redBG: [41, 49],
+  greenBG: [42, 49],
+  yellowBG: [43, 49],
+  blueBG: [44, 49],
+  magentaBG: [45, 49],
+  cyanBG: [46, 49],
+  whiteBG: [47, 49]
+
+};
+
+Object.keys(codes).forEach(function (key) {
+  var val = codes[key];
+  var style = styles[key] = [];
+  style.open = '\u001b[' + val[0] + 'm';
+  style.close = '\u001b[' + val[1] + 'm';
+});
+},{}],17:[function(require,module,exports){
+(function (process){
+/*
+The MIT License (MIT)
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+*/
+
+var argv = process.argv;
+
+module.exports = (function () {
+  if (argv.indexOf('--no-color') !== -1 ||
+    argv.indexOf('--color=false') !== -1) {
+    return false;
+  }
+
+  if (argv.indexOf('--color') !== -1 ||
+    argv.indexOf('--color=true') !== -1 ||
+    argv.indexOf('--color=always') !== -1) {
+    return true;
+  }
+
+  if (process.stdout && !process.stdout.isTTY) {
+    return false;
+  }
+
+  if (process.platform === 'win32') {
+    return true;
+  }
+
+  if ('COLORTERM' in process.env) {
+    return true;
+  }
+
+  if (process.env.TERM === 'dumb') {
+    return false;
+  }
+
+  if (/^screen|^xterm|^vt100|color|ansi|cygwin|linux/i.test(process.env.TERM)) {
+    return true;
+  }
+
+  return false;
+})();
+}).call(this,require("1YiZ5S"))
+},{"1YiZ5S":3}],18:[function(require,module,exports){
+"use strict";
+
+module.exports = asString
+asString.asString = asString
+
+asString.ISO8601_FORMAT = "yyyy-MM-dd hh:mm:ss.SSS";
+asString.ISO8601_WITH_TZ_OFFSET_FORMAT = "yyyy-MM-ddThh:mm:ssO";
+asString.DATETIME_FORMAT = "dd MM yyyy hh:mm:ss.SSS";
+asString.ABSOLUTETIME_FORMAT = "hh:mm:ss.SSS";
+
+function padWithZeros(vNumber, width) {
+  var numAsString = vNumber + "";
+  while (numAsString.length < width) {
+    numAsString = "0" + numAsString;
+  }
+  return numAsString;
+}
+  
+function addZero(vNumber) {
+  return padWithZeros(vNumber, 2);
+}
+
+/**
+ * Formats the TimeOffest
+ * Thanks to http://www.svendtofte.com/code/date_format/
+ * @private
+ */
+function offset(date) {
+  // Difference to Greenwich time (GMT) in hours
+  var os = Math.abs(date.getTimezoneOffset());
+  var h = String(Math.floor(os/60));
+  var m = String(os%60);
+  if (h.length == 1) {
+    h = "0" + h;
+  }
+  if (m.length == 1) {
+    m = "0" + m;
+  }
+  return date.getTimezoneOffset() < 0 ? "+"+h+m : "-"+h+m;
+}
+
+function asString(/*format,*/ date) {
+  var format = asString.ISO8601_FORMAT;
+  if (typeof(date) === "string") {
+    format = arguments[0];
+    date = arguments[1];
+  }
+  
+  if (!date) {
+    date = new Date();
+  }
+
+  var vDay = addZero(date.getDate());
+  var vMonth = addZero(date.getMonth()+1);
+  var vYearLong = addZero(date.getFullYear());
+  var vYearShort = addZero(date.getFullYear().toString().substring(2,4));
+  var vYear = (format.indexOf("yyyy") > -1 ? vYearLong : vYearShort);
+  var vHour  = addZero(date.getHours());
+  var vMinute = addZero(date.getMinutes());
+  var vSecond = addZero(date.getSeconds());
+  var vMillisecond = padWithZeros(date.getMilliseconds(), 3);
+  var vTimeZone = offset(date);
+  var formatted = format
+    .replace(/dd/g, vDay)
+    .replace(/MM/g, vMonth)
+    .replace(/y{1,4}/g, vYear)
+    .replace(/hh/g, vHour)
+    .replace(/mm/g, vMinute)
+    .replace(/ss/g, vSecond)
+    .replace(/SSS/g, vMillisecond)
+    .replace(/O/g, vTimeZone);
+  return formatted;
+
+};
+
+},{}],19:[function(require,module,exports){
+module.exports = new(function() {
+
+  // ヒアドキュメント用
+  String.prototype.uHereDoc = function() {
+    return this.replace(/^function\s?\(\)\s?\{\/\*\!?/gi, "").replace(/\*\/;?\}$/gi, "");
+  };
+  // スラッシュ挿入
+  String.prototype.uAddslashes = function(s) {
+      var reg = new RegExp(s, 'g');
+      return this.replace(reg, "\\" + s);
+    }
+    // 文字列の繰り返し
+  String.prototype.uRepeat = function(i) {
+    var repeatStr = this;
+    var str = "";
+    while (i > 0) {
+      str += repeatStr;
+      i--;
+    }
+    return str;
+  }
+
+  // パスからファイル情報返す @return ['ファイル名','拡張子','拡張子抜きファイル名']
+  String.prototype.uGetFileInfo = function() {
+      var file_path = this;
+      // Extract a file name with the extension.
+      var name_ext = file_path.substring(file_path.lastIndexOf("/") + 1, file_path.length);
+      // Extract only the extension of the file.
+      var ext = name_ext.substring(name_ext.lastIndexOf(".") + 1, name_ext.length);
+      // Extract only the name part of the file.
+      var name = name_ext.substring(0, name_ext.indexOf("."));
+      array = new Array(name_ext, ext, name);
+      return array;
+    }
+    // パスからファイル名を返す
+  String.prototype.uGetFileNameExt = function() {
+      file_path = this;
+      return file_path.uGetFileInfo()[0];
+    }
+    // パスから拡張子を返す
+  String.prototype.uGetFileExt = function() {
+      file_path = this;
+      return file_path.uGetFileInfo()[1];
+    }
+    // パスから拡張子抜きファイル名を返す
+  String.prototype.uGetFileName = function() {
+      file_path = this;
+      return file_path.uGetFileInfo()[2];
+    }
+    // Math.floor(x)小数点以下指定
+  Math.uFloor = function(x, scale) {
+      if (typeof scale !== "undefined" && scale !== null) {
+        var s = Math.pow(10, scale)
+        return Math.floor(x * s) / s;
+      }
+      return Math.floor(x);
+    }
+    // Math.ceil(x)小数点以下指定
+  Math.uCeil = function(x, scale) {
+      if (typeof scale !== "undefined" && scale !== null) {
+        var s = Math.pow(10, scale);
+        return Math.ceil(x * s) / s;
+      }
+      return Math.ceil(x);
+    }
+    // Math.round(x)小数点以下指定
+  Math.uRound = function(x, scale) {
+      if (typeof scale !== "undefined" && scale !== null) {
+        var s = Math.pow(10, scale);
+        return Math.round(x * s) / s;
+      }
+      return Math.round(x);
+    }
+    // 左空白詰め（右寄せ）
+  uLpad = function(txt, pad) {
+    var c, i, t;
+    if (pad == null) {
+      pad = 40;
+    }
+    c = " ";
+    i = 0;
+    t = txt;
+    while (i <= pad - txt.length) {
+      t = c + t;
+      i++;
+    }
+    return t;
+  };
+  // 右空白詰め（左寄せ）
+  uRpad = function(txt, pad) {
+    var c, i, t;
+    if (pad == null) {
+      pad = 40;
+    }
+    c = " ";
+    i = 0;
+    t = txt;
+    while (i <= pad - txt.length) {
+      t += c;
+      i++;
+    }
+    return t;
+  };
+})();
+
+},{}],20:[function(require,module,exports){
 (function (global){
 // This file is generated by `make build`. 
 // Do NOT edit by hand. 
@@ -13332,7 +15347,7 @@ exports.strtr = function (str, from, to) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],3:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 (function (global){
 phpjs = require('./build/npm');
 
@@ -13345,178 +15360,1559 @@ phpjs.registerGlobals = function() {
 module.exports = phpjs;
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./build/npm":2}],4:[function(require,module,exports){
-window.cont = new (function(){
-	var _this = this;
-	var it79 = require('iterate79');
-	var php = require('phpjs');
-	var data = {};
-	var broccoli = new Broccoli();
+},{"./build/npm":20}],22:[function(require,module,exports){
+//     Underscore.js 1.8.3
+//     http://underscorejs.org
+//     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+//     Underscore may be freely distributed under the MIT license.
 
-	this.init = function(callback){
-		callback = callback||function(){};
+(function() {
 
-		/**
-		 * initialize
-		 */
-		main.init(function(){
-			it79.fnc(data, [
-				function(it1, data){
-					// Parse Query string parameters
-					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
-					data.layout = php.trim($.url(window.location.href).param('layout'));
-					// console.log( data );
-					it1.next(data);
-				} ,
-				function(it1, data){
-					// getting Project Info
-					main.socket.send(
-						'getProject',
-						{'projectIdx': data.projectIdx},
-						function(pjInfo){
-							data.projectInfo = pjInfo;
-							// console.log(data);
-							it1.next(data);
-						}
-					);
-				} ,
-				function(it1, data){
-					main.previewServerUp(
-						data.projectIdx,
-						{
-							'staticWeb': true,
-							'documentRoot': data.projectInfo.path_homedir + '/themes/broccoli/'
-						},
-						function(serverInfo){
-							console.log('getting callback by previewServerUp();');
-							console.log('Loading Preview Window: ' + serverInfo.scheme+"://"+serverInfo.domain+":"+serverInfo.port+'/'+data.layout+'.html');
-							$('#canvas').attr({
-								"data-broccoli-preview": serverInfo.scheme+"://"+serverInfo.domain+":"+serverInfo.port+'/'+data.layout+'.html'
-							});
-							it1.next(data);
-						}
-					);
-				} ,
-				function(it1, data){
-					// broccoli-html-editor standby.
-					console.log('initialize broccoli...');
-					broccoli.init(
-						{
-							'elmCanvas': document.getElementById('canvas'),
-							'elmModulePalette': document.getElementById('palette'),
-							'contents_area_selector': '[data-px2-contents-theme-editor]',
-							'contents_bowl_name_by': 'data-px2-contents-theme-editor',
-							'customFields': {
-								'table': window.BroccoliHtmlEditorTableField,
-								'image-editor': window.BroccoliFieldImageEditor
-							},
-							'gpiBridge': function(api, options, callback){
-								// GPI(General Purpose Interface) Bridge
-								// broccoliは、バックグラウンドで様々なデータ通信を行います。
-								// GPIは、これらのデータ通信を行うための汎用的なAPIです。
-								main.socket.send(
-									'broccoliBridgeForThemeEditor',
-									{
-										'api': 'gpiBridge' ,
-										'projectIdx': php.intval($.url(window.location.href).param('projectIdx')),
-										'layout': php.trim($.url(window.location.href).param('layout')),
-										'bridge': {
-											'api': api ,
-											'options': options
-										}
-									} ,
-									function(rtn){
-										// console.log(rtn);
-										callback(rtn);
-									}
-								);
-								return;
-							}
-						} ,
-						function(){
-							// 初期化が完了すると呼びだされるコールバック関数です。
+  // Baseline setup
+  // --------------
 
-							$(window).resize(function(){
-								// このメソッドは、canvasの再描画を行います。
-								// ウィンドウサイズが変更された際に、UIを再描画するよう命令しています。
-								onWindowResized();
-							}).resize();
+  // Establish the root object, `window` in the browser, or `exports` on the server.
+  var root = this;
 
-							it1.next(data);
-						}
-					);
-				} ,
-				function(it1, _data){
-					data = _data;
-					console.log(data);
-					console.log('Started!');
-					callback();
-				}
-			]);
-		});
-		return this;
-	}
+  // Save the previous value of the `_` variable.
+  var previousUnderscore = root._;
 
-	/**
-	 * Window Resize Event
-	 */
-	function onWindowResized(callback){
-		callback = callback||function(){};
-		$('.cont_outline')
-			.css({
-				'width': $(window).innerWidth() ,
-				'height': $(window).innerHeight()
-			})
-		;
-		broccoli.redraw();
-		callback();
-		return;
-	}
+  // Save bytes in the minified (but not gzipped) version:
+  var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
 
-	/**
-	 * すべての変更を保存する
-	 * TODO: 未実装です。
-	 * @return {Object} this
-	 */
-	this.save = function(callback){
-		callback = callback||function(){};
-		callback();
-		return this;
-	}
+  // Create quick reference variables for speed access to core prototypes.
+  var
+    push             = ArrayProto.push,
+    slice            = ArrayProto.slice,
+    toString         = ObjProto.toString,
+    hasOwnProperty   = ObjProto.hasOwnProperty;
 
-	/**
-	 * プレビューを更新する。
-	 * @param  {Function} callback コールバック関数
-	 * @return {Object}			this
-	 */
-	this.updatePreview = function(callback){
-		callback = callback||function(){};
-		var $iframe = $($('iframe.cont_preview').get(0).contentWindow);
-		var doc = $iframe.get(0).document;
+  // All **ECMAScript 5** native function implementations that we hope to use
+  // are declared here.
+  var
+    nativeIsArray      = Array.isArray,
+    nativeKeys         = Object.keys,
+    nativeBind         = FuncProto.bind,
+    nativeCreate       = Object.create;
 
-		var html = '';
-		this.save(function(){
-			main.socket.send('moduleEditor',
-				{
-					'fnc': 'generatePreviewHTML' ,
-					'projectIdx': data.projectIdx ,
-					'packageId': data.packageId ,
-					'moduleId': data.moduleId
-				},
-				function(result){
-					console.log( result );
-					doc.write(result.html);
-					doc.close();
+  // Naked function reference for surrogate-prototype-swapping.
+  var Ctor = function(){};
 
-					setTimeout(function(){
-						callback();
-					}, 0);
-				}
-			);
-		});
-		return this;
-	}
+  // Create a safe reference to the Underscore object for use below.
+  var _ = function(obj) {
+    if (obj instanceof _) return obj;
+    if (!(this instanceof _)) return new _(obj);
+    this._wrapped = obj;
+  };
 
-})();
+  // Export the Underscore object for **Node.js**, with
+  // backwards-compatibility for the old `require()` API. If we're in
+  // the browser, add `_` as a global object.
+  if (typeof exports !== 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+      exports = module.exports = _;
+    }
+    exports._ = _;
+  } else {
+    root._ = _;
+  }
 
-},{"iterate79":1,"phpjs":3}]},{},[4])
+  // Current version.
+  _.VERSION = '1.8.3';
+
+  // Internal function that returns an efficient (for current engines) version
+  // of the passed-in callback, to be repeatedly applied in other Underscore
+  // functions.
+  var optimizeCb = function(func, context, argCount) {
+    if (context === void 0) return func;
+    switch (argCount == null ? 3 : argCount) {
+      case 1: return function(value) {
+        return func.call(context, value);
+      };
+      case 2: return function(value, other) {
+        return func.call(context, value, other);
+      };
+      case 3: return function(value, index, collection) {
+        return func.call(context, value, index, collection);
+      };
+      case 4: return function(accumulator, value, index, collection) {
+        return func.call(context, accumulator, value, index, collection);
+      };
+    }
+    return function() {
+      return func.apply(context, arguments);
+    };
+  };
+
+  // A mostly-internal function to generate callbacks that can be applied
+  // to each element in a collection, returning the desired result — either
+  // identity, an arbitrary callback, a property matcher, or a property accessor.
+  var cb = function(value, context, argCount) {
+    if (value == null) return _.identity;
+    if (_.isFunction(value)) return optimizeCb(value, context, argCount);
+    if (_.isObject(value)) return _.matcher(value);
+    return _.property(value);
+  };
+  _.iteratee = function(value, context) {
+    return cb(value, context, Infinity);
+  };
+
+  // An internal function for creating assigner functions.
+  var createAssigner = function(keysFunc, undefinedOnly) {
+    return function(obj) {
+      var length = arguments.length;
+      if (length < 2 || obj == null) return obj;
+      for (var index = 1; index < length; index++) {
+        var source = arguments[index],
+            keys = keysFunc(source),
+            l = keys.length;
+        for (var i = 0; i < l; i++) {
+          var key = keys[i];
+          if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
+        }
+      }
+      return obj;
+    };
+  };
+
+  // An internal function for creating a new object that inherits from another.
+  var baseCreate = function(prototype) {
+    if (!_.isObject(prototype)) return {};
+    if (nativeCreate) return nativeCreate(prototype);
+    Ctor.prototype = prototype;
+    var result = new Ctor;
+    Ctor.prototype = null;
+    return result;
+  };
+
+  var property = function(key) {
+    return function(obj) {
+      return obj == null ? void 0 : obj[key];
+    };
+  };
+
+  // Helper for collection methods to determine whether a collection
+  // should be iterated as an array or as an object
+  // Related: http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength
+  // Avoids a very nasty iOS 8 JIT bug on ARM-64. #2094
+  var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+  var getLength = property('length');
+  var isArrayLike = function(collection) {
+    var length = getLength(collection);
+    return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+  };
+
+  // Collection Functions
+  // --------------------
+
+  // The cornerstone, an `each` implementation, aka `forEach`.
+  // Handles raw objects in addition to array-likes. Treats all
+  // sparse array-likes as if they were dense.
+  _.each = _.forEach = function(obj, iteratee, context) {
+    iteratee = optimizeCb(iteratee, context);
+    var i, length;
+    if (isArrayLike(obj)) {
+      for (i = 0, length = obj.length; i < length; i++) {
+        iteratee(obj[i], i, obj);
+      }
+    } else {
+      var keys = _.keys(obj);
+      for (i = 0, length = keys.length; i < length; i++) {
+        iteratee(obj[keys[i]], keys[i], obj);
+      }
+    }
+    return obj;
+  };
+
+  // Return the results of applying the iteratee to each element.
+  _.map = _.collect = function(obj, iteratee, context) {
+    iteratee = cb(iteratee, context);
+    var keys = !isArrayLike(obj) && _.keys(obj),
+        length = (keys || obj).length,
+        results = Array(length);
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys ? keys[index] : index;
+      results[index] = iteratee(obj[currentKey], currentKey, obj);
+    }
+    return results;
+  };
+
+  // Create a reducing function iterating left or right.
+  function createReduce(dir) {
+    // Optimized iterator function as using arguments.length
+    // in the main function will deoptimize the, see #1991.
+    function iterator(obj, iteratee, memo, keys, index, length) {
+      for (; index >= 0 && index < length; index += dir) {
+        var currentKey = keys ? keys[index] : index;
+        memo = iteratee(memo, obj[currentKey], currentKey, obj);
+      }
+      return memo;
+    }
+
+    return function(obj, iteratee, memo, context) {
+      iteratee = optimizeCb(iteratee, context, 4);
+      var keys = !isArrayLike(obj) && _.keys(obj),
+          length = (keys || obj).length,
+          index = dir > 0 ? 0 : length - 1;
+      // Determine the initial value if none is provided.
+      if (arguments.length < 3) {
+        memo = obj[keys ? keys[index] : index];
+        index += dir;
+      }
+      return iterator(obj, iteratee, memo, keys, index, length);
+    };
+  }
+
+  // **Reduce** builds up a single result from a list of values, aka `inject`,
+  // or `foldl`.
+  _.reduce = _.foldl = _.inject = createReduce(1);
+
+  // The right-associative version of reduce, also known as `foldr`.
+  _.reduceRight = _.foldr = createReduce(-1);
+
+  // Return the first value which passes a truth test. Aliased as `detect`.
+  _.find = _.detect = function(obj, predicate, context) {
+    var key;
+    if (isArrayLike(obj)) {
+      key = _.findIndex(obj, predicate, context);
+    } else {
+      key = _.findKey(obj, predicate, context);
+    }
+    if (key !== void 0 && key !== -1) return obj[key];
+  };
+
+  // Return all the elements that pass a truth test.
+  // Aliased as `select`.
+  _.filter = _.select = function(obj, predicate, context) {
+    var results = [];
+    predicate = cb(predicate, context);
+    _.each(obj, function(value, index, list) {
+      if (predicate(value, index, list)) results.push(value);
+    });
+    return results;
+  };
+
+  // Return all the elements for which a truth test fails.
+  _.reject = function(obj, predicate, context) {
+    return _.filter(obj, _.negate(cb(predicate)), context);
+  };
+
+  // Determine whether all of the elements match a truth test.
+  // Aliased as `all`.
+  _.every = _.all = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = !isArrayLike(obj) && _.keys(obj),
+        length = (keys || obj).length;
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys ? keys[index] : index;
+      if (!predicate(obj[currentKey], currentKey, obj)) return false;
+    }
+    return true;
+  };
+
+  // Determine if at least one element in the object matches a truth test.
+  // Aliased as `any`.
+  _.some = _.any = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = !isArrayLike(obj) && _.keys(obj),
+        length = (keys || obj).length;
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys ? keys[index] : index;
+      if (predicate(obj[currentKey], currentKey, obj)) return true;
+    }
+    return false;
+  };
+
+  // Determine if the array or object contains a given item (using `===`).
+  // Aliased as `includes` and `include`.
+  _.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
+    if (!isArrayLike(obj)) obj = _.values(obj);
+    if (typeof fromIndex != 'number' || guard) fromIndex = 0;
+    return _.indexOf(obj, item, fromIndex) >= 0;
+  };
+
+  // Invoke a method (with arguments) on every item in a collection.
+  _.invoke = function(obj, method) {
+    var args = slice.call(arguments, 2);
+    var isFunc = _.isFunction(method);
+    return _.map(obj, function(value) {
+      var func = isFunc ? method : value[method];
+      return func == null ? func : func.apply(value, args);
+    });
+  };
+
+  // Convenience version of a common use case of `map`: fetching a property.
+  _.pluck = function(obj, key) {
+    return _.map(obj, _.property(key));
+  };
+
+  // Convenience version of a common use case of `filter`: selecting only objects
+  // containing specific `key:value` pairs.
+  _.where = function(obj, attrs) {
+    return _.filter(obj, _.matcher(attrs));
+  };
+
+  // Convenience version of a common use case of `find`: getting the first object
+  // containing specific `key:value` pairs.
+  _.findWhere = function(obj, attrs) {
+    return _.find(obj, _.matcher(attrs));
+  };
+
+  // Return the maximum element (or element-based computation).
+  _.max = function(obj, iteratee, context) {
+    var result = -Infinity, lastComputed = -Infinity,
+        value, computed;
+    if (iteratee == null && obj != null) {
+      obj = isArrayLike(obj) ? obj : _.values(obj);
+      for (var i = 0, length = obj.length; i < length; i++) {
+        value = obj[i];
+        if (value > result) {
+          result = value;
+        }
+      }
+    } else {
+      iteratee = cb(iteratee, context);
+      _.each(obj, function(value, index, list) {
+        computed = iteratee(value, index, list);
+        if (computed > lastComputed || computed === -Infinity && result === -Infinity) {
+          result = value;
+          lastComputed = computed;
+        }
+      });
+    }
+    return result;
+  };
+
+  // Return the minimum element (or element-based computation).
+  _.min = function(obj, iteratee, context) {
+    var result = Infinity, lastComputed = Infinity,
+        value, computed;
+    if (iteratee == null && obj != null) {
+      obj = isArrayLike(obj) ? obj : _.values(obj);
+      for (var i = 0, length = obj.length; i < length; i++) {
+        value = obj[i];
+        if (value < result) {
+          result = value;
+        }
+      }
+    } else {
+      iteratee = cb(iteratee, context);
+      _.each(obj, function(value, index, list) {
+        computed = iteratee(value, index, list);
+        if (computed < lastComputed || computed === Infinity && result === Infinity) {
+          result = value;
+          lastComputed = computed;
+        }
+      });
+    }
+    return result;
+  };
+
+  // Shuffle a collection, using the modern version of the
+  // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
+  _.shuffle = function(obj) {
+    var set = isArrayLike(obj) ? obj : _.values(obj);
+    var length = set.length;
+    var shuffled = Array(length);
+    for (var index = 0, rand; index < length; index++) {
+      rand = _.random(0, index);
+      if (rand !== index) shuffled[index] = shuffled[rand];
+      shuffled[rand] = set[index];
+    }
+    return shuffled;
+  };
+
+  // Sample **n** random values from a collection.
+  // If **n** is not specified, returns a single random element.
+  // The internal `guard` argument allows it to work with `map`.
+  _.sample = function(obj, n, guard) {
+    if (n == null || guard) {
+      if (!isArrayLike(obj)) obj = _.values(obj);
+      return obj[_.random(obj.length - 1)];
+    }
+    return _.shuffle(obj).slice(0, Math.max(0, n));
+  };
+
+  // Sort the object's values by a criterion produced by an iteratee.
+  _.sortBy = function(obj, iteratee, context) {
+    iteratee = cb(iteratee, context);
+    return _.pluck(_.map(obj, function(value, index, list) {
+      return {
+        value: value,
+        index: index,
+        criteria: iteratee(value, index, list)
+      };
+    }).sort(function(left, right) {
+      var a = left.criteria;
+      var b = right.criteria;
+      if (a !== b) {
+        if (a > b || a === void 0) return 1;
+        if (a < b || b === void 0) return -1;
+      }
+      return left.index - right.index;
+    }), 'value');
+  };
+
+  // An internal function used for aggregate "group by" operations.
+  var group = function(behavior) {
+    return function(obj, iteratee, context) {
+      var result = {};
+      iteratee = cb(iteratee, context);
+      _.each(obj, function(value, index) {
+        var key = iteratee(value, index, obj);
+        behavior(result, value, key);
+      });
+      return result;
+    };
+  };
+
+  // Groups the object's values by a criterion. Pass either a string attribute
+  // to group by, or a function that returns the criterion.
+  _.groupBy = group(function(result, value, key) {
+    if (_.has(result, key)) result[key].push(value); else result[key] = [value];
+  });
+
+  // Indexes the object's values by a criterion, similar to `groupBy`, but for
+  // when you know that your index values will be unique.
+  _.indexBy = group(function(result, value, key) {
+    result[key] = value;
+  });
+
+  // Counts instances of an object that group by a certain criterion. Pass
+  // either a string attribute to count by, or a function that returns the
+  // criterion.
+  _.countBy = group(function(result, value, key) {
+    if (_.has(result, key)) result[key]++; else result[key] = 1;
+  });
+
+  // Safely create a real, live array from anything iterable.
+  _.toArray = function(obj) {
+    if (!obj) return [];
+    if (_.isArray(obj)) return slice.call(obj);
+    if (isArrayLike(obj)) return _.map(obj, _.identity);
+    return _.values(obj);
+  };
+
+  // Return the number of elements in an object.
+  _.size = function(obj) {
+    if (obj == null) return 0;
+    return isArrayLike(obj) ? obj.length : _.keys(obj).length;
+  };
+
+  // Split a collection into two arrays: one whose elements all satisfy the given
+  // predicate, and one whose elements all do not satisfy the predicate.
+  _.partition = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var pass = [], fail = [];
+    _.each(obj, function(value, key, obj) {
+      (predicate(value, key, obj) ? pass : fail).push(value);
+    });
+    return [pass, fail];
+  };
+
+  // Array Functions
+  // ---------------
+
+  // Get the first element of an array. Passing **n** will return the first N
+  // values in the array. Aliased as `head` and `take`. The **guard** check
+  // allows it to work with `_.map`.
+  _.first = _.head = _.take = function(array, n, guard) {
+    if (array == null) return void 0;
+    if (n == null || guard) return array[0];
+    return _.initial(array, array.length - n);
+  };
+
+  // Returns everything but the last entry of the array. Especially useful on
+  // the arguments object. Passing **n** will return all the values in
+  // the array, excluding the last N.
+  _.initial = function(array, n, guard) {
+    return slice.call(array, 0, Math.max(0, array.length - (n == null || guard ? 1 : n)));
+  };
+
+  // Get the last element of an array. Passing **n** will return the last N
+  // values in the array.
+  _.last = function(array, n, guard) {
+    if (array == null) return void 0;
+    if (n == null || guard) return array[array.length - 1];
+    return _.rest(array, Math.max(0, array.length - n));
+  };
+
+  // Returns everything but the first entry of the array. Aliased as `tail` and `drop`.
+  // Especially useful on the arguments object. Passing an **n** will return
+  // the rest N values in the array.
+  _.rest = _.tail = _.drop = function(array, n, guard) {
+    return slice.call(array, n == null || guard ? 1 : n);
+  };
+
+  // Trim out all falsy values from an array.
+  _.compact = function(array) {
+    return _.filter(array, _.identity);
+  };
+
+  // Internal implementation of a recursive `flatten` function.
+  var flatten = function(input, shallow, strict, startIndex) {
+    var output = [], idx = 0;
+    for (var i = startIndex || 0, length = getLength(input); i < length; i++) {
+      var value = input[i];
+      if (isArrayLike(value) && (_.isArray(value) || _.isArguments(value))) {
+        //flatten current level of array or arguments object
+        if (!shallow) value = flatten(value, shallow, strict);
+        var j = 0, len = value.length;
+        output.length += len;
+        while (j < len) {
+          output[idx++] = value[j++];
+        }
+      } else if (!strict) {
+        output[idx++] = value;
+      }
+    }
+    return output;
+  };
+
+  // Flatten out an array, either recursively (by default), or just one level.
+  _.flatten = function(array, shallow) {
+    return flatten(array, shallow, false);
+  };
+
+  // Return a version of the array that does not contain the specified value(s).
+  _.without = function(array) {
+    return _.difference(array, slice.call(arguments, 1));
+  };
+
+  // Produce a duplicate-free version of the array. If the array has already
+  // been sorted, you have the option of using a faster algorithm.
+  // Aliased as `unique`.
+  _.uniq = _.unique = function(array, isSorted, iteratee, context) {
+    if (!_.isBoolean(isSorted)) {
+      context = iteratee;
+      iteratee = isSorted;
+      isSorted = false;
+    }
+    if (iteratee != null) iteratee = cb(iteratee, context);
+    var result = [];
+    var seen = [];
+    for (var i = 0, length = getLength(array); i < length; i++) {
+      var value = array[i],
+          computed = iteratee ? iteratee(value, i, array) : value;
+      if (isSorted) {
+        if (!i || seen !== computed) result.push(value);
+        seen = computed;
+      } else if (iteratee) {
+        if (!_.contains(seen, computed)) {
+          seen.push(computed);
+          result.push(value);
+        }
+      } else if (!_.contains(result, value)) {
+        result.push(value);
+      }
+    }
+    return result;
+  };
+
+  // Produce an array that contains the union: each distinct element from all of
+  // the passed-in arrays.
+  _.union = function() {
+    return _.uniq(flatten(arguments, true, true));
+  };
+
+  // Produce an array that contains every item shared between all the
+  // passed-in arrays.
+  _.intersection = function(array) {
+    var result = [];
+    var argsLength = arguments.length;
+    for (var i = 0, length = getLength(array); i < length; i++) {
+      var item = array[i];
+      if (_.contains(result, item)) continue;
+      for (var j = 1; j < argsLength; j++) {
+        if (!_.contains(arguments[j], item)) break;
+      }
+      if (j === argsLength) result.push(item);
+    }
+    return result;
+  };
+
+  // Take the difference between one array and a number of other arrays.
+  // Only the elements present in just the first array will remain.
+  _.difference = function(array) {
+    var rest = flatten(arguments, true, true, 1);
+    return _.filter(array, function(value){
+      return !_.contains(rest, value);
+    });
+  };
+
+  // Zip together multiple lists into a single array -- elements that share
+  // an index go together.
+  _.zip = function() {
+    return _.unzip(arguments);
+  };
+
+  // Complement of _.zip. Unzip accepts an array of arrays and groups
+  // each array's elements on shared indices
+  _.unzip = function(array) {
+    var length = array && _.max(array, getLength).length || 0;
+    var result = Array(length);
+
+    for (var index = 0; index < length; index++) {
+      result[index] = _.pluck(array, index);
+    }
+    return result;
+  };
+
+  // Converts lists into objects. Pass either a single array of `[key, value]`
+  // pairs, or two parallel arrays of the same length -- one of keys, and one of
+  // the corresponding values.
+  _.object = function(list, values) {
+    var result = {};
+    for (var i = 0, length = getLength(list); i < length; i++) {
+      if (values) {
+        result[list[i]] = values[i];
+      } else {
+        result[list[i][0]] = list[i][1];
+      }
+    }
+    return result;
+  };
+
+  // Generator function to create the findIndex and findLastIndex functions
+  function createPredicateIndexFinder(dir) {
+    return function(array, predicate, context) {
+      predicate = cb(predicate, context);
+      var length = getLength(array);
+      var index = dir > 0 ? 0 : length - 1;
+      for (; index >= 0 && index < length; index += dir) {
+        if (predicate(array[index], index, array)) return index;
+      }
+      return -1;
+    };
+  }
+
+  // Returns the first index on an array-like that passes a predicate test
+  _.findIndex = createPredicateIndexFinder(1);
+  _.findLastIndex = createPredicateIndexFinder(-1);
+
+  // Use a comparator function to figure out the smallest index at which
+  // an object should be inserted so as to maintain order. Uses binary search.
+  _.sortedIndex = function(array, obj, iteratee, context) {
+    iteratee = cb(iteratee, context, 1);
+    var value = iteratee(obj);
+    var low = 0, high = getLength(array);
+    while (low < high) {
+      var mid = Math.floor((low + high) / 2);
+      if (iteratee(array[mid]) < value) low = mid + 1; else high = mid;
+    }
+    return low;
+  };
+
+  // Generator function to create the indexOf and lastIndexOf functions
+  function createIndexFinder(dir, predicateFind, sortedIndex) {
+    return function(array, item, idx) {
+      var i = 0, length = getLength(array);
+      if (typeof idx == 'number') {
+        if (dir > 0) {
+            i = idx >= 0 ? idx : Math.max(idx + length, i);
+        } else {
+            length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
+        }
+      } else if (sortedIndex && idx && length) {
+        idx = sortedIndex(array, item);
+        return array[idx] === item ? idx : -1;
+      }
+      if (item !== item) {
+        idx = predicateFind(slice.call(array, i, length), _.isNaN);
+        return idx >= 0 ? idx + i : -1;
+      }
+      for (idx = dir > 0 ? i : length - 1; idx >= 0 && idx < length; idx += dir) {
+        if (array[idx] === item) return idx;
+      }
+      return -1;
+    };
+  }
+
+  // Return the position of the first occurrence of an item in an array,
+  // or -1 if the item is not included in the array.
+  // If the array is large and already in sort order, pass `true`
+  // for **isSorted** to use binary search.
+  _.indexOf = createIndexFinder(1, _.findIndex, _.sortedIndex);
+  _.lastIndexOf = createIndexFinder(-1, _.findLastIndex);
+
+  // Generate an integer Array containing an arithmetic progression. A port of
+  // the native Python `range()` function. See
+  // [the Python documentation](http://docs.python.org/library/functions.html#range).
+  _.range = function(start, stop, step) {
+    if (stop == null) {
+      stop = start || 0;
+      start = 0;
+    }
+    step = step || 1;
+
+    var length = Math.max(Math.ceil((stop - start) / step), 0);
+    var range = Array(length);
+
+    for (var idx = 0; idx < length; idx++, start += step) {
+      range[idx] = start;
+    }
+
+    return range;
+  };
+
+  // Function (ahem) Functions
+  // ------------------
+
+  // Determines whether to execute a function as a constructor
+  // or a normal function with the provided arguments
+  var executeBound = function(sourceFunc, boundFunc, context, callingContext, args) {
+    if (!(callingContext instanceof boundFunc)) return sourceFunc.apply(context, args);
+    var self = baseCreate(sourceFunc.prototype);
+    var result = sourceFunc.apply(self, args);
+    if (_.isObject(result)) return result;
+    return self;
+  };
+
+  // Create a function bound to a given object (assigning `this`, and arguments,
+  // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if
+  // available.
+  _.bind = function(func, context) {
+    if (nativeBind && func.bind === nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
+    if (!_.isFunction(func)) throw new TypeError('Bind must be called on a function');
+    var args = slice.call(arguments, 2);
+    var bound = function() {
+      return executeBound(func, bound, context, this, args.concat(slice.call(arguments)));
+    };
+    return bound;
+  };
+
+  // Partially apply a function by creating a version that has had some of its
+  // arguments pre-filled, without changing its dynamic `this` context. _ acts
+  // as a placeholder, allowing any combination of arguments to be pre-filled.
+  _.partial = function(func) {
+    var boundArgs = slice.call(arguments, 1);
+    var bound = function() {
+      var position = 0, length = boundArgs.length;
+      var args = Array(length);
+      for (var i = 0; i < length; i++) {
+        args[i] = boundArgs[i] === _ ? arguments[position++] : boundArgs[i];
+      }
+      while (position < arguments.length) args.push(arguments[position++]);
+      return executeBound(func, bound, this, this, args);
+    };
+    return bound;
+  };
+
+  // Bind a number of an object's methods to that object. Remaining arguments
+  // are the method names to be bound. Useful for ensuring that all callbacks
+  // defined on an object belong to it.
+  _.bindAll = function(obj) {
+    var i, length = arguments.length, key;
+    if (length <= 1) throw new Error('bindAll must be passed function names');
+    for (i = 1; i < length; i++) {
+      key = arguments[i];
+      obj[key] = _.bind(obj[key], obj);
+    }
+    return obj;
+  };
+
+  // Memoize an expensive function by storing its results.
+  _.memoize = function(func, hasher) {
+    var memoize = function(key) {
+      var cache = memoize.cache;
+      var address = '' + (hasher ? hasher.apply(this, arguments) : key);
+      if (!_.has(cache, address)) cache[address] = func.apply(this, arguments);
+      return cache[address];
+    };
+    memoize.cache = {};
+    return memoize;
+  };
+
+  // Delays a function for the given number of milliseconds, and then calls
+  // it with the arguments supplied.
+  _.delay = function(func, wait) {
+    var args = slice.call(arguments, 2);
+    return setTimeout(function(){
+      return func.apply(null, args);
+    }, wait);
+  };
+
+  // Defers a function, scheduling it to run after the current call stack has
+  // cleared.
+  _.defer = _.partial(_.delay, _, 1);
+
+  // Returns a function, that, when invoked, will only be triggered at most once
+  // during a given window of time. Normally, the throttled function will run
+  // as much as it can, without ever going more than once per `wait` duration;
+  // but if you'd like to disable the execution on the leading edge, pass
+  // `{leading: false}`. To disable execution on the trailing edge, ditto.
+  _.throttle = function(func, wait, options) {
+    var context, args, result;
+    var timeout = null;
+    var previous = 0;
+    if (!options) options = {};
+    var later = function() {
+      previous = options.leading === false ? 0 : _.now();
+      timeout = null;
+      result = func.apply(context, args);
+      if (!timeout) context = args = null;
+    };
+    return function() {
+      var now = _.now();
+      if (!previous && options.leading === false) previous = now;
+      var remaining = wait - (now - previous);
+      context = this;
+      args = arguments;
+      if (remaining <= 0 || remaining > wait) {
+        if (timeout) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+        previous = now;
+        result = func.apply(context, args);
+        if (!timeout) context = args = null;
+      } else if (!timeout && options.trailing !== false) {
+        timeout = setTimeout(later, remaining);
+      }
+      return result;
+    };
+  };
+
+  // Returns a function, that, as long as it continues to be invoked, will not
+  // be triggered. The function will be called after it stops being called for
+  // N milliseconds. If `immediate` is passed, trigger the function on the
+  // leading edge, instead of the trailing.
+  _.debounce = function(func, wait, immediate) {
+    var timeout, args, context, timestamp, result;
+
+    var later = function() {
+      var last = _.now() - timestamp;
+
+      if (last < wait && last >= 0) {
+        timeout = setTimeout(later, wait - last);
+      } else {
+        timeout = null;
+        if (!immediate) {
+          result = func.apply(context, args);
+          if (!timeout) context = args = null;
+        }
+      }
+    };
+
+    return function() {
+      context = this;
+      args = arguments;
+      timestamp = _.now();
+      var callNow = immediate && !timeout;
+      if (!timeout) timeout = setTimeout(later, wait);
+      if (callNow) {
+        result = func.apply(context, args);
+        context = args = null;
+      }
+
+      return result;
+    };
+  };
+
+  // Returns the first function passed as an argument to the second,
+  // allowing you to adjust arguments, run code before and after, and
+  // conditionally execute the original function.
+  _.wrap = function(func, wrapper) {
+    return _.partial(wrapper, func);
+  };
+
+  // Returns a negated version of the passed-in predicate.
+  _.negate = function(predicate) {
+    return function() {
+      return !predicate.apply(this, arguments);
+    };
+  };
+
+  // Returns a function that is the composition of a list of functions, each
+  // consuming the return value of the function that follows.
+  _.compose = function() {
+    var args = arguments;
+    var start = args.length - 1;
+    return function() {
+      var i = start;
+      var result = args[start].apply(this, arguments);
+      while (i--) result = args[i].call(this, result);
+      return result;
+    };
+  };
+
+  // Returns a function that will only be executed on and after the Nth call.
+  _.after = function(times, func) {
+    return function() {
+      if (--times < 1) {
+        return func.apply(this, arguments);
+      }
+    };
+  };
+
+  // Returns a function that will only be executed up to (but not including) the Nth call.
+  _.before = function(times, func) {
+    var memo;
+    return function() {
+      if (--times > 0) {
+        memo = func.apply(this, arguments);
+      }
+      if (times <= 1) func = null;
+      return memo;
+    };
+  };
+
+  // Returns a function that will be executed at most one time, no matter how
+  // often you call it. Useful for lazy initialization.
+  _.once = _.partial(_.before, 2);
+
+  // Object Functions
+  // ----------------
+
+  // Keys in IE < 9 that won't be iterated by `for key in ...` and thus missed.
+  var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
+  var nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString',
+                      'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
+
+  function collectNonEnumProps(obj, keys) {
+    var nonEnumIdx = nonEnumerableProps.length;
+    var constructor = obj.constructor;
+    var proto = (_.isFunction(constructor) && constructor.prototype) || ObjProto;
+
+    // Constructor is a special case.
+    var prop = 'constructor';
+    if (_.has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
+
+    while (nonEnumIdx--) {
+      prop = nonEnumerableProps[nonEnumIdx];
+      if (prop in obj && obj[prop] !== proto[prop] && !_.contains(keys, prop)) {
+        keys.push(prop);
+      }
+    }
+  }
+
+  // Retrieve the names of an object's own properties.
+  // Delegates to **ECMAScript 5**'s native `Object.keys`
+  _.keys = function(obj) {
+    if (!_.isObject(obj)) return [];
+    if (nativeKeys) return nativeKeys(obj);
+    var keys = [];
+    for (var key in obj) if (_.has(obj, key)) keys.push(key);
+    // Ahem, IE < 9.
+    if (hasEnumBug) collectNonEnumProps(obj, keys);
+    return keys;
+  };
+
+  // Retrieve all the property names of an object.
+  _.allKeys = function(obj) {
+    if (!_.isObject(obj)) return [];
+    var keys = [];
+    for (var key in obj) keys.push(key);
+    // Ahem, IE < 9.
+    if (hasEnumBug) collectNonEnumProps(obj, keys);
+    return keys;
+  };
+
+  // Retrieve the values of an object's properties.
+  _.values = function(obj) {
+    var keys = _.keys(obj);
+    var length = keys.length;
+    var values = Array(length);
+    for (var i = 0; i < length; i++) {
+      values[i] = obj[keys[i]];
+    }
+    return values;
+  };
+
+  // Returns the results of applying the iteratee to each element of the object
+  // In contrast to _.map it returns an object
+  _.mapObject = function(obj, iteratee, context) {
+    iteratee = cb(iteratee, context);
+    var keys =  _.keys(obj),
+          length = keys.length,
+          results = {},
+          currentKey;
+      for (var index = 0; index < length; index++) {
+        currentKey = keys[index];
+        results[currentKey] = iteratee(obj[currentKey], currentKey, obj);
+      }
+      return results;
+  };
+
+  // Convert an object into a list of `[key, value]` pairs.
+  _.pairs = function(obj) {
+    var keys = _.keys(obj);
+    var length = keys.length;
+    var pairs = Array(length);
+    for (var i = 0; i < length; i++) {
+      pairs[i] = [keys[i], obj[keys[i]]];
+    }
+    return pairs;
+  };
+
+  // Invert the keys and values of an object. The values must be serializable.
+  _.invert = function(obj) {
+    var result = {};
+    var keys = _.keys(obj);
+    for (var i = 0, length = keys.length; i < length; i++) {
+      result[obj[keys[i]]] = keys[i];
+    }
+    return result;
+  };
+
+  // Return a sorted list of the function names available on the object.
+  // Aliased as `methods`
+  _.functions = _.methods = function(obj) {
+    var names = [];
+    for (var key in obj) {
+      if (_.isFunction(obj[key])) names.push(key);
+    }
+    return names.sort();
+  };
+
+  // Extend a given object with all the properties in passed-in object(s).
+  _.extend = createAssigner(_.allKeys);
+
+  // Assigns a given object with all the own properties in the passed-in object(s)
+  // (https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
+  _.extendOwn = _.assign = createAssigner(_.keys);
+
+  // Returns the first key on an object that passes a predicate test
+  _.findKey = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = _.keys(obj), key;
+    for (var i = 0, length = keys.length; i < length; i++) {
+      key = keys[i];
+      if (predicate(obj[key], key, obj)) return key;
+    }
+  };
+
+  // Return a copy of the object only containing the whitelisted properties.
+  _.pick = function(object, oiteratee, context) {
+    var result = {}, obj = object, iteratee, keys;
+    if (obj == null) return result;
+    if (_.isFunction(oiteratee)) {
+      keys = _.allKeys(obj);
+      iteratee = optimizeCb(oiteratee, context);
+    } else {
+      keys = flatten(arguments, false, false, 1);
+      iteratee = function(value, key, obj) { return key in obj; };
+      obj = Object(obj);
+    }
+    for (var i = 0, length = keys.length; i < length; i++) {
+      var key = keys[i];
+      var value = obj[key];
+      if (iteratee(value, key, obj)) result[key] = value;
+    }
+    return result;
+  };
+
+   // Return a copy of the object without the blacklisted properties.
+  _.omit = function(obj, iteratee, context) {
+    if (_.isFunction(iteratee)) {
+      iteratee = _.negate(iteratee);
+    } else {
+      var keys = _.map(flatten(arguments, false, false, 1), String);
+      iteratee = function(value, key) {
+        return !_.contains(keys, key);
+      };
+    }
+    return _.pick(obj, iteratee, context);
+  };
+
+  // Fill in a given object with default properties.
+  _.defaults = createAssigner(_.allKeys, true);
+
+  // Creates an object that inherits from the given prototype object.
+  // If additional properties are provided then they will be added to the
+  // created object.
+  _.create = function(prototype, props) {
+    var result = baseCreate(prototype);
+    if (props) _.extendOwn(result, props);
+    return result;
+  };
+
+  // Create a (shallow-cloned) duplicate of an object.
+  _.clone = function(obj) {
+    if (!_.isObject(obj)) return obj;
+    return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
+  };
+
+  // Invokes interceptor with the obj, and then returns obj.
+  // The primary purpose of this method is to "tap into" a method chain, in
+  // order to perform operations on intermediate results within the chain.
+  _.tap = function(obj, interceptor) {
+    interceptor(obj);
+    return obj;
+  };
+
+  // Returns whether an object has a given set of `key:value` pairs.
+  _.isMatch = function(object, attrs) {
+    var keys = _.keys(attrs), length = keys.length;
+    if (object == null) return !length;
+    var obj = Object(object);
+    for (var i = 0; i < length; i++) {
+      var key = keys[i];
+      if (attrs[key] !== obj[key] || !(key in obj)) return false;
+    }
+    return true;
+  };
+
+
+  // Internal recursive comparison function for `isEqual`.
+  var eq = function(a, b, aStack, bStack) {
+    // Identical objects are equal. `0 === -0`, but they aren't identical.
+    // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
+    if (a === b) return a !== 0 || 1 / a === 1 / b;
+    // A strict comparison is necessary because `null == undefined`.
+    if (a == null || b == null) return a === b;
+    // Unwrap any wrapped objects.
+    if (a instanceof _) a = a._wrapped;
+    if (b instanceof _) b = b._wrapped;
+    // Compare `[[Class]]` names.
+    var className = toString.call(a);
+    if (className !== toString.call(b)) return false;
+    switch (className) {
+      // Strings, numbers, regular expressions, dates, and booleans are compared by value.
+      case '[object RegExp]':
+      // RegExps are coerced to strings for comparison (Note: '' + /a/i === '/a/i')
+      case '[object String]':
+        // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
+        // equivalent to `new String("5")`.
+        return '' + a === '' + b;
+      case '[object Number]':
+        // `NaN`s are equivalent, but non-reflexive.
+        // Object(NaN) is equivalent to NaN
+        if (+a !== +a) return +b !== +b;
+        // An `egal` comparison is performed for other numeric values.
+        return +a === 0 ? 1 / +a === 1 / b : +a === +b;
+      case '[object Date]':
+      case '[object Boolean]':
+        // Coerce dates and booleans to numeric primitive values. Dates are compared by their
+        // millisecond representations. Note that invalid dates with millisecond representations
+        // of `NaN` are not equivalent.
+        return +a === +b;
+    }
+
+    var areArrays = className === '[object Array]';
+    if (!areArrays) {
+      if (typeof a != 'object' || typeof b != 'object') return false;
+
+      // Objects with different constructors are not equivalent, but `Object`s or `Array`s
+      // from different frames are.
+      var aCtor = a.constructor, bCtor = b.constructor;
+      if (aCtor !== bCtor && !(_.isFunction(aCtor) && aCtor instanceof aCtor &&
+                               _.isFunction(bCtor) && bCtor instanceof bCtor)
+                          && ('constructor' in a && 'constructor' in b)) {
+        return false;
+      }
+    }
+    // Assume equality for cyclic structures. The algorithm for detecting cyclic
+    // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
+
+    // Initializing stack of traversed objects.
+    // It's done here since we only need them for objects and arrays comparison.
+    aStack = aStack || [];
+    bStack = bStack || [];
+    var length = aStack.length;
+    while (length--) {
+      // Linear search. Performance is inversely proportional to the number of
+      // unique nested structures.
+      if (aStack[length] === a) return bStack[length] === b;
+    }
+
+    // Add the first object to the stack of traversed objects.
+    aStack.push(a);
+    bStack.push(b);
+
+    // Recursively compare objects and arrays.
+    if (areArrays) {
+      // Compare array lengths to determine if a deep comparison is necessary.
+      length = a.length;
+      if (length !== b.length) return false;
+      // Deep compare the contents, ignoring non-numeric properties.
+      while (length--) {
+        if (!eq(a[length], b[length], aStack, bStack)) return false;
+      }
+    } else {
+      // Deep compare objects.
+      var keys = _.keys(a), key;
+      length = keys.length;
+      // Ensure that both objects contain the same number of properties before comparing deep equality.
+      if (_.keys(b).length !== length) return false;
+      while (length--) {
+        // Deep compare each member
+        key = keys[length];
+        if (!(_.has(b, key) && eq(a[key], b[key], aStack, bStack))) return false;
+      }
+    }
+    // Remove the first object from the stack of traversed objects.
+    aStack.pop();
+    bStack.pop();
+    return true;
+  };
+
+  // Perform a deep comparison to check if two objects are equal.
+  _.isEqual = function(a, b) {
+    return eq(a, b);
+  };
+
+  // Is a given array, string, or object empty?
+  // An "empty" object has no enumerable own-properties.
+  _.isEmpty = function(obj) {
+    if (obj == null) return true;
+    if (isArrayLike(obj) && (_.isArray(obj) || _.isString(obj) || _.isArguments(obj))) return obj.length === 0;
+    return _.keys(obj).length === 0;
+  };
+
+  // Is a given value a DOM element?
+  _.isElement = function(obj) {
+    return !!(obj && obj.nodeType === 1);
+  };
+
+  // Is a given value an array?
+  // Delegates to ECMA5's native Array.isArray
+  _.isArray = nativeIsArray || function(obj) {
+    return toString.call(obj) === '[object Array]';
+  };
+
+  // Is a given variable an object?
+  _.isObject = function(obj) {
+    var type = typeof obj;
+    return type === 'function' || type === 'object' && !!obj;
+  };
+
+  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError.
+  _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'], function(name) {
+    _['is' + name] = function(obj) {
+      return toString.call(obj) === '[object ' + name + ']';
+    };
+  });
+
+  // Define a fallback version of the method in browsers (ahem, IE < 9), where
+  // there isn't any inspectable "Arguments" type.
+  if (!_.isArguments(arguments)) {
+    _.isArguments = function(obj) {
+      return _.has(obj, 'callee');
+    };
+  }
+
+  // Optimize `isFunction` if appropriate. Work around some typeof bugs in old v8,
+  // IE 11 (#1621), and in Safari 8 (#1929).
+  if (typeof /./ != 'function' && typeof Int8Array != 'object') {
+    _.isFunction = function(obj) {
+      return typeof obj == 'function' || false;
+    };
+  }
+
+  // Is a given object a finite number?
+  _.isFinite = function(obj) {
+    return isFinite(obj) && !isNaN(parseFloat(obj));
+  };
+
+  // Is the given value `NaN`? (NaN is the only number which does not equal itself).
+  _.isNaN = function(obj) {
+    return _.isNumber(obj) && obj !== +obj;
+  };
+
+  // Is a given value a boolean?
+  _.isBoolean = function(obj) {
+    return obj === true || obj === false || toString.call(obj) === '[object Boolean]';
+  };
+
+  // Is a given value equal to null?
+  _.isNull = function(obj) {
+    return obj === null;
+  };
+
+  // Is a given variable undefined?
+  _.isUndefined = function(obj) {
+    return obj === void 0;
+  };
+
+  // Shortcut function for checking if an object has a given property directly
+  // on itself (in other words, not on a prototype).
+  _.has = function(obj, key) {
+    return obj != null && hasOwnProperty.call(obj, key);
+  };
+
+  // Utility Functions
+  // -----------------
+
+  // Run Underscore.js in *noConflict* mode, returning the `_` variable to its
+  // previous owner. Returns a reference to the Underscore object.
+  _.noConflict = function() {
+    root._ = previousUnderscore;
+    return this;
+  };
+
+  // Keep the identity function around for default iteratees.
+  _.identity = function(value) {
+    return value;
+  };
+
+  // Predicate-generating functions. Often useful outside of Underscore.
+  _.constant = function(value) {
+    return function() {
+      return value;
+    };
+  };
+
+  _.noop = function(){};
+
+  _.property = property;
+
+  // Generates a function for a given object that returns a given property.
+  _.propertyOf = function(obj) {
+    return obj == null ? function(){} : function(key) {
+      return obj[key];
+    };
+  };
+
+  // Returns a predicate for checking whether an object has a given set of
+  // `key:value` pairs.
+  _.matcher = _.matches = function(attrs) {
+    attrs = _.extendOwn({}, attrs);
+    return function(obj) {
+      return _.isMatch(obj, attrs);
+    };
+  };
+
+  // Run a function **n** times.
+  _.times = function(n, iteratee, context) {
+    var accum = Array(Math.max(0, n));
+    iteratee = optimizeCb(iteratee, context, 1);
+    for (var i = 0; i < n; i++) accum[i] = iteratee(i);
+    return accum;
+  };
+
+  // Return a random integer between min and max (inclusive).
+  _.random = function(min, max) {
+    if (max == null) {
+      max = min;
+      min = 0;
+    }
+    return min + Math.floor(Math.random() * (max - min + 1));
+  };
+
+  // A (possibly faster) way to get the current timestamp as an integer.
+  _.now = Date.now || function() {
+    return new Date().getTime();
+  };
+
+   // List of HTML entities for escaping.
+  var escapeMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#x27;',
+    '`': '&#x60;'
+  };
+  var unescapeMap = _.invert(escapeMap);
+
+  // Functions for escaping and unescaping strings to/from HTML interpolation.
+  var createEscaper = function(map) {
+    var escaper = function(match) {
+      return map[match];
+    };
+    // Regexes for identifying a key that needs to be escaped
+    var source = '(?:' + _.keys(map).join('|') + ')';
+    var testRegexp = RegExp(source);
+    var replaceRegexp = RegExp(source, 'g');
+    return function(string) {
+      string = string == null ? '' : '' + string;
+      return testRegexp.test(string) ? string.replace(replaceRegexp, escaper) : string;
+    };
+  };
+  _.escape = createEscaper(escapeMap);
+  _.unescape = createEscaper(unescapeMap);
+
+  // If the value of the named `property` is a function then invoke it with the
+  // `object` as context; otherwise, return it.
+  _.result = function(object, property, fallback) {
+    var value = object == null ? void 0 : object[property];
+    if (value === void 0) {
+      value = fallback;
+    }
+    return _.isFunction(value) ? value.call(object) : value;
+  };
+
+  // Generate a unique integer id (unique within the entire client session).
+  // Useful for temporary DOM ids.
+  var idCounter = 0;
+  _.uniqueId = function(prefix) {
+    var id = ++idCounter + '';
+    return prefix ? prefix + id : id;
+  };
+
+  // By default, Underscore uses ERB-style template delimiters, change the
+  // following template settings to use alternative delimiters.
+  _.templateSettings = {
+    evaluate    : /<%([\s\S]+?)%>/g,
+    interpolate : /<%=([\s\S]+?)%>/g,
+    escape      : /<%-([\s\S]+?)%>/g
+  };
+
+  // When customizing `templateSettings`, if you don't want to define an
+  // interpolation, evaluation or escaping regex, we need one that is
+  // guaranteed not to match.
+  var noMatch = /(.)^/;
+
+  // Certain characters need to be escaped so that they can be put into a
+  // string literal.
+  var escapes = {
+    "'":      "'",
+    '\\':     '\\',
+    '\r':     'r',
+    '\n':     'n',
+    '\u2028': 'u2028',
+    '\u2029': 'u2029'
+  };
+
+  var escaper = /\\|'|\r|\n|\u2028|\u2029/g;
+
+  var escapeChar = function(match) {
+    return '\\' + escapes[match];
+  };
+
+  // JavaScript micro-templating, similar to John Resig's implementation.
+  // Underscore templating handles arbitrary delimiters, preserves whitespace,
+  // and correctly escapes quotes within interpolated code.
+  // NB: `oldSettings` only exists for backwards compatibility.
+  _.template = function(text, settings, oldSettings) {
+    if (!settings && oldSettings) settings = oldSettings;
+    settings = _.defaults({}, settings, _.templateSettings);
+
+    // Combine delimiters into one regular expression via alternation.
+    var matcher = RegExp([
+      (settings.escape || noMatch).source,
+      (settings.interpolate || noMatch).source,
+      (settings.evaluate || noMatch).source
+    ].join('|') + '|$', 'g');
+
+    // Compile the template source, escaping string literals appropriately.
+    var index = 0;
+    var source = "__p+='";
+    text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
+      source += text.slice(index, offset).replace(escaper, escapeChar);
+      index = offset + match.length;
+
+      if (escape) {
+        source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
+      } else if (interpolate) {
+        source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+      } else if (evaluate) {
+        source += "';\n" + evaluate + "\n__p+='";
+      }
+
+      // Adobe VMs need the match returned to produce the correct offest.
+      return match;
+    });
+    source += "';\n";
+
+    // If a variable is not specified, place data values in local scope.
+    if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';
+
+    source = "var __t,__p='',__j=Array.prototype.join," +
+      "print=function(){__p+=__j.call(arguments,'');};\n" +
+      source + 'return __p;\n';
+
+    try {
+      var render = new Function(settings.variable || 'obj', '_', source);
+    } catch (e) {
+      e.source = source;
+      throw e;
+    }
+
+    var template = function(data) {
+      return render.call(this, data, _);
+    };
+
+    // Provide the compiled source as a convenience for precompilation.
+    var argument = settings.variable || 'obj';
+    template.source = 'function(' + argument + '){\n' + source + '}';
+
+    return template;
+  };
+
+  // Add a "chain" function. Start chaining a wrapped Underscore object.
+  _.chain = function(obj) {
+    var instance = _(obj);
+    instance._chain = true;
+    return instance;
+  };
+
+  // OOP
+  // ---------------
+  // If Underscore is called as a function, it returns a wrapped object that
+  // can be used OO-style. This wrapper holds altered versions of all the
+  // underscore functions. Wrapped objects may be chained.
+
+  // Helper function to continue chaining intermediate results.
+  var result = function(instance, obj) {
+    return instance._chain ? _(obj).chain() : obj;
+  };
+
+  // Add your own custom functions to the Underscore object.
+  _.mixin = function(obj) {
+    _.each(_.functions(obj), function(name) {
+      var func = _[name] = obj[name];
+      _.prototype[name] = function() {
+        var args = [this._wrapped];
+        push.apply(args, arguments);
+        return result(this, func.apply(_, args));
+      };
+    });
+  };
+
+  // Add all of the Underscore functions to the wrapper object.
+  _.mixin(_);
+
+  // Add all mutator Array functions to the wrapper.
+  _.each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
+    var method = ArrayProto[name];
+    _.prototype[name] = function() {
+      var obj = this._wrapped;
+      method.apply(obj, arguments);
+      if ((name === 'shift' || name === 'splice') && obj.length === 0) delete obj[0];
+      return result(this, obj);
+    };
+  });
+
+  // Add all accessor Array functions to the wrapper.
+  _.each(['concat', 'join', 'slice'], function(name) {
+    var method = ArrayProto[name];
+    _.prototype[name] = function() {
+      return result(this, method.apply(this._wrapped, arguments));
+    };
+  });
+
+  // Extracts the result from a wrapped and chained object.
+  _.prototype.value = function() {
+    return this._wrapped;
+  };
+
+  // Provide unwrapping proxy for some methods used in engine operations
+  // such as arithmetic and JSON stringification.
+  _.prototype.valueOf = _.prototype.toJSON = _.prototype.value;
+
+  _.prototype.toString = function() {
+    return '' + this._wrapped;
+  };
+
+  // AMD registration happens at the end for compatibility with AMD loaders
+  // that may not enforce next-turn semantics on modules. Even though general
+  // practice for AMD registration is to be anonymous, underscore registers
+  // as a named module because, like jQuery, it is a base library that is
+  // popular enough to be bundled in a third party lib, but not be part of
+  // an AMD load request. Those cases could generate an error when an
+  // anonymous define() is called outside of a loader request.
+  if (typeof define === 'function' && define.amd) {
+    define('underscore', [], function() {
+      return _;
+    });
+  }
+}.call(this));
+
+},{}],23:[function(require,module,exports){
+(function(window){
+	window.BroccoliFieldImageEditor = require('../libs/client.js');
+})(window);
+
+},{"../libs/client.js":1}]},{},[23])

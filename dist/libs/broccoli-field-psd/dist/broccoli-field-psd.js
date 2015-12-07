@@ -1,4 +1,427 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = function(broccoli){
+
+	require('m-util');
+	var it79 = require('iterate79');
+	var php = require('phpjs');
+	var resouce = require('br-resouce');
+	var mLog = require('m-log');
+	var _resMgr = broccoli.resourceMgr;
+	var _imgDummy = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAlgAAAHgCAMAAABOyeNrAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAE5QTFRFenp6uLi4j4+Po6OjlpaWwsLCbW1tPT09xcXFra2tcHBwXFxcvr6+gYGBUlJSdHR0qqqqR0dHsbGxmZmZiIiInJychYWFzMzMMzMzZmZmDbCo0wAAHGlJREFUeNrsnYmSo7wORtnXhOwhvP+LTiDYeGNJd2ZqICdV91b19xucUU5hI8mS18jPQ37Q0H6reRgBDbDQAAsNsDAMGmChARYaYGEYNMBCAyy0rwULc6D9DQ2w0AALDbDQAAsjoAEWGmChARaGQQMsNMBC+16wMAcasUI0wEIDLAyDBlhogIUGWBgGDbDQAAsNsDAM2ifBwhxoxArRAAsNsDAMGmChARYaYGEYNMBCAyw0wMIwaJ8EC3OgEStEAyw0wMIwaICFBlhogIVh0AALDbDQAAvDoH0SLMyBRqwQDbDQAAvDoAEWGmChARaGQQMsNMBCAywMg/ZJsDAHGrFCNMBCAywMgwZYaICFBlgYBg2w0AALDbAwDNonwcIcaMQK0QALDbAwDBpgoQEWGmBhGDTAQgMsNMDCMGifBAtzoBErRAMsNMDCMGiAhQZYaICFYdAACw2w0AALw6B9EizMgUasEA2w0AALw6ABFhpgoQEWhkEDLDTAQgMsDIP2SbAwBxqxQjTAQgMsDIMGWGiAhQZYGAYNsNAACw2wMAzaJ8HCHGjECtEACw2wMAwaYKEBFhpgYRg0wEL761oS7QEL7fPaMeOJhfZZrYief2XHX4OFKb9cS9NBS5rmcK7DtKwLYoVov9FOYV37Taclx6w+P3m413FYnwAL7RdaGudFkdfP/xYFZz+IssxrHqVf5ylgof1mJ1RXz8XQ99PHOcueC6GXnZ/jqrrOS8BC+4l2SNr/D/MOgtp7RHW3X7/V++5v/ykBFtq72m1X1+cnWmHdrXm+/zi8wNrXt8fj4j/S8LmHByy097Swvl1v9bndqFetcK/L5rzr3gtbsOJLq3klYKEt1bwWpEMdtstgvW+KunNklvW9Cepru0I+wSpr7/fzAtZXaWXdPoyu9e21nWoecdiNivOmyfzktcfyghSw0N7SvDputZahxH9uqh6X11qYP8E61tnRryNy3tEWa4XXa/6uDp6aV/t5XOeXU+O99uzP3fujqC+XoCG7Ae2NnZVf5mW3gwpakB6PKo+9xovj5LnTCtp3wah9N8xJm0F7R7s/Ebq0zoMgey54h6ZdEjsH6HPhS/z6GD6XxuefwWtZBCy0WS1pgUnzvI69Vjueny9/7S4qfz2cYv855Ob7UdJ0O3sPsNAWaIdzH2Gu6jJuX9N20fPl79yUjzx+gXXUrs0BC22BlmR+EHQRZi9/pI92K/Wk61xnfhfEaRfE69+LQvKDbFBLu0Bg1HLURZj7cdHOC9tYTvF8ONXhvdu3AxbaUs3z6zp8onX2m861IP3oT70+X3d+i949zy/NzP2q+x2w0IR2r+9NFwg810mrtT6q/ol1jg5tKKdacr9DG6iOAQutOTQdMW0I+bkMRk+6vHbcvXMtDOP2u2Y+qSZqn27PT/FjsPhpNqKllycHYbtDD7rnVPwoXjlV+y4y+Mb90iKvxedIrPDbtTwuruGToY6jV/JeG2Fu2ujyO56v4FKrnwSwvlvz6nYrHrQZVV3QJn1S1UaYu0Dg4vs90TQ+V8D6bi2IhebvOi2s06q+vAPWPswMqnY3j6Xwy7Uwf6Q3f3dMnvv2a9M/woK66CLMS0BoXwK1T3z3yMdCu9enPDueaz9pM2G6CPNzG56/Isxz9zt5vknVbxNoAGsjWlHnedJ624/NsXOJtmA90nsXYZ689uTl5sbqUpBBitY/dOq6+y39rDlk5/TxuMTLXAsXm6r0Exmk/Egb0cK6++tWt7ss/x72kZzJawOLKj86fOb7AdZWtKa+tH+FrefpGraBwLlrI+slsI34kPOOpmvnNv5yeh27WXRtoT+r7hXZDWgun7lfh0Hsv1EnJpZUZWFJ2gzaiJZ4ee6lb1wbCKqu5GOhfVBrerBI9EP7rBYP8UDAQvucdn+BFQIW2ke1asiNASy0dzTPC8JuwcsvkWeP6wPPAWChvaFdjTyYXWSGo28yT3QiWOQBFtqgHSIzD6ZF62r4x+VaOHK/tI1QN+S8o4ngclC7P4E+LhdnJlz3S4Jjv7knVoj2el7E9dgnTNVr+0dW7vJyDRHqBLDQWqz8euKjQXTqxZNxvyaIjcccYH29Fihbdv8W7Nv67Vcl81g7WN+vhRoH1d0g8whYaE2kZK1XyrhSJopGyrViLZTSwaSqzsI9YKHJA1xxF5BWx93Ff1I8WmkvHV5URTZVPwv4ANbGNPm8ujvyHPoMLF91lfZb9Ft7VtXamx0DMkjRWu0qHleNc1xH1j1xwLbrXQtq8nuQ/CKDlB9kS1rS79vjamRcUPul4QIdeXf0TuS8owmtf+pk44WK2hVS1xyuVN/7fb9CfpoNaWUPxltdcK5j5+oJQqP1Wv9GeH/v2kw7AV1+5rsA1oa03o0epz90UNRBQ9oMmuPH7L1Ub14r1sIi/eR34QfZjta71k/vXttHe5oHYKE5tEQEmd+9tk/3uwDWd2qNNz1uL1fC+fulRT4EfES6H0vhF2plm8cy7XXsoznz/edfJWYUAHdqiWTA+h7tJDIOggVgVTP3u75OV6hLZqSuhYD1PZonHQL7iXG9233yfp5yvmLY5B8GZfq77Ml535SmpFhV4+N6f9T4/YwEvmgYlyuJWqPfpQniOCVWuE2wWu/nz8A6WBUh/WGcJ5UZKAvA2ihYdZ7OgJU47udItery/cSok5Lu54JSPuougLUlrds9nf3BTzUF1t6+X+ROjblZ10aO76JnlSaAtSHt/MplyZQzM45xwWjtGD2BIY/6v5VuTSLdz7w2Cc7GuUTA2hpYteQjcI/zxp86mZZqJR1Xg08gHbLhh2sTO6s0vwLW9sASsZfWk+kYVwwNu8z7hVqdUbk23oZxR5n6Lq8MMkf+H3usFWonz5sC6zBkuDiPxJdDgT5zDu+VaiW13nGVPcx1dNdfWwbmWWoJJWCtS+viLP4UWPu2w3P/M1euca7lTARtwqum+VpCQ7vsZcObonVg9Qll9ea/DbD+D00USqimwXpUsTg06Bh3tpaz0Xkj8+y8eBiGB89xtPD9fxshnf9Bq+Ru5uYcF4roctMEhqPUkejnL5j3pNS17dEeKfXQdUAhVrhOrRxOMsyBJX1Sud3xRlR+LBfMGxreA7Xqu1Ka5sdZpYD1f4FVOxuB1wpYcgOf2+N8kaUwP2+h9XxutWDkEBhgbQKsYBYssfEWQ5Vx95GiRI55PcOTPlS6FYfADqTNbAmseB6sZKeRpeZtuQoVufdY/cKXHQbNN48WAtaGwBrWwlGwGhHbeaV8qve7mGlbI/OmuVnR6CGL0bzqywDW1sAK5sEaYn+Fcb+yVvJfJuYVXB3VcZXxsAOsjYCVqUcaJsEa0hUq436h40lk3S8VDzZfz1Xwf+haAKz/G6xQPdIwDZZ8NYwrp39qePI45k1yefHf+7cB1v8D1lU73meDVTkOp9ZmsrB428u8sXkHz3rxN09l87P+E+0UHZPxca8TgeK1zOo6f5A5x0pKi8DDT/X7CT0eOcw1VOoO/qYNAOsfaGkRKhvlcbDu2io2jNs7wBpeDXP9fgcZHvIc36UMtZQ9wFqxVlz0DfU4WJX2SjcDljj4bL1H7gfXeWl8F6WwzAtfwFqtpuY17WfAEmvhYQlYSbAzyervFqhRGfkDJ42aDJPtG8BatXZR808OM2B56qNtEqxGa+xV6PfTo37n8/F2Pusdm/xDA1jr1grjJN8kWCd1LRwHq7LSO42N+jWuJz/R37cBYP1lLdV+43AaLK0ByQhYdnqnKNig1vbLJ7AKDw1grVLT/NmBeXpqCixP5oC6wTqN9V+KzVIgo/2/wvKf2ACwPq2lxSXT3sRqNV6TeZNgnYbjfTZYVj+SXXSQ5UL81Gph6UArvp/+kV0A67Pay7dwVbX+9+3PV+2SKbBErM/T5nAeZO5TWwLl6L35/fTecHV+L/+dXQjpfFQLHZ4lEQLMx6sflLKaRyAKajty2bXzDaX8BeXbn7PqQul53v35v6L8t3YBrI9qeyNbT9EuYhsf2demEqxkuMEoWF3C1DCvdHqG/5NdAOuz2s6RodBraTlePE2CJY6BNaNgHV+tk5R55c7rDlib1W6ODIWbCN31gGTJBFiFXExdYJ0DRyg78Q1HKWBtT9MLEGtaLl0P/gRY/YIZO8DKvZFDEjIe7crlAqxtaDtHkGUnKnyKVPPbOFgCvsIGa3zevVlJErA2p0WOYvyRTGMRJ+SDcbAa+2zgLFiD06EnC7A2p2kFiHXNV9yl3ihYwu+lZIbeZ8GSBY76vD/A2p7mqzXNdK19mtyVYwxusMRaOMwRDlyOzhuKSgsnwNqmFjkqhUaKOyB0lUdTwaosR2oo3VTj87avhrk8E/8fgAUS72je7TY3Ti1AbGg7QYDV/E2GdB7qXl98zr1nfTpG6Z3+J1sB1nLtdNuJwj9T4y6OYvwXJR3GVRNGA+tmFghdBNZ/pgHWY2kZx3xhrnjhyFAohnSsRvyhHtzSwPLMQxKA9dhsGcchce44d61SgNjUMm17no+AZa2FgLVJLS0uWgw4mbv2MnhBTa2vwa77SS2wImMtBKwNatfQTFm5zl3rKsZfaKnJp9goN6SDpfi9AGuT2j7M3Ol109dmMovB1ESp7FI/B2+Apfq9hmsBazOuhZ2ZXnfzFl0byseTpYmcd08v92KAFelpMDVgbajWws4qdd4svd9VbtUt7Si0i1agygDLWAsBa2uuBbUo9Tv3y8RuzNYSUc9B7T1pgiWapZYrBgucrH5XVmeiPmlz+f1EdQ+HJtNhRBJVaYZ0TL9Xj91MSOd/0wBL1xz9rqLD2/erHLWrKoGHUAKlE4AJVqrV93cdsACsNWneb/pdqZpvZShIbYjo3YYnkQmW6vfqwMq99AFYq9WK3/S7UrW746jXXYkXaqkungOsRl0L/6esBcD6kZYpL4HlL+5XORrdVlYgRxwIa2yw+nS/LFmrTQHL5YH6Ub8rTcsdjW5ztfqVthc72WAF/6Q8GmD9I83lgfrR/TxHvXXPPrDar715ZoHVKKX8AWv9mssD9ZP7ael+urZTx6m1aPRgUXy8rtmmgKVr4k3t1/fLHSXOcmP7rvhJ5QnprdgUsHRNNsX67f3MtVDRbqp2ijcKFjjNe6B+cr+k1rP1FM3XMygkWOWWbApYCzxQ5rhDtOB+Rz1DQdUa7doIsL5Bc3mgtHFJW1evmb9foD+eVM0on30ErG/QXB4oOU5EqIP5+yW1lq2narF+bdfYMg6aB2CtU0uL5oceKOHlGiLU6fy8obYWalqjX+tllyLdmO2/B6z2SET4Qw/UK/Ehtkv2T93vqj2eNC3Y/irwLWD1VJx+6IGyiqtfFsybqY8nXUsBayOa8E3+xAN1skr2ZzJCPXW/0NESPHR2kgCs1WrydPH8tam2Fh6ivLZryy6aV1sLde0CWBvRBC1LCmcMB06TwLfTlJfPu1PWQkNLNw/WtzgU+he624JrhQfKOAHdHalI35n37jiU32krzlogVmhoPS27Bdcm7iY0fnR6c97KcSi/kkczAGsTmuGvXOKBMtrW/GBe39EkN/2OzccmwfL2QbTfG+OOy4vsX93n6t//LndX9T7AWqVWeme5zy7UcVcjtWCBB+r1Uhfuf/z9TsNaCFhr/scZ7a66bttyXKanFizwQHWr2K++ny+drYC12n9cGTga9HnDuNDZ833KA1V3L4G/+X6vlJgMsFb7D/HuI61HB7/31dGZ6x0P1E++30H6FgBrhf+Qg1UaxnxmNY61cGoOtdfSr77fTfgWAGtt/xCroa35KR9694ZgwRxqryUy1r4w5z21veO+V3a5VxI3WbLRSA592wMFOt8SK7RLw/jRQY7zrM7xvpYcOjmH970eqK8HK8pc3nFHiY+d0O5aFb1FHqhZf/seiDYHltM7ro67yQN7lr/yMx6oJohlu1TA2gpYB7U+qLNHe5KJBJhe0JJDl3ig2nS/sXF9VmkAROsH6+R5iubLqrNj10o69J2Tv9AD9VoLneOGrNIjEK0crO4N0Fc0VwM3/VpBx1RnrrFrz+LpZo/Ts0oTwFozWOLoVTVo2il297W943T/cKyFM/OKBC4rWys4G759wFovWENxULXEq5oJ4772bIBVKGvhzLxJbXZ3ezhLKvtXwFovWEPlDLWBrXqKfRlYrs5cy5OZr6Fd/PYARGvOeS+1HknLMekzGoZ3xuPy0taFfgxspK8OOK06VqiAFc40cHMVJRrO5gT1gsbdL02Unm2xdfTVCT0g2hRYan3QxtHATXMKiEwZKSWxfAeYnbeHMLSTJ+LwCkRbA0urD5pZy6N+sF5kvzTmI+u+YN5mJF3iUqRAtEGwwpkGbsO1RW30r2k/Mt1vfl5HRmodFqTSbA6szKoPOlk++xq7IJJF++fnDay+OqJFBBBtCiwza32yfHYSKTmk9vIYLJi3Ml4CTwCzTbBEM0k19XesfHYgN9y5fr/S2tCPz+vjWlg9WIfomMyBpVXUeI1zl89W3+Py9PFuXWR5JP4+1JcBmDWC9Yq/HWfBuhnl9IZooLI8JloSfG7VdZmpi3y47UItmRnXwlpz3mXeejQT0hGbHn8cEzOYF9pJfV5tPffk59W0N5ba7hgkYLLOWGEYG00/JsASy5hSH1TLCr0a5Tx2zgDxzn7uGXkLDXCsHyz1CZMdZsDy7PqgMhPGChHHkTttODLKiD6sR10AHOsHS3MW+TNgnewONT1r2c5KPBjzjx+MbiSPxoIyBY7Vg5Vo/u1wGiyzgZaSFao/rIJyYl5fz7Qq7WyYEjjWn48VOPIxR8EyGmgpWaFaMG96XjWn2Sq0/YSyAo4tgCWid/2S5k2CZTSTVLJCh6pYs10j5Fp48myqGuDYSgZpj1TvdNglU2CJsLM33C8dOQk935nLLolcpMCxHbD6tbDIx4+1D2AV2lqopvtZJ6Fn6yLrn3OQAMemwOqjd5c0Gz19nEiwUpnPIO9X2MvjzLxJ7Sr6AByfBOsfTdfHjtzjek9BUsrCQ9a4WrZ5P1odasSB52r597sYnokTSKwxVtgVcfTGx/UhwEi888XpBFiB3aEmfLunVqEdiQCENYJ1uCkhFPc4T55w6KnJJ8Dqn09qhxpXA7eZ7xereQuAsEawIrW03si4nXCFp7nR6N0GS2ug1Q9yNXCb/n6BmrcACOsGK67GxkXSFV7FRudcG6yrXR/U1cBt+vs19SWgANFGwHLtnbToXXfaT/WTOsFSm0k2qjdCb+A28/2IBm4IrDpPpqN31ZC16SejYIX2nm1nL4/8wBsHq3MPhPl4C2+FvrviWz+OguUNa6G428fKZ6OtBqwueS4Xe6dwMnrXlfdIfUfdPRUs8Xw7UT7768Gq5bHicDJ6V8lMc5FP6gLrbh/rmnVpoP1jsP76dGHPxK3WMoKNcYWKXSD2+sM4GdJ5PNSKjw9Donz298QKQ5Glfq4nOrjrIcDQOhGogSWeT4cflM9G2xZYz2Ut2alNTkeid73LMjdLd+hgRXZ90O9t4Pb1YMl6j3E1Hr3rt2Cn2CjnoYN1sOuDzpfPRtsqWDINqt08jUTvMj2VJq6cYJlZ64/Z8tlo6wHr1ETns1/vzsfIWwaWdJbm6Uj0bsh593SXqgFWZNUHFe+VET/wqsGq7rlx1mrsWu0oaiALdTiid4pfdNh0HZ1gibVQ+X5j5bP50VcEVmGfjPGbJWDJIzWBPUesHGlu3xO1/iQGWOL5VA7fz1k+mx94TWAV7s6T9yVgCbf64IKXc9wV5LqHYqxcaoIVmLVAXOWz+YHXBJaXj7UyDRaAJXGxmxv1Dvez6TTt+muZYCVGg+dHz1p45QduVpnz7k00yXWWxdbWrCGdaijKYYZlTlITVdXMkI7t9+q0+EJ90NXGCtWDU7t7UT4/yiNsvwCsIY/GPPxwGzZJWpyxVSywGjuonfIDrxasQGtnKkaVYuO0SxaAJQI2L0epushagZxE5hxbYAm/F723tgDWXR7uvGrj5JY8GgNLezr5iqNUnSMfS4eJTzZYAb23NgOWOPeXWe26E3/Mi9R7nDRNjDbrg3p2Oow4thNbYDV0iNgMWD0PvqM82qFdtLLbYaxvl34/2SVOr2h8kul+jUmWWbyo26s3/JibAKvQs9H1cdFz1zVezsMAa2gTp9fOy8W6OWhpbleS5IfbFlhG0TN9XDJyRs8JVjJUYdcK+XvC1apopxiwtg1WOhqMWdDCUtX0uoxqvfVUrIXq/UrA2jZY/Q9c/Q4sz6rLGCjX9m7PRrufB1grBGv5JZHeEX7hdKWKind3hRkrIyzz8rUr9zvWesiZn3BTscLfgmX3k9Qdpd1Orfdn6PfrkpqzoOGHAywTrENkPKt20UEucf4QjAnNSXr3BB0itgtWv0xd35vEGbT275Xmo3o1vFFC1AE/0veA1W/Dz78FS6nBLuPRobw2Mxrd8CNtPx8rG+lB8w5YRrnr0MrlCo1J+JG2D1ZoJv/2gw77feO1n/I0A5Zd7tpX80+bRq9+xY/0HWDthy1Sl4hVRtHtfNY3T8F+FCxnuWsZj26fUWq6X8qP9D2pycd6wcdo5ebNlLuW8WhxOPX2cpryI30RWEm2hCy9+aSn+dIdc+wHd1afO4NrYQtgvXVJFS8iS22XGzmzG9Q5pNMhezlKyVv/wtTkyl/2zBquvc2CJQscSUcpP9LXgfVI74vIGg5EnIdSfaNziOKQxYkf5FvBejxOZsjPD8N71H3Ocg8Wn3Swwsk52lfDhX270DYLVls5Yf8CySvLUh8nE/ju74DVJLRIAqyZRry5PKL8BlhogDWniZNgJWAB1kcnKcT2HbAA66OTxH2wD7AA66OThD1KgEXO+0dvfe6rEb3+jofaRJicWOHnwKoBC7A+M4mvlQcBLMD6zCQHcVoQsADr7Yur8XGhXm8dsABr6cWpF/uj4/aSJBWsG8YHrJmLD0Es8t4d46pMnpuXYOUR3ZcBa+7ivXIu3h5XxsPS91Jy74ShAWvBxbvhXLw1zlNLpGFowHrn4mCouGCMGxoLBBj668F6/xKJT5SqOVpK/l+AeQnp/IBF5Vhz8Wri3GglPwIMjfaTIHQwne9eYGi0n2U3RBNY+RVGRftp2szoMyuLMCraL/Kx9js3VglGRftVol8SWcftj1eMivZbsNpa7UqhmfPtilHRPpaaXHZ1scoKo6J9FCw0tOaf5byjof2V1GQ0NMBCAyw0wEIDLIyABlhogIUGWBgGDbDQVgIW5kAjVogGWGiAhWHQAAsNsNAAC8OgARYaYKEBFoZB+yRYmAONWCEaYKEBFoZBAyw0wEIDLAyDBlhogIUGWBgG7ZNgYQ40YoVogIUGWBgGDbDQAAsNsDAMGmChARYaYGEYtE+ChTnQiBWiARYaYGEYNMBCAyw0wMIwaICFBlhogIVh0D4JFuZAI1aIBlhogIVh0AALDbDQAAvDoAEWGmChARaGQfskWJgDjVghGmChARaGQQMsNMBCAywMgwZYaICFBlgYBu2TYGEONGKFaICFBlgYBg2w0AALDbAwDBpgoQEWGmBhGLRPgoU50IgVogEWGmBhGDTAQgMsNMDCMGiAhQZYaICFYdA+CRbmQCNWiAZYaICFYdAACw2w0AALw6ABFhpgoQEWhkH7JFiYA41YIRpgoQEWhkEDLDTAQgMsDIMGWGiAhQZYGAbtk2BhDjRihWiAhQZYGAYNsNAACw2wMAwaYKEBFhpgYRi0D2p/BBgAdvm9Pq2H7sMAAAAASUVORK5CYII=';
+	var _this = this;
+
+	/**
+	 * プレビュー用の簡易なHTMLを生成する
+	 */
+	this.mkPreviewHtml = function( fieldData, mod, callback ){
+		var rtn = {}
+		if( typeof(fieldData) === typeof({}) ){
+			rtn = fieldData;
+		}
+		_resMgr.getResource( rtn.resKeyPng, function(res){
+			rtn.PngPath = 'data:'+res.type+';base64,' + res.base64;
+			if( !res.base64 ){
+				// ↓ ダミーの Sample Image
+				rtn.PngPath = _imgDummy;
+			}
+			rtn = $('<img src="'+rtn.PngPath+'" />');
+			rtn.css({
+				'max-width': 200,
+				'max-height': 200
+			});
+
+			callback( rtn.get(0).outerHTML );
+		} );
+		return;
+	}
+
+	/**
+	 * データを正規化する
+	 */
+	this.normalizeData = function( fieldData, mode ){
+		var rtn = fieldData;
+		if( typeof(fieldData) !== typeof({}) ){
+			rtn = {
+				"resKey":'',
+				"path":'about:blank',
+				"resKeyPng":'',
+				"PngPath":'',
+				"resKeyHtml":'',
+				"HtmlPath":''
+			};
+		}
+		return rtn;
+	}
+
+	/**
+	 * エディタUIを生成
+	 */
+	this.mkEditor = function( mod, data, elm, callback ){
+		var rtn = $('<div>');
+		var _this = this;
+		var $DL_link = "", DL_file = "";
+		if( typeof(data) !== typeof({}) ){ data = {}; }
+		if( typeof(data.resKey) !== typeof('') ){
+			data.resKey = '';
+		}else{
+			_resMgr.getResource( data.resKey, function(res){
+				if(typeof res.base64 !== "undefined"){
+					/* for Browser */
+					// DL_file = res.publicFilename + '.' + res.ext;
+					// var DL_data = 'data:' +res.type + ';base64,'+ res.base64;
+					// DL_link = '<a href="' + DL_data + '" download="' + res.publicFilename + '">' + "Download" + '</a>';
+
+					/* for node-webkit */
+					DL_file = res.publicFilename + '.' + res.ext;
+					var DL_data = res.base64;
+					$DL_link = $('<div data-psd-info>');
+					$DL_link.html('')
+					.append($('<input type="button" class="download" value="Download" />')
+						.attr({
+							'data-psd-resKey': data.resKey
+						})
+						.click(function(){
+							var resKey = $(this).attr('data-psd-resKey');
+							var $chooser = $('#nw_download');
+							$chooser.nwsaveas = DL_file;
+							// console.log('chooser', $chooser);
+							$chooser.click();
+							$chooser.bind('change', function(evt){
+								// console.log('evt', evt);
+						    // $chooser.addEventListener("change", function(evt) {
+						    var dlFilePath = $(this).val();
+						    $chooser.nwdirectory = dlFilePath;
+						    // console.log('directory', dlFilePath);
+						    $(this).val('');
+						    // console.log("white");
+						    _this.callGpi(
+						      {
+						        'api': 'openOuternalEditor',
+						        'data': {'base64': DL_data, 'dlFilePath': dlFilePath + '/'+ DL_file}
+						      } ,
+						      function(output){
+						        return;
+						      }
+						    );
+							});
+						})
+					).append($('<input id="nw_download" type="file" style="display:none" nwworkingdir="" nwsaveas="" nwdirectory="" />'));
+				}
+			});
+		}
+		if( typeof(data.resKeyPng) !== typeof('') ){
+			data.resKeyPng = '';
+		}
+		// if( typeof(data.original) !== typeof({}) ){ data.original = {}; }
+		_resMgr.getResource( data.resKeyPng, function(res){
+			// console.log(res);
+			var PngPath = 'data:'+res.type+';base64,' + res.base64;
+			if( !res.base64 ){
+				// ↓ ダミーの Sample Image
+				PngPath = _imgDummy;
+			}
+
+			var $img = $('<img class="psd-c-img">');
+			var $btnOK = $('.btn-primary');
+			rtn.append( $img
+				.attr({
+					"src": PngPath ,
+					"data-size": res.size ,
+					"data-extension": res.ext,
+					"data-mime-type": res.type,
+					"data-base64": res.base64
+				})
+				.css({
+					'min-width':'100px',
+					'max-width':'100%',
+					'min-height':'100px',
+					'max-height':'200px'
+				})
+			);
+			rtn.append( $('<input>')
+				.attr({
+					"name":mod.name ,
+					"type":"file",
+					"webkitfile":"webkitfile",
+					"accept":"image/vnd.adobe.photoshop"
+				})
+				.css({'width':'100%'})
+				.bind('change', function(e){
+					var psdFileInfo = e.target.files[0];
+					var realpathSelected = $(this).val();
+					var resInfo = new resouce();
+					if( realpathSelected ){
+						resInfo.readSelectedLocalFile(psdFileInfo, function(obj){
+							$btnOK.prop('disabled', true); // ボタン無効化
+							var realpathSelected;
+							var $dom = $(elm);
+							if( typeof(data) !== typeof({}) ){
+								data = {};
+							}
+							if( typeof(data.resKey) !== typeof('') ){
+								data.resKey = '';
+							}
+							it79.fnc(
+								data,
+								[
+									// PSD登録
+									function(it1, data){
+										_resMgr.getResource(data.resKey, function(result){
+											if( result === false ){
+												_resMgr.addResource(function(newResKey){
+													data.resKey = newResKey;
+													it1.next(data);
+												});
+												return;
+											}
+											it1.next(data);
+										});
+									} ,
+									function(it1, data){
+										// resInfo.src = obj.dataUri;
+										resInfo.base64 = obj.base64;
+										_resMgr.updateResource( data.resKey, resInfo, function(){
+											_resMgr.getResourcePublicPath( data.resKey, function(publicPath){
+												data.path = publicPath;
+												_resMgr.resetBinFromBase64( data.resKey, function(){
+													$elem = $("[data-broccoli-edit-window-field-name='image_src']");
+													$elem.data('resKey', data.resKey);
+													it1.next(data);
+												});
+											});
+										} );
+										return;
+									} ,
+									// /PSD登録
+									function(it1, data){
+										_this.callGpi(
+											{
+												'api': 'convertPSD',
+												'data': data
+											},
+											function(result){
+												$btnOK.prop('disabled', false); // ボタン無効化解除
+												$elem = $("[data-broccoli-edit-window-field-name='image_src']");
+												$elem.data('resKeyPng', result.resKeyPng);
+												$elem.data('PngPath', result.PngPath);
+												$elem.data('PngInfo', result.PngInfo);
+
+												$elem.data('resKeyHtml', result.resKeyHtml);
+												$elem.data('HtmlPath', result.HtmlPath);
+												$elem.data('isChanged', true);
+												// console.log(result.PngInfo);
+												var base64Png = 'data:image/png;base64,' + result.PngInfo.base64;
+												$('.psd-c-img').attr({"src": base64Png});
+												// console.log(result);
+												it1.next(data);
+											}
+										);
+									} ,
+									function(it1, data){
+										callback(data);
+										it1.next(data);
+									}
+								]
+							);
+						});
+					}
+				})
+			);
+			rtn.append(
+					$('<div>')
+						.append( $('<span>')
+							.text('PSDファイル名')
+						)
+						.append( $('<input>')
+							.attr({
+								"name":mod.name+'-publicFilename' ,
+								"type":"text",
+								"placeholder": "PSD file name",
+								"readonly": "readonly"
+							}).val(DL_file)
+							// .val( (typeof(res.publicFilename)==typeof('') ? res.publicFilename : '') )
+				)
+			);
+			rtn.append(
+					$('<div>').append($DL_link)
+			);
+			$(elm).html(rtn);
+
+			setTimeout(function(){ callback(); }, 0);
+		} );
+		return;
+	}
+
+	/**
+	 * データを複製する
+	 */
+	this.duplicateData = function( data, callback ){
+		data = JSON.parse( JSON.stringify( data ) );
+		it79.fnc(
+			data,
+			[
+				function(it1, data){
+					_resMgr.duplicateResource( data.resKey, function(newResKey){
+						data.resKey = newResKey;
+						it1.next(data);
+					} );
+				} ,
+				function(it1, data){
+					_resMgr.getResourcePublicPath( data.resKey, function(publicPath){
+						data.PngPath = publicPath;
+						it1.next(data);
+					} );
+				} ,
+				function(it1, data){
+					callback(data);
+					it1.next(data);
+				}
+			]
+		);
+		return;
+	}
+
+	/**
+	 * エディタUIで編集した内容を保存
+	 */
+	this.saveEditorContent = function( elm, data, mod, callback ){
+		// console.log('saveEditorContent', elm, data, mod);
+		// $elem = $("[data-broccoli-edit-window-field-name='image_src']");
+		$elem = $(elm);
+		if($elem.data('isChanged') === true){
+			// PSDの変更あり
+			// if(realpathSelected){
+			data.PngPath = $elem.data('PngPath');
+			data.HtmlPath = $elem.data('HtmlPath');
+
+			data.resKey = $elem.data('resKey');
+			data.resKeyPng = $elem.data('resKeyPng');
+			data.resKeyHtml = $elem.data('resKeyHtml');
+			_resMgr.getResource(data.resKey,function(){
+				_resMgr.getResource(data.resKeyPng,function(){
+					_resMgr.getResource(data.resKeyHtml,function(){
+							callback(data);
+					});
+				});
+			});
+		}else{
+			callback(data);
+		}
+
+
+		return;
+	}// this.saveEditorContent()
+
+}
+
+},{"br-resouce":2,"iterate79":4,"m-log":5,"m-util":19,"phpjs":21}],2:[function(require,module,exports){
+module.exports = function() {
+  this.ext;
+  this.type;
+  this.size;
+  this.base64;
+  this.isPrivateMaterial = false;
+  this.publicFilename;
+
+  // クライアント側の選択ファイルからResourceDbを作成
+  this.readSelectedLocalFile = function(fileInfo, callback) {
+    require('m-util');
+    this.publicFilename = (fileInfo.name).uGetFileName();
+    this.size = fileInfo.size;
+    this.ext = (fileInfo.name).uGetFileExt();
+    this.type = fileInfo.type;
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+      dataUri = evt.target.result;
+      callback({
+        dataUri: dataUri,
+        base64: (dataUri).replace(new RegExp('^data\\:[^\\;]*\\;base64\\,'), '')
+      });
+    }
+    reader.onerror = function(error) {
+      console.log(error);
+    };
+    reader.readAsDataURL(fileInfo);
+  }
+
+  // 要らないキーを削除
+  this.fixed = function(obj) {
+    var fixedObj = {};
+    for (k in obj) {
+      if (typeof obj[k] !== "undefined" || typeof obj[k] !== "function") {
+        fixedObj[k] = obj[k];
+      }
+    }
+    return fixedObj;
+  }
+}
+
+},{"m-util":19}],3:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            var source = ev.source;
+            if ((source === window || source === null) && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],4:[function(require,module,exports){
 /**
  * node-iterate79
  */
@@ -74,13 +497,1021 @@
 
 })(exports);
 
-},{}],2:[function(require,module,exports){
-(function (global){
-// This file is generated by `make build`.
-// Do NOT edit by hand.
+},{}],5:[function(require,module,exports){
+module.exports = require('./libs/log');
+
+},{"./libs/log":6}],6:[function(require,module,exports){
+module.exports = new(function() {
+
+    'use strict';
+    var colors = require('colors');
+    var colorTheme = {
+        silly: 'rainbow',
+        info: 'white',
+        input: 'magenta',
+        verbose: ['yellow', 'bgBlue'],
+        prompt: ['grey', 'bold'],
+        data: 'grey',
+        help: 'blue',
+        warn: 'yellow',
+        debug: 'red',
+        error: ['red', 'underline']
+    }
+
+    this.setColorTheme = function(colorTheme) {
+      for(var i in colorTheme){
+        // console.log('i', i);
+        var theme = "";
+        if(typeof colorTheme[i] === 'string'){
+          theme = '"'+colorTheme[i] + '"';
+          eval('colors.setTheme({' + i + ':' + theme + '});');
+        }else{
+          var v = "";
+          var aryVal = (colorTheme[i]).toString().split(',');
+          for (var x=0; x < aryVal.length; x++){
+            if(x > 0) v += ',';
+            v += '"' + aryVal[x] + '"';
+          }
+          eval('theme = {' + i + ':['+ v +']}');
+          colors.setTheme(theme);
+        }
+      }
+    }
+    this.setColorTheme(colorTheme);
+    this.getColorTheme = function() {
+      return colorTheme;
+    }
+
+    var format = require('date-format');
+    var DateTimeformat = '[hh:mm:ss.SSS]';
+    this.setDateTimeformat = function(format) {
+      DateTimeformat = format;
+    }
+    this.getDateTimeformat = function() {
+      return DateTimeformat;
+    }
+    this.getTime = function(){
+      return format.asString(DateTimeformat, new Date());
+    }
+
+    var isDebuggable = true;
+    this.setDebuggable = function(bool) {
+      isDebuggable = bool;
+    }
+
+    // Always Output
+    this.out = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        console.log(n);
+    }
+    this.silly = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).silly);
+        }
+    }
+    this.info = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).info);
+        }
+    }
+    this.input = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).input);
+        }
+    }
+    this.verbose = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).verbose);
+        }
+    }
+    this.prompt = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).prompt);
+        }
+    }
+    this.data = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).data);
+        }
+    }
+    this.help = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).help);
+        }
+    }
+    this.warn = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).warn);
+        }
+    }
+    this.debug = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).debug);
+        }
+    }
+    this.error = function(msg) {
+        var n = ""
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 0) n += ',';
+            n += JSON.stringify(arguments[i]);
+        }
+        if (isDebuggable) {
+            console.log((this.getTime() + n).error);
+        }
+    }
+})();
+
+},{"colors":11,"date-format":18}],7:[function(require,module,exports){
+/*
+
+The MIT License (MIT)
+
+Original Library 
+  - Copyright (c) Marak Squires
+
+Additional functionality
+ - Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+*/
+
+var colors = {};
+module['exports'] = colors;
+
+colors.themes = {};
+
+var ansiStyles = colors.styles = require('./styles');
+var defineProps = Object.defineProperties;
+
+colors.supportsColor = require('./system/supports-colors');
+
+if (typeof colors.enabled === "undefined") {
+  colors.enabled = colors.supportsColor;
+}
+
+colors.stripColors = colors.strip = function(str){
+  return ("" + str).replace(/\x1B\[\d+m/g, '');
+};
+
+
+var stylize = colors.stylize = function stylize (str, style) {
+  if (!colors.enabled) {
+    return str+'';
+  }
+
+  return ansiStyles[style].open + str + ansiStyles[style].close;
+}
+
+var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
+var escapeStringRegexp = function (str) {
+  if (typeof str !== 'string') {
+    throw new TypeError('Expected a string');
+  }
+  return str.replace(matchOperatorsRe,  '\\$&');
+}
+
+function build(_styles) {
+  var builder = function builder() {
+    return applyStyle.apply(builder, arguments);
+  };
+  builder._styles = _styles;
+  // __proto__ is used because we must return a function, but there is
+  // no way to create a function with a different prototype.
+  builder.__proto__ = proto;
+  return builder;
+}
+
+var styles = (function () {
+  var ret = {};
+  ansiStyles.grey = ansiStyles.gray;
+  Object.keys(ansiStyles).forEach(function (key) {
+    ansiStyles[key].closeRe = new RegExp(escapeStringRegexp(ansiStyles[key].close), 'g');
+    ret[key] = {
+      get: function () {
+        return build(this._styles.concat(key));
+      }
+    };
+  });
+  return ret;
+})();
+
+var proto = defineProps(function colors() {}, styles);
+
+function applyStyle() {
+  var args = arguments;
+  var argsLen = args.length;
+  var str = argsLen !== 0 && String(arguments[0]);
+  if (argsLen > 1) {
+    for (var a = 1; a < argsLen; a++) {
+      str += ' ' + args[a];
+    }
+  }
+
+  if (!colors.enabled || !str) {
+    return str;
+  }
+
+  var nestedStyles = this._styles;
+
+  var i = nestedStyles.length;
+  while (i--) {
+    var code = ansiStyles[nestedStyles[i]];
+    str = code.open + str.replace(code.closeRe, code.open) + code.close;
+  }
+
+  return str;
+}
+
+function applyTheme (theme) {
+  for (var style in theme) {
+    (function(style){
+      colors[style] = function(str){
+        if (typeof theme[style] === 'object'){
+          var out = str;
+          for (var i in theme[style]){
+            out = colors[theme[style][i]](out);
+          }
+          return out;
+        }
+        return colors[theme[style]](str);
+      };
+    })(style)
+  }
+}
+
+colors.setTheme = function (theme) {
+  if (typeof theme === 'string') {
+    try {
+      colors.themes[theme] = require(theme);
+      applyTheme(colors.themes[theme]);
+      return colors.themes[theme];
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  } else {
+    applyTheme(theme);
+  }
+};
+
+function init() {
+  var ret = {};
+  Object.keys(styles).forEach(function (name) {
+    ret[name] = {
+      get: function () {
+        return build([name]);
+      }
+    };
+  });
+  return ret;
+}
+
+var sequencer = function sequencer (map, str) {
+  var exploded = str.split(""), i = 0;
+  exploded = exploded.map(map);
+  return exploded.join("");
+};
+
+// custom formatter methods
+colors.trap = require('./custom/trap');
+colors.zalgo = require('./custom/zalgo');
+
+// maps
+colors.maps = {};
+colors.maps.america = require('./maps/america');
+colors.maps.zebra = require('./maps/zebra');
+colors.maps.rainbow = require('./maps/rainbow');
+colors.maps.random = require('./maps/random')
+
+for (var map in colors.maps) {
+  (function(map){
+    colors[map] = function (str) {
+      return sequencer(colors.maps[map], str);
+    }
+  })(map)
+}
+
+defineProps(colors, init());
+},{"./custom/trap":8,"./custom/zalgo":9,"./maps/america":12,"./maps/rainbow":13,"./maps/random":14,"./maps/zebra":15,"./styles":16,"./system/supports-colors":17}],8:[function(require,module,exports){
+module['exports'] = function runTheTrap (text, options) {
+  var result = "";
+  text = text || "Run the trap, drop the bass";
+  text = text.split('');
+  var trap = {
+    a: ["\u0040", "\u0104", "\u023a", "\u0245", "\u0394", "\u039b", "\u0414"],
+    b: ["\u00df", "\u0181", "\u0243", "\u026e", "\u03b2", "\u0e3f"],
+    c: ["\u00a9", "\u023b", "\u03fe"],
+    d: ["\u00d0", "\u018a", "\u0500" , "\u0501" ,"\u0502", "\u0503"],
+    e: ["\u00cb", "\u0115", "\u018e", "\u0258", "\u03a3", "\u03be", "\u04bc", "\u0a6c"],
+    f: ["\u04fa"],
+    g: ["\u0262"],
+    h: ["\u0126", "\u0195", "\u04a2", "\u04ba", "\u04c7", "\u050a"],
+    i: ["\u0f0f"],
+    j: ["\u0134"],
+    k: ["\u0138", "\u04a0", "\u04c3", "\u051e"],
+    l: ["\u0139"],
+    m: ["\u028d", "\u04cd", "\u04ce", "\u0520", "\u0521", "\u0d69"],
+    n: ["\u00d1", "\u014b", "\u019d", "\u0376", "\u03a0", "\u048a"],
+    o: ["\u00d8", "\u00f5", "\u00f8", "\u01fe", "\u0298", "\u047a", "\u05dd", "\u06dd", "\u0e4f"],
+    p: ["\u01f7", "\u048e"],
+    q: ["\u09cd"],
+    r: ["\u00ae", "\u01a6", "\u0210", "\u024c", "\u0280", "\u042f"],
+    s: ["\u00a7", "\u03de", "\u03df", "\u03e8"],
+    t: ["\u0141", "\u0166", "\u0373"],
+    u: ["\u01b1", "\u054d"],
+    v: ["\u05d8"],
+    w: ["\u0428", "\u0460", "\u047c", "\u0d70"],
+    x: ["\u04b2", "\u04fe", "\u04fc", "\u04fd"],
+    y: ["\u00a5", "\u04b0", "\u04cb"],
+    z: ["\u01b5", "\u0240"]
+  }
+  text.forEach(function(c){
+    c = c.toLowerCase();
+    var chars = trap[c] || [" "];
+    var rand = Math.floor(Math.random() * chars.length);
+    if (typeof trap[c] !== "undefined") {
+      result += trap[c][rand];
+    } else {
+      result += c;
+    }
+  });
+  return result;
+
+}
+
+},{}],9:[function(require,module,exports){
+// please no
+module['exports'] = function zalgo(text, options) {
+  text = text || "   he is here   ";
+  var soul = {
+    "up" : [
+      '̍', '̎', '̄', '̅',
+      '̿', '̑', '̆', '̐',
+      '͒', '͗', '͑', '̇',
+      '̈', '̊', '͂', '̓',
+      '̈', '͊', '͋', '͌',
+      '̃', '̂', '̌', '͐',
+      '̀', '́', '̋', '̏',
+      '̒', '̓', '̔', '̽',
+      '̉', 'ͣ', 'ͤ', 'ͥ',
+      'ͦ', 'ͧ', 'ͨ', 'ͩ',
+      'ͪ', 'ͫ', 'ͬ', 'ͭ',
+      'ͮ', 'ͯ', '̾', '͛',
+      '͆', '̚'
+    ],
+    "down" : [
+      '̖', '̗', '̘', '̙',
+      '̜', '̝', '̞', '̟',
+      '̠', '̤', '̥', '̦',
+      '̩', '̪', '̫', '̬',
+      '̭', '̮', '̯', '̰',
+      '̱', '̲', '̳', '̹',
+      '̺', '̻', '̼', 'ͅ',
+      '͇', '͈', '͉', '͍',
+      '͎', '͓', '͔', '͕',
+      '͖', '͙', '͚', '̣'
+    ],
+    "mid" : [
+      '̕', '̛', '̀', '́',
+      '͘', '̡', '̢', '̧',
+      '̨', '̴', '̵', '̶',
+      '͜', '͝', '͞',
+      '͟', '͠', '͢', '̸',
+      '̷', '͡', ' ҉'
+    ]
+  },
+  all = [].concat(soul.up, soul.down, soul.mid),
+  zalgo = {};
+
+  function randomNumber(range) {
+    var r = Math.floor(Math.random() * range);
+    return r;
+  }
+
+  function is_char(character) {
+    var bool = false;
+    all.filter(function (i) {
+      bool = (i === character);
+    });
+    return bool;
+  }
+  
+
+  function heComes(text, options) {
+    var result = '', counts, l;
+    options = options || {};
+    options["up"] =   typeof options["up"]   !== 'undefined' ? options["up"]   : true;
+    options["mid"] =  typeof options["mid"]  !== 'undefined' ? options["mid"]  : true;
+    options["down"] = typeof options["down"] !== 'undefined' ? options["down"] : true;
+    options["size"] = typeof options["size"] !== 'undefined' ? options["size"] : "maxi";
+    text = text.split('');
+    for (l in text) {
+      if (is_char(l)) {
+        continue;
+      }
+      result = result + text[l];
+      counts = {"up" : 0, "down" : 0, "mid" : 0};
+      switch (options.size) {
+      case 'mini':
+        counts.up = randomNumber(8);
+        counts.mid = randomNumber(2);
+        counts.down = randomNumber(8);
+        break;
+      case 'maxi':
+        counts.up = randomNumber(16) + 3;
+        counts.mid = randomNumber(4) + 1;
+        counts.down = randomNumber(64) + 3;
+        break;
+      default:
+        counts.up = randomNumber(8) + 1;
+        counts.mid = randomNumber(6) / 2;
+        counts.down = randomNumber(8) + 1;
+        break;
+      }
+
+      var arr = ["up", "mid", "down"];
+      for (var d in arr) {
+        var index = arr[d];
+        for (var i = 0 ; i <= counts[index]; i++) {
+          if (options[index]) {
+            result = result + soul[index][randomNumber(soul[index].length)];
+          }
+        }
+      }
+    }
+    return result;
+  }
+  // don't summon him
+  return heComes(text, options);
+}
+
+},{}],10:[function(require,module,exports){
+var colors = require('./colors');
+
+module['exports'] = function () {
+
+  //
+  // Extends prototype of native string object to allow for "foo".red syntax
+  //
+  var addProperty = function (color, func) {
+    String.prototype.__defineGetter__(color, func);
+  };
+
+  var sequencer = function sequencer (map, str) {
+      return function () {
+        var exploded = this.split(""), i = 0;
+        exploded = exploded.map(map);
+        return exploded.join("");
+      }
+  };
+
+  addProperty('strip', function () {
+    return colors.strip(this);
+  });
+
+  addProperty('stripColors', function () {
+    return colors.strip(this);
+  });
+
+  addProperty("trap", function(){
+    return colors.trap(this);
+  });
+
+  addProperty("zalgo", function(){
+    return colors.zalgo(this);
+  });
+
+  addProperty("zebra", function(){
+    return colors.zebra(this);
+  });
+
+  addProperty("rainbow", function(){
+    return colors.rainbow(this);
+  });
+
+  addProperty("random", function(){
+    return colors.random(this);
+  });
+
+  addProperty("america", function(){
+    return colors.america(this);
+  });
+
+  //
+  // Iterate through all default styles and colors
+  //
+  var x = Object.keys(colors.styles);
+  x.forEach(function (style) {
+    addProperty(style, function () {
+      return colors.stylize(this, style);
+    });
+  });
+
+  function applyTheme(theme) {
+    //
+    // Remark: This is a list of methods that exist
+    // on String that you should not overwrite.
+    //
+    var stringPrototypeBlacklist = [
+      '__defineGetter__', '__defineSetter__', '__lookupGetter__', '__lookupSetter__', 'charAt', 'constructor',
+      'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'toLocaleString', 'toString', 'valueOf', 'charCodeAt',
+      'indexOf', 'lastIndexof', 'length', 'localeCompare', 'match', 'replace', 'search', 'slice', 'split', 'substring',
+      'toLocaleLowerCase', 'toLocaleUpperCase', 'toLowerCase', 'toUpperCase', 'trim', 'trimLeft', 'trimRight'
+    ];
+
+    Object.keys(theme).forEach(function (prop) {
+      if (stringPrototypeBlacklist.indexOf(prop) !== -1) {
+        console.log('warn: '.red + ('String.prototype' + prop).magenta + ' is probably something you don\'t want to override. Ignoring style name');
+      }
+      else {
+        if (typeof(theme[prop]) === 'string') {
+          colors[prop] = colors[theme[prop]];
+          addProperty(prop, function () {
+            return colors[theme[prop]](this);
+          });
+        }
+        else {
+          addProperty(prop, function () {
+            var ret = this;
+            for (var t = 0; t < theme[prop].length; t++) {
+              ret = colors[theme[prop][t]](ret);
+            }
+            return ret;
+          });
+        }
+      }
+    });
+  }
+
+  colors.setTheme = function (theme) {
+    if (typeof theme === 'string') {
+      try {
+        colors.themes[theme] = require(theme);
+        applyTheme(colors.themes[theme]);
+        return colors.themes[theme];
+      } catch (err) {
+        console.log(err);
+        return err;
+      }
+    } else {
+      applyTheme(theme);
+    }
+  };
+
+};
+},{"./colors":7}],11:[function(require,module,exports){
+var colors = require('./colors');
+module['exports'] = colors;
+
+// Remark: By default, colors will add style properties to String.prototype
 //
-// Make function changes in ./functions and
-// generator changes in ./lib/phpjsutil.js
+// If you don't wish to extend String.prototype you can do this instead and native String will not be touched
+//
+//   var colors = require('colors/safe);
+//   colors.red("foo")
+//
+//
+require('./extendStringPrototype')();
+},{"./colors":7,"./extendStringPrototype":10}],12:[function(require,module,exports){
+var colors = require('../colors');
+
+module['exports'] = (function() {
+  return function (letter, i, exploded) {
+    if(letter === " ") return letter;
+    switch(i%3) {
+      case 0: return colors.red(letter);
+      case 1: return colors.white(letter)
+      case 2: return colors.blue(letter)
+    }
+  }
+})();
+},{"../colors":7}],13:[function(require,module,exports){
+var colors = require('../colors');
+
+module['exports'] = (function () {
+  var rainbowColors = ['red', 'yellow', 'green', 'blue', 'magenta']; //RoY G BiV
+  return function (letter, i, exploded) {
+    if (letter === " ") {
+      return letter;
+    } else {
+      return colors[rainbowColors[i++ % rainbowColors.length]](letter);
+    }
+  };
+})();
+
+
+},{"../colors":7}],14:[function(require,module,exports){
+var colors = require('../colors');
+
+module['exports'] = (function () {
+  var available = ['underline', 'inverse', 'grey', 'yellow', 'red', 'green', 'blue', 'white', 'cyan', 'magenta'];
+  return function(letter, i, exploded) {
+    return letter === " " ? letter : colors[available[Math.round(Math.random() * (available.length - 1))]](letter);
+  };
+})();
+},{"../colors":7}],15:[function(require,module,exports){
+var colors = require('../colors');
+
+module['exports'] = function (letter, i, exploded) {
+  return i % 2 === 0 ? letter : colors.inverse(letter);
+};
+},{"../colors":7}],16:[function(require,module,exports){
+/*
+The MIT License (MIT)
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+*/
+
+var styles = {};
+module['exports'] = styles;
+
+var codes = {
+  reset: [0, 0],
+
+  bold: [1, 22],
+  dim: [2, 22],
+  italic: [3, 23],
+  underline: [4, 24],
+  inverse: [7, 27],
+  hidden: [8, 28],
+  strikethrough: [9, 29],
+
+  black: [30, 39],
+  red: [31, 39],
+  green: [32, 39],
+  yellow: [33, 39],
+  blue: [34, 39],
+  magenta: [35, 39],
+  cyan: [36, 39],
+  white: [37, 39],
+  gray: [90, 39],
+  grey: [90, 39],
+
+  bgBlack: [40, 49],
+  bgRed: [41, 49],
+  bgGreen: [42, 49],
+  bgYellow: [43, 49],
+  bgBlue: [44, 49],
+  bgMagenta: [45, 49],
+  bgCyan: [46, 49],
+  bgWhite: [47, 49],
+
+  // legacy styles for colors pre v1.0.0
+  blackBG: [40, 49],
+  redBG: [41, 49],
+  greenBG: [42, 49],
+  yellowBG: [43, 49],
+  blueBG: [44, 49],
+  magentaBG: [45, 49],
+  cyanBG: [46, 49],
+  whiteBG: [47, 49]
+
+};
+
+Object.keys(codes).forEach(function (key) {
+  var val = codes[key];
+  var style = styles[key] = [];
+  style.open = '\u001b[' + val[0] + 'm';
+  style.close = '\u001b[' + val[1] + 'm';
+});
+},{}],17:[function(require,module,exports){
+(function (process){
+/*
+The MIT License (MIT)
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+*/
+
+var argv = process.argv;
+
+module.exports = (function () {
+  if (argv.indexOf('--no-color') !== -1 ||
+    argv.indexOf('--color=false') !== -1) {
+    return false;
+  }
+
+  if (argv.indexOf('--color') !== -1 ||
+    argv.indexOf('--color=true') !== -1 ||
+    argv.indexOf('--color=always') !== -1) {
+    return true;
+  }
+
+  if (process.stdout && !process.stdout.isTTY) {
+    return false;
+  }
+
+  if (process.platform === 'win32') {
+    return true;
+  }
+
+  if ('COLORTERM' in process.env) {
+    return true;
+  }
+
+  if (process.env.TERM === 'dumb') {
+    return false;
+  }
+
+  if (/^screen|^xterm|^vt100|color|ansi|cygwin|linux/i.test(process.env.TERM)) {
+    return true;
+  }
+
+  return false;
+})();
+}).call(this,require("1YiZ5S"))
+},{"1YiZ5S":3}],18:[function(require,module,exports){
+"use strict";
+
+module.exports = asString
+asString.asString = asString
+
+asString.ISO8601_FORMAT = "yyyy-MM-dd hh:mm:ss.SSS";
+asString.ISO8601_WITH_TZ_OFFSET_FORMAT = "yyyy-MM-ddThh:mm:ssO";
+asString.DATETIME_FORMAT = "dd MM yyyy hh:mm:ss.SSS";
+asString.ABSOLUTETIME_FORMAT = "hh:mm:ss.SSS";
+
+function padWithZeros(vNumber, width) {
+  var numAsString = vNumber + "";
+  while (numAsString.length < width) {
+    numAsString = "0" + numAsString;
+  }
+  return numAsString;
+}
+  
+function addZero(vNumber) {
+  return padWithZeros(vNumber, 2);
+}
+
+/**
+ * Formats the TimeOffest
+ * Thanks to http://www.svendtofte.com/code/date_format/
+ * @private
+ */
+function offset(date) {
+  // Difference to Greenwich time (GMT) in hours
+  var os = Math.abs(date.getTimezoneOffset());
+  var h = String(Math.floor(os/60));
+  var m = String(os%60);
+  if (h.length == 1) {
+    h = "0" + h;
+  }
+  if (m.length == 1) {
+    m = "0" + m;
+  }
+  return date.getTimezoneOffset() < 0 ? "+"+h+m : "-"+h+m;
+}
+
+function asString(/*format,*/ date) {
+  var format = asString.ISO8601_FORMAT;
+  if (typeof(date) === "string") {
+    format = arguments[0];
+    date = arguments[1];
+  }
+  
+  if (!date) {
+    date = new Date();
+  }
+
+  var vDay = addZero(date.getDate());
+  var vMonth = addZero(date.getMonth()+1);
+  var vYearLong = addZero(date.getFullYear());
+  var vYearShort = addZero(date.getFullYear().toString().substring(2,4));
+  var vYear = (format.indexOf("yyyy") > -1 ? vYearLong : vYearShort);
+  var vHour  = addZero(date.getHours());
+  var vMinute = addZero(date.getMinutes());
+  var vSecond = addZero(date.getSeconds());
+  var vMillisecond = padWithZeros(date.getMilliseconds(), 3);
+  var vTimeZone = offset(date);
+  var formatted = format
+    .replace(/dd/g, vDay)
+    .replace(/MM/g, vMonth)
+    .replace(/y{1,4}/g, vYear)
+    .replace(/hh/g, vHour)
+    .replace(/mm/g, vMinute)
+    .replace(/ss/g, vSecond)
+    .replace(/SSS/g, vMillisecond)
+    .replace(/O/g, vTimeZone);
+  return formatted;
+
+};
+
+},{}],19:[function(require,module,exports){
+module.exports = new(function() {
+
+  // ヒアドキュメント用
+  String.prototype.uHereDoc = function() {
+    return this.replace(/^function\s?\(\)\s?\{\/\*/gi, "").replace(/\*\/;?\}$/gi, "");
+  };
+  // スラッシュ挿入
+  String.prototype.uAddslashes = function(s) {
+      var reg = new RegExp(s, 'g');
+      return this.replace(reg, "\\" + s);
+    }
+    // 文字列の繰り返し
+  String.prototype.uRepeat = function(i) {
+    var repeatStr = this;
+    var str = "";
+    while (i > 0) {
+      str += repeatStr;
+      i--;
+    }
+    return str;
+  }
+
+  // パスからファイル情報返す @return ['ファイル名','拡張子','拡張子抜きファイル名']
+  String.prototype.uGetFileInfo = function() {
+      var file_path = this;
+      // Extract a file name with the extension.
+      var name_ext = file_path.substring(file_path.lastIndexOf("/") + 1, file_path.length);
+      // Extract only the extension of the file.
+      var ext = name_ext.substring(name_ext.lastIndexOf(".") + 1, name_ext.length);
+      // Extract only the name part of the file.
+      var name = name_ext.substring(0, name_ext.indexOf("."));
+      array = new Array(name_ext, ext, name);
+      return array;
+    }
+    // パスからファイル名を返す
+  String.prototype.uGetFileNameExt = function() {
+      file_path = this;
+      return file_path.uGetFileInfo()[0];
+    }
+    // パスから拡張子を返す
+  String.prototype.uGetFileExt = function() {
+      file_path = this;
+      return file_path.uGetFileInfo()[1];
+    }
+    // パスから拡張子抜きファイル名を返す
+  String.prototype.uGetFileName = function() {
+      file_path = this;
+      return file_path.uGetFileInfo()[2];
+    }
+    // Math.floor(x)小数点以下指定
+  Math.uFloor = function(x, scale) {
+      if (typeof scale !== "undefined" && scale !== null) {
+        var s = Math.pow(10, scale)
+        return Math.floor(x * s) / s;
+      }
+      return Math.floor(x);
+    }
+    // Math.ceil(x)小数点以下指定
+  Math.uCeil = function(x, scale) {
+      if (typeof scale !== "undefined" && scale !== null) {
+        var s = Math.pow(10, scale);
+        return Math.ceil(x * s) / s;
+      }
+      return Math.ceil(x);
+    }
+    // Math.round(x)小数点以下指定
+  Math.uRound = function(x, scale) {
+      if (typeof scale !== "undefined" && scale !== null) {
+        var s = Math.pow(10, scale);
+        return Math.round(x * s) / s;
+      }
+      return Math.round(x);
+    }
+    // 左空白詰め（右寄せ）
+  uLpad = function(txt, pad) {
+    var c, i, t;
+    if (pad == null) {
+      pad = 40;
+    }
+    c = " ";
+    i = 0;
+    t = txt;
+    while (i <= pad - txt.length) {
+      t = c + t;
+      i++;
+    }
+    return t;
+  };
+  // 右空白詰め（左寄せ）
+  uRpad = function(txt, pad) {
+    var c, i, t;
+    if (pad == null) {
+      pad = 40;
+    }
+    c = " ";
+    i = 0;
+    t = txt;
+    while (i <= pad - txt.length) {
+      t += c;
+      i++;
+    }
+    return t;
+  };
+})();
+
+},{}],20:[function(require,module,exports){
+(function (global){
+// This file is generated by `make build`. 
+// Do NOT edit by hand. 
+// 
+// Make function changes in ./functions and 
+// generator changes in ./lib/phpjsutil.js 
 exports.XMLHttpRequest = {};
 exports.window = {window: {},document: {lastModified: 1388954399,getElementsByTagName: function(){return [];}},location: {href: ""}};
 exports.window.window = exports.window;
@@ -91,7 +1522,7 @@ exports.array = function () {
     } catch (e) {
       this.php_js = {};
     }
-
+  
     var arrInst, e, __, that = this,
       PHPJS_Array = function PHPJS_Array() {};
     mainArgs = arguments, p = this.php_js,
@@ -128,7 +1559,7 @@ exports.array = function () {
           }
           return -1;
         }
-
+  
         function Relator() {
           var Stack = [],
             Array = [];
@@ -156,7 +1587,7 @@ exports.array = function () {
       }());
     }
     // END REDUNDANT
-
+  
     if (p && p.ini && p.ini['phpjs.return_phpjs_arrays'].local_value.toLowerCase() === 'on') {
       if (!p.PHPJS_Array) {
         // We keep this Relator outside the class in case adding prototype methods below
@@ -230,7 +1661,7 @@ exports.array = function () {
           var _ = __.method(this),
             obj, func, ini, i = 0,
             kl = 0;
-
+  
           try {
             if (typeof funcname === 'function') {
               for (i = 0, kl = _.keys.length; i < kl; i++) {
@@ -286,7 +1717,7 @@ exports.array = function () {
           } catch (e) {
             return false;
           }
-
+  
           return this;
         };
         // Here we'll return actual arrays since most logical and practical for these functions to do this
@@ -412,7 +1843,7 @@ exports.array = function () {
 
 exports.array_change_key_case = function (array, cs) {
   var case_fn, key, tmp_ar = {};
-
+  
     if (Object.prototype.toString.call(array) === '[object Array]') {
       return array;
     }
@@ -426,7 +1857,7 @@ exports.array_change_key_case = function (array, cs) {
       }
       return tmp_ar;
     }
-
+  
     return false;
 };
 
@@ -436,11 +1867,11 @@ exports.array_chunk = function (input, size, preserve_keys) {
       c = -1,
       l = input.length || 0,
       n = [];
-
+  
     if (size < 1) {
       return null;
     }
-
+  
     if (Object.prototype.toString.call(input) === '[object Array]') {
       if (preserve_keys) {
         while (i < l) {
@@ -477,22 +1908,22 @@ exports.array_combine = function (keys, values) {
   var new_array = {},
       keycount = keys && keys.length,
       i = 0;
-
+  
     // input sanitation
     if (typeof keys !== 'object' || typeof values !== 'object' || // Only accept arrays or array-like objects
       typeof keycount !== 'number' || typeof values.length !== 'number' || !keycount) { // Require arrays to have a count
       return false;
     }
-
+  
     // number of elements does not match
     if (keycount != values.length) {
       return false;
     }
-
+  
     for (i = 0; i < keycount; i++) {
       new_array[keys[i]] = values[i];
     }
-
+  
     return new_array;
 };
 
@@ -500,7 +1931,7 @@ exports.array_count_values = function (array) {
   var tmp_arr = {},
       key = '',
       t = '';
-
+  
     var __getType = function(obj) {
       // Objects are php associative arrays.
       var t = typeof obj;
@@ -510,7 +1941,7 @@ exports.array_count_values = function (array) {
       }
       return t;
     };
-
+  
     var __countValue = function(value) {
       switch (typeof value) {
         case 'number':
@@ -526,7 +1957,7 @@ exports.array_count_values = function (array) {
           }
       }
     };
-
+  
     t = __getType(array);
     if (t === 'array') {
       for (key in array) {
@@ -535,7 +1966,7 @@ exports.array_count_values = function (array) {
         }
       }
     }
-
+  
     return tmp_arr;
 };
 
@@ -546,7 +1977,7 @@ exports.array_diff = function (arr1) {
       i = 1,
       k = '',
       arr = {};
-
+  
     arr1keys: for (k1 in arr1) {
       for (i = 1; i < argl; i++) {
         arr = arguments[i];
@@ -559,7 +1990,7 @@ exports.array_diff = function (arr1) {
         retArr[k1] = arr1[k1];
       }
     }
-
+  
     return retArr;
 };
 
@@ -570,7 +2001,7 @@ exports.array_diff_assoc = function (arr1) {
       i = 1,
       k = '',
       arr = {};
-
+  
     arr1keys: for (k1 in arr1) {
       for (i = 1; i < argl; i++) {
         arr = arguments[i];
@@ -583,7 +2014,7 @@ exports.array_diff_assoc = function (arr1) {
         retArr[k1] = arr1[k1];
       }
     }
-
+  
     return retArr;
 };
 
@@ -594,7 +2025,7 @@ exports.array_diff_key = function (arr1) {
       i = 1,
       k = '',
       arr = {};
-
+  
     arr1keys: for (k1 in arr1) {
       for (i = 1; i < argl; i++) {
         arr = arguments[i];
@@ -607,7 +2038,7 @@ exports.array_diff_key = function (arr1) {
         retArr[k1] = arr1[k1];
       }
     }
-
+  
     return retArr;
 };
 
@@ -621,7 +2052,7 @@ exports.array_diff_uassoc = function (arr1) {
       k = '';
     cb = (typeof cb === 'string') ? this.window[cb] : (Object.prototype.toString.call(cb) === '[object Array]') ? this.window[
       cb[0]][cb[1]] : cb;
-
+  
     arr1keys: for (k1 in arr1) {
       for (i = 1; i < arglm1; i++) {
         arr = arguments[i];
@@ -634,7 +2065,7 @@ exports.array_diff_uassoc = function (arr1) {
         retArr[k1] = arr1[k1];
       }
     }
-
+  
     return retArr;
 };
 
@@ -646,10 +2077,10 @@ exports.array_diff_ukey = function (arr1) {
       i = 1,
       k1 = '',
       k = '';
-
+  
     cb = (typeof cb === 'string') ? this.window[cb] : (Object.prototype.toString.call(cb) === '[object Array]') ? this.window[
       cb[0]][cb[1]] : cb;
-
+  
     arr1keys: for (k1 in arr1) {
       for (i = 1; i < arglm1; i++) {
         arr = arguments[i];
@@ -662,52 +2093,52 @@ exports.array_diff_ukey = function (arr1) {
         retArr[k1] = arr1[k1];
       }
     }
-
+  
     return retArr;
 };
 
 exports.array_fill = function (start_index, num, mixed_val) {
   var key, tmp_arr = {};
-
+  
     if (!isNaN(start_index) && !isNaN(num)) {
       for (key = 0; key < num; key++) {
         tmp_arr[(key + start_index)] = mixed_val;
       }
     }
-
+  
     return tmp_arr;
 };
 
 exports.array_fill_keys = function (keys, value) {
   var retObj = {},
       key = '';
-
+  
     for (key in keys) {
       retObj[keys[key]] = value;
     }
-
+  
     return retObj;
 };
 
 exports.array_filter = function (arr, func) {
   var retObj = {},
       k;
-
+  
     func = func || function(v) {
       return v;
     };
-
+  
     // Fix: Issue #73
     if (Object.prototype.toString.call(arr) === '[object Array]') {
       retObj = [];
     }
-
+  
     for (k in arr) {
       if (func(arr[k])) {
         retObj[k] = arr[k];
       }
     }
-
+  
     return retObj;
 };
 
@@ -719,7 +2150,7 @@ exports.array_intersect = function (arr1) {
       arr = {},
       i = 0,
       k = '';
-
+  
     arr1keys: for (k1 in arr1) {
       arrs: for (i = 1; i < argl; i++) {
         arr = arguments[i];
@@ -736,7 +2167,7 @@ exports.array_intersect = function (arr1) {
         continue arr1keys;
       }
     }
-
+  
     return retArr;
 };
 
@@ -748,7 +2179,7 @@ exports.array_intersect_assoc = function (arr1) {
       arr = {},
       i = 0,
       k = '';
-
+  
     arr1keys: for (k1 in arr1) {
       arrs: for (i = 1; i < argl; i++) {
         arr = arguments[i];
@@ -765,7 +2196,7 @@ exports.array_intersect_assoc = function (arr1) {
         continue arr1keys;
       }
     }
-
+  
     return retArr;
 };
 
@@ -777,7 +2208,7 @@ exports.array_intersect_key = function (arr1) {
       arr = {},
       i = 0,
       k = '';
-
+  
     arr1keys: for (k1 in arr1) {
       arrs: for (i = 1; i < argl; i++) {
         arr = arguments[i];
@@ -794,7 +2225,7 @@ exports.array_intersect_key = function (arr1) {
         continue arr1keys;
       }
     }
-
+  
     return retArr;
 };
 
@@ -807,10 +2238,10 @@ exports.array_intersect_uassoc = function (arr1) {
       i = 1,
       arr = {},
       k = '';
-
+  
     cb = (typeof cb === 'string') ? this.window[cb] : (Object.prototype.toString.call(cb) === '[object Array]') ? this.window[
       cb[0]][cb[1]] : cb;
-
+  
     arr1keys: for (k1 in arr1) {
       arrs: for (i = 1; i < arglm1; i++) {
         arr = arguments[i];
@@ -827,7 +2258,7 @@ exports.array_intersect_uassoc = function (arr1) {
         continue arr1keys;
       }
     }
-
+  
     return retArr;
 };
 
@@ -840,10 +2271,10 @@ exports.array_intersect_ukey = function (arr1) {
       i = 1,
       arr = {},
       k = '';
-
+  
     cb = (typeof cb === 'string') ? this.window[cb] : (Object.prototype.toString.call(cb) === '[object Array]') ? this.window[
       cb[0]][cb[1]] : cb;
-
+  
     arr1keys: for (k1 in arr1) {
       arrs: for (i = 1; i < arglm1; i++) {
         arr = arguments[i];
@@ -860,7 +2291,7 @@ exports.array_intersect_ukey = function (arr1) {
         continue arr1keys;
       }
     }
-
+  
     return retArr;
 };
 
@@ -868,7 +2299,7 @@ exports.array_key_exists = function (key, search) {
   if (!search || (search.constructor !== Array && search.constructor !== Object)) {
       return false;
     }
-
+  
     return key in search;
 };
 
@@ -878,11 +2309,11 @@ exports.array_keys = function (input, search_value, argStrict) {
       strict = !! argStrict,
       include = true,
       key = '';
-
+  
     if (input && typeof input === 'object' && input.change_key_case) { // Duck-type check for our own array()-created PHPJS_Array
       return input.keys(search_value, argStrict);
     }
-
+  
     for (key in input) {
       if (input.hasOwnProperty(key)) {
         include = true;
@@ -893,13 +2324,13 @@ exports.array_keys = function (input, search_value, argStrict) {
             include = false;
           }
         }
-
+  
         if (include) {
           tmp_arr[tmp_arr.length] = key;
         }
       }
     }
-
+  
     return tmp_arr;
 };
 
@@ -915,15 +2346,15 @@ exports.array_map = function (callback) {
       m = 0,
       tmp = [],
       tmp_ar = [];
-
+  
     while (i < j) {
       while (k < argc) {
         tmp[m++] = argv[k++][i];
       }
-
+  
       m = 0;
       k = 1;
-
+  
       if (callback) {
         if (typeof callback === 'string') {
           cb = glbl[callback];
@@ -938,10 +2369,10 @@ exports.array_map = function (callback) {
       } else {
         tmp_ar[i++] = tmp;
       }
-
+  
       tmp = [];
     }
-
+  
     return tmp_ar;
 };
 
@@ -957,14 +2388,14 @@ exports.array_merge = function () {
       ct = 0,
       toStr = Object.prototype.toString,
       retArr = true;
-
+  
     for (i = 0; i < argl; i++) {
       if (toStr.call(args[i]) !== '[object Array]') {
         retArr = false;
         break;
       }
     }
-
+  
     if (retArr) {
       retArr = [];
       for (i = 0; i < argl; i++) {
@@ -972,7 +2403,7 @@ exports.array_merge = function () {
       }
       return retArr;
     }
-
+  
     for (i = 0, ct = 0; i < argl; i++) {
       arg = args[i];
       if (toStr.call(arg) === '[object Array]') {
@@ -996,13 +2427,13 @@ exports.array_merge = function () {
 
 exports.array_multisort = function (arr) {
   var g, i, j, k, l, sal, vkey, elIndex, lastSorts, tmpArray, zlast;
-
+  
     var sortFlag = [0];
     var thingsToSort = [];
     var nLastSort = [];
     var lastSort = [];
     var args = arguments; // possibly redundant
-
+  
     var flags = {
       'SORT_REGULAR': 16,
       'SORT_NUMERIC': 17,
@@ -1010,14 +2441,14 @@ exports.array_multisort = function (arr) {
       'SORT_ASC': 32,
       'SORT_DESC': 40
     };
-
+  
     var sortDuplicator = function(a, b) {
       return nLastSort.shift();
     };
-
+  
     var sortFunctions = [
       [
-
+  
         function(a, b) {
           lastSort.push(a > b ? 1 : (a < b ? -1 : 0));
           return a > b ? 1 : (a < b ? -1 : 0);
@@ -1028,7 +2459,7 @@ exports.array_multisort = function (arr) {
         }
       ],
       [
-
+  
         function(a, b) {
           lastSort.push(a - b);
           return a - b;
@@ -1039,7 +2470,7 @@ exports.array_multisort = function (arr) {
         }
       ],
       [
-
+  
         function(a, b) {
           lastSort.push((a + '') > (b + '') ? 1 : ((a + '') < (b + '') ? -1 : 0));
           return (a + '') > (b + '') ? 1 : ((a + '') < (b + '') ? -1 : 0);
@@ -1050,15 +2481,15 @@ exports.array_multisort = function (arr) {
         }
       ]
     ];
-
+  
     var sortArrs = [
       []
     ];
-
+  
     var sortKeys = [
       []
     ];
-
+  
     // Store first argument into sortArrs and sortKeys if an Object.
     // First Argument should be either a Javascript Array or an Object, otherwise function would return FALSE like in PHP
     if (Object.prototype.toString.call(arr) === '[object Array]') {
@@ -1073,13 +2504,13 @@ exports.array_multisort = function (arr) {
     } else {
       return false;
     }
-
+  
     // arrMainLength: Holds the length of the first array. All other arrays must be of equal length, otherwise function would return FALSE like in PHP
     //
     // sortComponents: Holds 2 indexes per every section of the array that can be sorted. As this is the start, the whole array can be sorted.
     var arrMainLength = sortArrs[0].length;
     var sortComponents = [0, arrMainLength];
-
+  
     // Loop through all other arguments, checking lengths and sort flags of arrays and adding them to the above variables.
     var argl = arguments.length;
     for (j = 1; j < argl; j++) {
@@ -1113,11 +2544,11 @@ exports.array_multisort = function (arr) {
         return false;
       }
     }
-
+  
     for (i = 0; i !== arrMainLength; i++) {
       thingsToSort.push(true);
     }
-
+  
     // Sort all the arrays....
     for (i in sortArrs) {
       if (sortArrs.hasOwnProperty(i)) {
@@ -1126,7 +2557,7 @@ exports.array_multisort = function (arr) {
         elIndex = 0;
         nLastSort = [];
         lastSort = [];
-
+  
         // If there are no sortComponents, then no more sorting is neeeded. Copy the array back to the argument.
         if (sortComponents.length === 0) {
           if (Object.prototype.toString.call(arguments[i]) === '[object Array]') {
@@ -1147,10 +2578,10 @@ exports.array_multisort = function (arr) {
           delete sortKeys[i];
           continue;
         }
-
+  
         // Sort function for sorting. Either sorts asc or desc, regular/string or numeric.
         var sFunction = sortFunctions[(sortFlag[i] & 3)][((sortFlag[i] & 8) > 0) ? 1 : 0];
-
+  
         // Sort current array.
         for (l = 0; l !== sortComponents.length; l += 2) {
           tmpArray = sortArrs[i].slice(sortComponents[l], sortComponents[l + 1] + 1);
@@ -1164,7 +2595,7 @@ exports.array_multisort = function (arr) {
             }
           }
         }
-
+  
         // Duplicate the sorting of the current array on future arrays.
         sFunction = sortDuplicator;
         for (j in sortArrs) {
@@ -1186,7 +2617,7 @@ exports.array_multisort = function (arr) {
             }
           }
         }
-
+  
         // Duplicate the sorting of the current array on array keys
         for (j in sortKeys) {
           if (sortKeys.hasOwnProperty(j)) {
@@ -1204,7 +2635,7 @@ exports.array_multisort = function (arr) {
             }
           }
         }
-
+  
         // Generate the next sortComponents
         zlast = null;
         sortComponents = [];
@@ -1234,7 +2665,7 @@ exports.array_multisort = function (arr) {
             }
           }
         }
-
+  
         if (sortComponents.length & 1) {
           sortComponents.push(j);
         }
@@ -1246,13 +2677,13 @@ exports.array_multisort = function (arr) {
               delete arguments[i][j];
             }
           }
-
+  
           sal = sortArrs[i].length;
           for (j = 0, vkey = 0; j < sal; j++) {
             vkey = sortKeys[i][j];
             args[i][vkey] = sortArrs[i][j];
           }
-
+  
         }
         delete sortArrs[i];
         delete sortKeys[i];
@@ -1267,11 +2698,11 @@ exports.array_pad = function (input, pad_size, pad_value) {
       newLength,
       diff = 0,
       i = 0;
-
+  
     if (Object.prototype.toString.call(input) === '[object Array]' && !isNaN(pad_size)) {
       newLength = ((pad_size < 0) ? (pad_size * -1) : pad_size);
       diff = newLength - input.length;
-
+  
       if (diff > 0) {
         for (i = 0; i < diff; i++) {
           newArray[i] = pad_value;
@@ -1281,14 +2712,14 @@ exports.array_pad = function (input, pad_size, pad_value) {
         pad = input;
       }
     }
-
+  
     return pad;
 };
 
 exports.array_pop = function (inputArr) {
   var key = '',
       lastKey = '';
-
+  
     if (inputArr.hasOwnProperty('length')) {
       // Indexed
       if (!inputArr.length) {
@@ -1317,11 +2748,11 @@ exports.array_product = function (input) {
   var idx = 0,
       product = 1,
       il = 0;
-
+  
     if (Object.prototype.toString.call(input) !== '[object Array]') {
       return null;
     }
-
+  
     il = input.length;
     while (idx < il) {
       product *= (!isNaN(input[idx]) ? input[idx] : 0);
@@ -1345,7 +2776,7 @@ exports.array_push = function (inputArr) {
       }
       return inputArr.length;
     }
-
+  
     // Associative (object)
     for (pr in inputArr) {
       if (inputArr.hasOwnProperty(pr)) {
@@ -1378,7 +2809,7 @@ exports.array_rand = function (input, num_req) {
       }
       return exist;
     };
-
+  
     if (Object.prototype.toString.call(input) === '[object Array]' && ticks <= input.length) {
       while (true) {
         var rand = Math.floor((Math.random() * input.length));
@@ -1392,7 +2823,7 @@ exports.array_rand = function (input, num_req) {
     } else {
       indexes = null;
     }
-
+  
     return ((ticks == 1) ? indexes.join() : indexes);
 };
 
@@ -1401,7 +2832,7 @@ exports.array_reduce = function (a_input, callback) {
     var res = 0,
       i = 0;
     var tmp = [];
-
+  
     for (i = 0; i < lon; i += 2) {
       tmp[0] = a_input[i];
       if (a_input[(i + 1)]) {
@@ -1412,7 +2843,7 @@ exports.array_reduce = function (a_input, callback) {
       res += callback.apply(null, tmp);
       tmp = [];
     }
-
+  
     return res;
 };
 
@@ -1421,16 +2852,16 @@ exports.array_replace = function (arr) {
       i = 0,
       p = '',
       argl = arguments.length;
-
+  
     if (argl < 2) {
       throw new Error('There should be at least 2 arguments passed to array_replace()');
     }
-
+  
     // Although docs state that the arguments are passed in by reference, it seems they are not altered, but rather the copy that is returned (just guessing), so we make a copy here, instead of acting on arr itself
     for (p in arr) {
       retObj[p] = arr[p];
     }
-
+  
     for (i = 1; i < argl; i++) {
       for (p in arguments[i]) {
         retObj[p] = arguments[i][p];
@@ -1444,16 +2875,16 @@ exports.array_replace_recursive = function (arr) {
       i = 0,
       p = '',
       argl = arguments.length;
-
+  
     if (argl < 2) {
       throw new Error('There should be at least 2 arguments passed to array_replace_recursive()');
     }
-
+  
     // Although docs state that the arguments are passed in by reference, it seems they are not altered, but rather the copy that is returned (just guessing), so we make a copy here, instead of acting on arr itself
     for (p in arr) {
       retObj[p] = arr[p];
     }
-
+  
     for (i = 1; i < argl; i++) {
       for (p in arguments[i]) {
         if (retObj[p] && typeof retObj[p] === 'object') {
@@ -1470,12 +2901,12 @@ exports.array_reverse = function (array, preserve_keys) {
   var isArray = Object.prototype.toString.call(array) === '[object Array]',
       tmp_arr = preserve_keys ? {} : [],
       key;
-
+  
     if (isArray && !preserve_keys) {
       return array.slice(0)
         .reverse();
     }
-
+  
     if (preserve_keys) {
       var keys = [];
       for (key in array) {
@@ -1483,7 +2914,7 @@ exports.array_reverse = function (array, preserve_keys) {
         keys.push(key);
         // }
       }
-
+  
       var i = keys.length;
       while (i--) {
         key = keys[i];
@@ -1499,7 +2930,7 @@ exports.array_reverse = function (array, preserve_keys) {
         // }
       }
     }
-
+  
     return tmp_arr;
 };
 
@@ -1524,14 +2955,14 @@ exports.array_shift = function (inputArr) {
         }
         return ct;
       };
-
+  
     if (inputArr.length === 0) {
       return null;
     }
     if (inputArr.length > 0) {
       return inputArr.shift();
     }
-
+  
     /*
     UNFINISHED FOR HANDLING OBJECTS
     for (pr in inputArr) {
@@ -1564,22 +2995,22 @@ exports.array_shift = function (inputArr) {
 
 exports.array_sum = function (array) {
   var key, sum = 0;
-
+  
     if (array && typeof array === 'object' && array.change_key_case) { // Duck-type check for our own array()-created PHPJS_Array
       return array.sum.apply(array, Array.prototype.slice.call(arguments, 0));
     }
-
+  
     // input sanitation
     if (typeof array !== 'object') {
       return null;
     }
-
+  
     for (key in array) {
       if (!isNaN(parseFloat(array[key]))) {
         sum += parseFloat(array[key]);
       }
     }
-
+  
     return sum;
 };
 
@@ -1593,7 +3024,7 @@ exports.array_udiff = function (arr1) {
       k = '';
     cb = (typeof cb === 'string') ? this.window[cb] : (Object.prototype.toString.call(cb) === '[object Array]') ? this.window[
       cb[0]][cb[1]] : cb;
-
+  
     arr1keys: for (k1 in arr1) {
       for (i = 1; i < arglm1; i++) {
         arr = arguments[i];
@@ -1606,7 +3037,7 @@ exports.array_udiff = function (arr1) {
         retArr[k1] = arr1[k1];
       }
     }
-
+  
     return retArr;
 };
 
@@ -1620,7 +3051,7 @@ exports.array_udiff_assoc = function (arr1) {
       k = '';
     cb = (typeof cb === 'string') ? this.window[cb] : (Object.prototype.toString.call(cb) === '[object Array]') ? this.window[
       cb[0]][cb[1]] : cb;
-
+  
     arr1keys: for (k1 in arr1) {
       for (i = 1; i < arglm1; i++) {
         arr = arguments[i];
@@ -1633,7 +3064,7 @@ exports.array_udiff_assoc = function (arr1) {
         retArr[k1] = arr1[k1];
       }
     }
-
+  
     return retArr;
 };
 
@@ -1647,12 +3078,12 @@ exports.array_udiff_uassoc = function (arr1) {
       i = 1,
       k = '',
       arr = {};
-
+  
     cb = (typeof cb === 'string') ? this.window[cb] : (Object.prototype.toString.call(cb) === '[object Array]') ? this.window[
       cb[0]][cb[1]] : cb;
     cb0 = (typeof cb0 === 'string') ? this.window[cb0] : (Object.prototype.toString.call(cb0) === '[object Array]') ?
       this.window[cb0[0]][cb0[1]] : cb0;
-
+  
     arr1keys: for (k1 in arr1) {
       for (i = 1; i < arglm2; i++) {
         arr = arguments[i];
@@ -1665,7 +3096,7 @@ exports.array_udiff_uassoc = function (arr1) {
         retArr[k1] = arr1[k1];
       }
     }
-
+  
     return retArr;
 };
 
@@ -1678,10 +3109,10 @@ exports.array_uintersect = function (arr1) {
       i = 1,
       arr = {},
       k = '';
-
+  
     cb = (typeof cb === 'string') ? this.window[cb] : (Object.prototype.toString.call(cb) === '[object Array]') ? this.window[
       cb[0]][cb[1]] : cb;
-
+  
     arr1keys: for (k1 in arr1) {
       arrs: for (i = 1; i < arglm1; i++) {
         arr = arguments[i];
@@ -1698,7 +3129,7 @@ exports.array_uintersect = function (arr1) {
         continue arr1keys;
       }
     }
-
+  
     return retArr;
 };
 
@@ -1711,10 +3142,10 @@ exports.array_uintersect_assoc = function (arr1) {
       i = 1,
       arr = {},
       k = '';
-
+  
     cb = (typeof cb === 'string') ? this.window[cb] : (Object.prototype.toString.call(cb) === '[object Array]') ? this.window[
       cb[0]][cb[1]] : cb;
-
+  
     arr1keys: for (k1 in arr1) {
       arrs: for (i = 1; i < arglm1; i++) {
         arr = arguments[i];
@@ -1731,7 +3162,7 @@ exports.array_uintersect_assoc = function (arr1) {
         continue arr1keys;
       }
     }
-
+  
     return retArr;
 };
 
@@ -1745,12 +3176,12 @@ exports.array_uintersect_uassoc = function (arr1) {
       i = 1,
       k = '',
       arr = {};
-
+  
     cb = (typeof cb === 'string') ? this.window[cb] : (Object.prototype.toString.call(cb) === '[object Array]') ? this.window[
       cb[0]][cb[1]] : cb;
     cb0 = (typeof cb0 === 'string') ? this.window[cb0] : (Object.prototype.toString.call(cb0) === '[object Array]') ?
       this.window[cb0[0]][cb0[1]] : cb0;
-
+  
     arr1keys: for (k1 in arr1) {
       arrs: for (i = 1; i < arglm2; i++) {
         arr = arguments[i];
@@ -1765,7 +3196,7 @@ exports.array_uintersect_uassoc = function (arr1) {
         continue arr1keys; // If it reaches here, it wasn't found in at least one array, so try next value
       }
     }
-
+  
     return retArr;
 };
 
@@ -1773,7 +3204,7 @@ exports.array_unique = function (inputArr) {
   var key = '',
       tmp_arr2 = {},
       val = '';
-
+  
     var __array_search = function(needle, haystack) {
       var fkey = '';
       for (fkey in haystack) {
@@ -1785,7 +3216,7 @@ exports.array_unique = function (inputArr) {
       }
       return false;
     };
-
+  
     for (key in inputArr) {
       if (inputArr.hasOwnProperty(key)) {
         val = inputArr[key];
@@ -1794,61 +3225,61 @@ exports.array_unique = function (inputArr) {
         }
       }
     }
-
+  
     return tmp_arr2;
 };
 
 exports.array_unshift = function (array) {
   var i = arguments.length;
-
+  
     while (--i !== 0) {
       arguments[0].unshift(arguments[i]);
     }
-
+  
     return arguments[0].length;
 };
 
 exports.array_values = function (input) {
   var tmp_arr = [],
       key = '';
-
+  
     if (input && typeof input === 'object' && input.change_key_case) { // Duck-type check for our own array()-created PHPJS_Array
       return input.values();
     }
-
+  
     for (key in input) {
       tmp_arr[tmp_arr.length] = input[key];
     }
-
+  
     return tmp_arr;
 };
 
 exports.array_walk_recursive = function (array, funcname, userdata) {
   var key;
-
+  
     if (typeof array !== 'object') {
       return false;
     }
-
+  
     for (key in array) {
       if (typeof array[key] === 'object') {
         return this.array_walk_recursive(array[key], funcname, userdata);
       }
-
+  
       if (typeof userdata !== 'undefined') {
         eval(funcname + '( array [key] , key , userdata  )');
       } else {
         eval(funcname + '(  userdata ) ');
       }
     }
-
+  
     return true;
 };
 
 exports.compact = function () {
   var matrix = {},
       that = this;
-
+  
     var process = function(value) {
       var i = 0,
         l = value.length,
@@ -1865,27 +3296,27 @@ exports.compact = function () {
       }
       return true;
     };
-
+  
     process(arguments);
     return matrix;
 };
 
 exports.count = function (mixed_var, mode) {
   var key, cnt = 0;
-
+  
     if (mixed_var === null || typeof mixed_var === 'undefined') {
       return 0;
     } else if (mixed_var.constructor !== Array && mixed_var.constructor !== Object) {
       return 1;
     }
-
+  
     if (mode === 'COUNT_RECURSIVE') {
       mode = 1;
     }
     if (mode != 1) {
       mode = 0;
     }
-
+  
     for (key in mixed_var) {
       if (mixed_var.hasOwnProperty(key)) {
         cnt++;
@@ -1895,7 +3326,7 @@ exports.count = function (mixed_var, mode) {
         }
       }
     }
-
+  
     return cnt;
 };
 
@@ -1955,7 +3386,7 @@ exports.each = function (arr) {
     var arrpos = pointers.indexOf(arr);
     var cursor = pointers[arrpos + 1];
     var pos = 0;
-
+  
     if (Object.prototype.toString.call(arr) !== '[object Array]') {
       var ct = 0;
       for (var k in arr) {
@@ -2036,9 +3467,9 @@ exports.end = function (arr) {
 exports.in_array = function (needle, haystack, argStrict) {
   var key = '',
       strict = !! argStrict;
-
+  
     //we prevent the double check (strict && arr[key] === ndl) || (!strict && arr[key] == ndl)
-    //in just one for, in order to improve the performance
+    //in just one for, in order to improve the performance 
     //deciding wich type of comparation will do before walk array
     if (strict) {
       for (key in haystack) {
@@ -2053,7 +3484,7 @@ exports.in_array = function (needle, haystack, argStrict) {
         }
       }
     }
-
+  
     return false;
 };
 
@@ -2073,7 +3504,7 @@ exports.key = function (arr) {
     if (!pointers.indexOf) {
       pointers.indexOf = indexOf;
     }
-
+  
     if (pointers.indexOf(arr) === -1) {
       pointers.push(arr, 0);
     }
@@ -2177,7 +3608,7 @@ exports.range = function (low, high, step) {
     var inival, endval, plus;
     var walker = step || 1;
     var chars = false;
-
+  
     if (!isNaN(low) && !isNaN(high)) {
       inival = low;
       endval = high;
@@ -2189,7 +3620,7 @@ exports.range = function (low, high, step) {
       inival = (isNaN(low) ? 0 : low);
       endval = (isNaN(high) ? 0 : high);
     }
-
+  
     plus = ((inival > endval) ? false : true);
     if (plus) {
       while (inival <= endval) {
@@ -2202,7 +3633,7 @@ exports.range = function (low, high, step) {
         inival -= walker;
       }
     }
-
+  
     return matrix;
 };
 
@@ -2250,7 +3681,7 @@ exports.shuffle = function (inputArr) {
       i = 0,
       strictForIn = false,
       populateArr = [];
-
+  
     for (k in inputArr) { // Get key and value arrays
       if (inputArr.hasOwnProperty(k)) {
         valArr.push(inputArr[k]);
@@ -2262,7 +3693,7 @@ exports.shuffle = function (inputArr) {
     valArr.sort(function() {
       return 0.5 - Math.random();
     });
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.php_js.ini = this.php_js.ini || {};
@@ -2270,11 +3701,11 @@ exports.shuffle = function (inputArr) {
     strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js
       .ini['phpjs.strictForIn'].local_value !== 'off';
     populateArr = strictForIn ? inputArr : populateArr;
-
+  
     for (i = 0; i < valArr.length; i++) { // Repopulate the old array
       populateArr[i] = valArr[i];
     }
-
+  
     return strictForIn || populateArr;
 };
 
@@ -2284,13 +3715,13 @@ exports.uasort = function (inputArr, sorter) {
       i = 0,
       strictForIn = false,
       populateArr = {};
-
+  
     if (typeof sorter === 'string') {
       sorter = this[sorter];
     } else if (Object.prototype.toString.call(sorter) === '[object Array]') {
       sorter = this[sorter[0]][sorter[1]];
     }
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.php_js.ini = this.php_js.ini || {};
@@ -2298,7 +3729,7 @@ exports.uasort = function (inputArr, sorter) {
     strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js
       .ini['phpjs.strictForIn'].local_value !== 'off';
     populateArr = strictForIn ? inputArr : populateArr;
-
+  
     for (k in inputArr) { // Get key and value arrays
       if (inputArr.hasOwnProperty(k)) {
         valArr.push([k, inputArr[k]]);
@@ -2310,11 +3741,11 @@ exports.uasort = function (inputArr, sorter) {
     valArr.sort(function(a, b) {
       return sorter(a[1], b[1]);
     });
-
+  
     for (i = 0; i < valArr.length; i++) { // Repopulate the old array
       populateArr[valArr[i][0]] = valArr[i][1];
     }
-
+  
     return strictForIn || populateArr;
 };
 
@@ -2325,18 +3756,18 @@ exports.uksort = function (inputArr, sorter) {
       k = '',
       strictForIn = false,
       populateArr = {};
-
+  
     if (typeof sorter === 'string') {
       sorter = this.window[sorter];
     }
-
+  
     // Make a list of key names
     for (k in inputArr) {
       if (inputArr.hasOwnProperty(k)) {
         keys.push(k);
       }
     }
-
+  
     // Sort key names
     try {
       if (sorter) {
@@ -2347,7 +3778,7 @@ exports.uksort = function (inputArr, sorter) {
     } catch (e) {
       return false;
     }
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.php_js.ini = this.php_js.ini || {};
@@ -2355,7 +3786,7 @@ exports.uksort = function (inputArr, sorter) {
     strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js
       .ini['phpjs.strictForIn'].local_value !== 'off';
     populateArr = strictForIn ? inputArr : populateArr;
-
+  
     // Rebuild array with sorted key names
     for (i = 0; i < keys.length; i++) {
       k = keys[i];
@@ -2378,13 +3809,13 @@ exports.usort = function (inputArr, sorter) {
       i = 0,
       strictForIn = false,
       populateArr = {};
-
+  
     if (typeof sorter === 'string') {
       sorter = this[sorter];
     } else if (Object.prototype.toString.call(sorter) === '[object Array]') {
       sorter = this[sorter[0]][sorter[1]];
     }
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.php_js.ini = this.php_js.ini || {};
@@ -2392,7 +3823,7 @@ exports.usort = function (inputArr, sorter) {
     strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js
       .ini['phpjs.strictForIn'].local_value !== 'off';
     populateArr = strictForIn ? inputArr : populateArr;
-
+  
     for (k in inputArr) { // Get key and value arrays
       if (inputArr.hasOwnProperty(k)) {
         valArr.push(inputArr[k]);
@@ -2409,7 +3840,7 @@ exports.usort = function (inputArr, sorter) {
     for (i = 0; i < valArr.length; i++) { // Repopulate the old array
       populateArr[i] = valArr[i];
     }
-
+  
     return strictForIn || populateArr;
 };
 
@@ -2476,14 +3907,14 @@ exports.date = function (format, timestamp) {
         var b = new Date(f.Y(), 0, 1);
         return Math.round((a - b) / 864e5);
       },
-
+  
       // Week
       W: function() { // ISO-8601 week number
         var a = new Date(f.Y(), f.n() - 1, f.j() - f.N() + 3);
         var b = new Date(a.getFullYear(), 0, 4);
         return _pad(1 + Math.round((a - b) / 864e5 / 7), 2);
       },
-
+  
       // Month
       F: function() { // Full month name; January...December
         return txt_words[6 + f.n()];
@@ -2502,7 +3933,7 @@ exports.date = function (format, timestamp) {
         return (new Date(f.Y(), f.n(), 0))
           .getDate();
       },
-
+  
       // Year
       L: function() { // Is leap year?; 0 or 1
         var j = f.Y();
@@ -2522,7 +3953,7 @@ exports.date = function (format, timestamp) {
           .toString()
           .slice(-2);
       },
-
+  
       // Time
       a: function() { // am or pm
         return jsdate.getHours() > 11 ? 'pm' : 'am';
@@ -2560,7 +3991,7 @@ exports.date = function (format, timestamp) {
       u: function() { // Microseconds; 000000-999000
         return _pad(jsdate.getMilliseconds() * 1000, 6);
       },
-
+  
       // Timezone
       e: function() { // Timezone identifier; e.g. Atlantic/Azores, ...
         // The following works, but requires inclusion of the very large
@@ -2621,7 +4052,7 @@ exports.date = function (format, timestamp) {
       Z: function() { // Timezone offset in seconds (-43200...50400)
         return -jsdate.getTimezoneOffset() * 60;
       },
-
+  
       // Full Date/Time
       c: function() { // ISO-8601 date.
         return 'Y-m-d\\TH:i:sP'.replace(formatChr, formatChrCb);
@@ -2657,7 +4088,7 @@ exports.getdate = function (timestamp) {
     var m = d.getMonth();
     var y = d.getFullYear();
     var r = {};
-
+  
     r.seconds = d.getSeconds();
     r.minutes = d.getMinutes();
     r.hours = d.getHours();
@@ -2669,18 +4100,18 @@ exports.getdate = function (timestamp) {
     r.weekday = _w[w] + 'day';
     r.month = _m[m];
     r['0'] = parseInt(d.getTime() / 1000, 10);
-
+  
     return r;
 };
 
 exports.gettimeofday = function (return_float) {
   var t = new Date(),
       y = 0;
-
+  
     if (return_float) {
       return t.getTime() / 1000;
     }
-
+  
     y = t.getFullYear(); // Store current year.
     return {
       sec: t.getUTCSeconds(),
@@ -2696,7 +4127,7 @@ exports.gmmktime = function () {
       r = arguments,
       i = 0,
       e = ['Hours', 'Minutes', 'Seconds', 'Month', 'Date', 'FullYear'];
-
+  
     for (i = 0; i < e.length; i++) {
       if (typeof r[i] === 'undefined') {
         r[i] = d['getUTC' + e[i]]();
@@ -2708,17 +4139,17 @@ exports.gmmktime = function () {
         }
       }
     }
-
+  
     // Map years 0-69 to 2000-2069 and years 70-100 to 1970-2000.
     r[5] += (r[5] >= 0 ? (r[5] <= 69 ? 2e3 : (r[5] <= 100 ? 1900 : 0)) : 0);
-
+  
     // Set year, month (-1 to fix JS months), and date.
     // !This must come before the call to setHours!
     d.setUTCFullYear(r[5], r[3] - 1, r[4]);
-
+  
     // Set hours, minutes, and seconds.
     d.setUTCHours(r[0], r[1], r[2]);
-
+  
     // Divide milliseconds by 1000 to return seconds and drop decimal.
     // Add 1 second if negative or it'll be off from PHP by 1 second.
     return (d.getTime() / 1e3 >> 0) - (d.getTime() < 0);
@@ -2731,14 +4162,14 @@ exports.idate = function (format, timestamp) {
     if (!format.length || format.length > 1) {
       throw 'idate format is one char';
     }
-
+  
     // Fix: Need to allow date_default_timezone_set() (check for this.php_js.default_timezone and use)
     var date = ((typeof timestamp === 'undefined') ? new Date() : // Not provided
       (timestamp instanceof Date) ? new Date(timestamp) : // Javascript Date()
       new Date(timestamp * 1000) // UNIX timestamp (auto-convert to int)
     ),
       a;
-
+  
     switch (format) {
       case 'B':
         return Math.floor(((date.getUTCHours() * 36e2) + (date.getUTCMinutes() * 60) + date.getUTCSeconds() + 36e2) /
@@ -2793,7 +4224,7 @@ exports.microtime = function (get_as_float) {
   var now = new Date()
       .getTime() / 1000;
     var s = parseInt(now, 10);
-
+  
     return (get_as_float) ? now : (Math.round((now - s) * 1000) / 1000) + ' ' + s;
 };
 
@@ -2802,7 +4233,7 @@ exports.mktime = function () {
       r = arguments,
       i = 0,
       e = ['Hours', 'Minutes', 'Seconds', 'Month', 'Date', 'FullYear'];
-
+  
     for (i = 0; i < e.length; i++) {
       if (typeof r[i] === 'undefined') {
         r[i] = d['get' + e[i]]();
@@ -2814,17 +4245,17 @@ exports.mktime = function () {
         }
       }
     }
-
+  
     // Map years 0-69 to 2000-2069 and years 70-100 to 1970-2000.
     r[5] += (r[5] >= 0 ? (r[5] <= 69 ? 2e3 : (r[5] <= 100 ? 1900 : 0)) : 0);
-
+  
     // Set year, month (-1 to fix JS months), and date.
     // !This must come before the call to setHours!
     d.setFullYear(r[5], r[3] - 1, r[4]);
-
+  
     // Set hours, minutes, and seconds.
     d.setHours(r[0], r[1], r[2]);
-
+  
     // Divide milliseconds by 1000 to return seconds and drop decimal.
     // Add 1 second if negative or it'll be off from PHP by 1 second.
     return (d.getTime() / 1e3 >> 0) - (d.getTime() < 0);
@@ -2832,17 +4263,17 @@ exports.mktime = function () {
 
 exports.strtotime = function (text, now) {
   var parsed, match, today, year, date, days, ranges, len, times, regex, i, fail = false;
-
+  
     if (!text) {
       return fail;
     }
-
+  
     // Unecessary spaces
     text = text.replace(/^\s+|\s+$/g, '')
       .replace(/\s{2,}/g, ' ')
       .replace(/[\t\r\n]/g, '')
       .toLowerCase();
-
+  
     // in contrast to php, js Date.parse function interprets:
     // dates given as yyyy-mm-dd as in timezone: UTC,
     // dates with "." or "-" as MDY instead of DMY
@@ -2851,7 +4282,7 @@ exports.strtotime = function (text, now) {
     // ...therefore we manually parse lots of common date formats
     match = text.match(
       /^(\d{1,4})([\-\.\/\:])(\d{1,2})([\-\.\/\:])(\d{1,4})(?:\s(\d{1,2}):(\d{2})?:?(\d{2})?)?(?:\s([A-Z]+)?)?$/);
-
+  
     if (match && match[2] === match[4]) {
       if (match[1] > 1901) {
         switch (match[2]) {
@@ -2860,7 +4291,7 @@ exports.strtotime = function (text, now) {
               if (match[3] > 12 || match[5] > 31) {
                 return fail;
               }
-
+  
               return new Date(match[1], parseInt(match[3], 10) - 1, match[5],
                 match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
             }
@@ -2873,7 +4304,7 @@ exports.strtotime = function (text, now) {
               if (match[3] > 12 || match[5] > 31) {
                 return fail;
               }
-
+  
               return new Date(match[1], parseInt(match[3], 10) - 1, match[5],
                 match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
             }
@@ -2885,7 +4316,7 @@ exports.strtotime = function (text, now) {
               if (match[3] > 12 || match[1] > 31) {
                 return fail;
               }
-
+  
               return new Date(match[5], parseInt(match[3], 10) - 1, match[1],
                 match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
             }
@@ -2894,7 +4325,7 @@ exports.strtotime = function (text, now) {
               if (match[3] > 12 || match[1] > 31) {
                 return fail;
               }
-
+  
               return new Date(match[5], parseInt(match[3], 10) - 1, match[1],
                 match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
             }
@@ -2903,7 +4334,7 @@ exports.strtotime = function (text, now) {
               if (match[1] > 12 || match[3] > 31) {
                 return fail;
               }
-
+  
               return new Date(match[5], parseInt(match[1], 10) - 1, match[3],
                 match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
             }
@@ -2915,7 +4346,7 @@ exports.strtotime = function (text, now) {
               if (match[3] > 12 || match[5] > 31 || (match[1] < 70 && match[1] > 38)) {
                 return fail;
               }
-
+  
               year = match[1] >= 0 && match[1] <= 38 ? +match[1] + 2000 : match[1];
               return new Date(year, parseInt(match[3], 10) - 1, match[5],
                 match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
@@ -2926,7 +4357,7 @@ exports.strtotime = function (text, now) {
                 if (match[3] > 12 || match[1] > 31) {
                   return fail;
                 }
-
+  
                 return new Date(match[5], parseInt(match[3], 10) - 1, match[1],
                   match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
               }
@@ -2934,12 +4365,12 @@ exports.strtotime = function (text, now) {
                 if (match[1] > 23 || match[3] > 59) {
                   return fail;
                 }
-
+  
                 today = new Date();
                 return new Date(today.getFullYear(), today.getMonth(), today.getDate(),
                   match[1] || 0, match[3] || 0, match[5] || 0, match[9] || 0) / 1000;
               }
-
+  
               return fail; // invalid format, cannot be parsed
             }
           case '/':
@@ -2947,7 +4378,7 @@ exports.strtotime = function (text, now) {
               if (match[1] > 12 || match[3] > 31 || (match[5] < 70 && match[5] > 38)) {
                 return fail;
               }
-
+  
               year = match[5] >= 0 && match[5] <= 38 ? +match[5] + 2000 : match[5];
               return new Date(year, parseInt(match[1], 10) - 1, match[3],
                 match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
@@ -2957,7 +4388,7 @@ exports.strtotime = function (text, now) {
               if (match[1] > 23 || match[3] > 59 || match[5] > 59) {
                 return fail;
               }
-
+  
               today = new Date();
               return new Date(today.getFullYear(), today.getMonth(), today.getDate(),
                 match[1] || 0, match[3] || 0, match[5] || 0) / 1000;
@@ -2965,7 +4396,7 @@ exports.strtotime = function (text, now) {
         }
       }
     }
-
+  
     // other formats and "now" should be parsed by Date.parse()
     if (text === 'now') {
       return now === null || isNaN(now) ? new Date()
@@ -2974,7 +4405,7 @@ exports.strtotime = function (text, now) {
     if (!isNaN(parsed = Date.parse(text))) {
       return parsed / 1000 | 0;
     }
-
+  
     date = now ? new Date(now * 1000) : new Date();
     days = {
       'sun': 0,
@@ -2993,13 +4424,13 @@ exports.strtotime = function (text, now) {
       'min': 'Minutes',
       'sec': 'Seconds'
     };
-
+  
     function lastNext(type, range, modifier) {
       var diff, day = days[range];
-
+  
       if (typeof day !== 'undefined') {
         diff = day - date.getDay();
-
+  
         if (diff === 0) {
           diff = 7 * modifier;
         } else if (diff > 0 && type === 'last') {
@@ -3007,11 +4438,11 @@ exports.strtotime = function (text, now) {
         } else if (diff < 0 && type === 'next') {
           diff += 7;
         }
-
+  
         date.setDate(date.getDate() + diff);
       }
     }
-
+  
     function process(val) {
       var splt = val.split(' '), // Todo: Reconcile this with regex using \s, taking into account browser issues with split and regexes
         type = splt[0],
@@ -3019,48 +4450,48 @@ exports.strtotime = function (text, now) {
         typeIsNumber = /\d+/.test(type),
         ago = splt[2] === 'ago',
         num = (type === 'last' ? -1 : 1) * (ago ? -1 : 1);
-
+  
       if (typeIsNumber) {
         num *= parseInt(type, 10);
       }
-
+  
       if (ranges.hasOwnProperty(range) && !splt[1].match(/^mon(day|\.)?$/i)) {
         return date['set' + ranges[range]](date['get' + ranges[range]]() + num);
       }
-
+  
       if (range === 'wee') {
         return date.setDate(date.getDate() + (num * 7));
       }
-
+  
       if (type === 'next' || type === 'last') {
         lastNext(type, range, num);
       } else if (!typeIsNumber) {
         return false;
       }
-
+  
       return true;
     }
-
+  
     times = '(years?|months?|weeks?|days?|hours?|minutes?|min|seconds?|sec' +
       '|sunday|sun\\.?|monday|mon\\.?|tuesday|tue\\.?|wednesday|wed\\.?' +
       '|thursday|thu\\.?|friday|fri\\.?|saturday|sat\\.?)';
     regex = '([+-]?\\d+\\s' + times + '|' + '(last|next)\\s' + times + ')(\\sago)?';
-
+  
     match = text.match(new RegExp(regex, 'gi'));
     if (!match) {
       return fail;
     }
-
+  
     for (i = 0, len = match.length; i < len; i++) {
       if (!process(match[i])) {
         return fail;
       }
     }
-
+  
     // ECMAScript 5 only
     // if (!match.every(process))
     //    return false;
-
+  
     return (date.getTime() / 1000);
 };
 
@@ -3071,28 +4502,28 @@ exports.time = function () {
 
 exports.escapeshellarg = function (arg) {
   var ret = '';
-
+  
     ret = arg.replace(/[^\\]'/g, function(m, i, s) {
       return m.slice(0, 1) + '\\\'';
     });
-
+  
     return "'" + ret + "'";
 };
 
 exports.basename = function (path, suffix) {
   var b = path;
     var lastChar = b.charAt(b.length - 1);
-
+  
     if (lastChar === '/' || lastChar === '\\') {
       b = b.slice(0, -1);
     }
-
+  
     b = b.replace(/^.*[\/\\]/g, '');
-
+  
     if (typeof suffix === 'string' && b.substr(b.length - suffix.length) == suffix) {
       b = b.substr(0, b.length - suffix.length);
     }
-
+  
     return b;
 };
 
@@ -3114,14 +4545,14 @@ exports.file_get_contents = function (url, flags, context, offset, maxLen) {
     var func = function(value) {
       return value.substring(1) !== '';
     };
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.php_js.ini = this.php_js.ini || {};
     // END REDUNDANT
     var ini = this.php_js.ini;
     context = context || this.php_js.default_streams_context || null;
-
+  
     if (!flags) {
       flags = 0;
     }
@@ -3140,11 +4571,11 @@ exports.file_get_contents = function (url, flags, context, offset, maxLen) {
         }
       }
     }
-
+  
     if (flagNames & OPTS.FILE_BINARY && (flagNames & OPTS.FILE_TEXT)) { // These flags shouldn't be together
       throw 'You cannot pass both FILE_BINARY and FILE_TEXT to file_get_contents()';
     }
-
+  
     if ((flagNames & OPTS.FILE_USE_INCLUDE_PATH) && ini.include_path && ini.include_path.local_value) {
       var slash = ini.include_path.local_value.indexOf('/') !== -1 ? '/' : '\\';
       url = ini.include_path.local_value + slash + url;
@@ -3153,27 +4584,27 @@ exports.file_get_contents = function (url, flags, context, offset, maxLen) {
       pathPos = url.indexOf('/') === 0 ? href.indexOf('/', 8) - 1 : href.lastIndexOf('/');
       url = href.slice(0, pathPos + 1) + url;
     }
-
+  
     var http_options;
     if (context) {
       http_options = context.stream_options && context.stream_options.http;
       http_stream = !! http_options;
     }
-
+  
     if (!context || http_stream) {
       var req = this.window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
       if (!req) {
         throw new Error('XMLHttpRequest not supported');
       }
-
+  
       var method = http_stream ? http_options.method : 'GET';
       var async = !! (context && context.stream_params && context.stream_params['phpjs.async']);
-
+  
       if (ini['phpjs.ajaxBypassCache'] && ini['phpjs.ajaxBypassCache'].local_value) {
         url += (url.match(/\?/) == null ? '?' : '&') + (new Date())
           .getTime(); // Give optional means of forcing bypass of cache
       }
-
+  
       req.open(method, url, async);
       if (async) {
         var notification = context.stream_params.notification;
@@ -3201,7 +4632,7 @@ exports.file_get_contents = function (url, flags, context, offset, maxLen) {
     STREAM_NOTIFY_COMPLETED 8     There is no more data available on the stream.
     STREAM_NOTIFY_FAILURE   9     A generic error occurred on the stream, consult message and message_code for details.
     STREAM_NOTIFY_AUTH_RESULT   10     Authorization has been completed (with or without success).
-
+  
     STREAM_NOTIFY_SEVERITY_INFO 0     Normal, non-error related, notification.
     STREAM_NOTIFY_SEVERITY_WARN 1     Non critical error condition. Processing may continue.
     STREAM_NOTIFY_SEVERITY_ERR  2     A critical error occurred. Processing cannot continue.
@@ -3253,7 +4684,7 @@ exports.file_get_contents = function (url, flags, context, offset, maxLen) {
           }
         }
       }
-
+  
       if (http_stream) {
         var sendHeaders = http_options.header && http_options.header.split(/\r?\n/);
         var userAgentSent = false;
@@ -3282,7 +4713,7 @@ exports.file_get_contents = function (url, flags, context, offset, maxLen) {
         var ignore_errors = http_options.ignore_errors || false; // Fetch the content even on failure status codes.
         */
       }
-
+  
       if (flagNames & OPTS.FILE_TEXT) { // Overrides how encoding is treated (regardless of what is returned from the server)
         var content_type = 'text/html';
         if (http_options && http_options['phpjs.override']) { // Fix: Could allow for non-HTTP as well
@@ -3309,7 +4740,7 @@ exports.file_get_contents = function (url, flags, context, offset, maxLen) {
         // Getting an individual byte then requires:
         // responseText.charCodeAt(x) & 0xFF; // throw away high-order byte (f7) where x is 0 to responseText.length-1 (see notes in our substr())
       }
-
+  
       try {
         if (http_options && http_options['phpjs.sendAsBinary']) { // For content sent in a POST or PUT request (use with file_put_contents()?)
           req.sendAsBinary(content); // In Firefox, only available FF3+
@@ -3320,7 +4751,7 @@ exports.file_get_contents = function (url, flags, context, offset, maxLen) {
         // catches exception reported in issue #66
         return false;
       }
-
+  
       tmp = req.getAllResponseHeaders();
       if (tmp) {
         tmp = tmp.split('\n');
@@ -3335,7 +4766,7 @@ exports.file_get_contents = function (url, flags, context, offset, maxLen) {
         }
         this.$http_response_header = headers; // see http://php.net/manual/en/reserved.variables.httpresponseheader.php
       }
-
+  
       if (offset || maxLen) {
         if (maxLen) {
           return req.responseText.substr(offset || 0, maxLen);
@@ -3386,7 +4817,7 @@ exports.realpath = function (path) {
 
 exports.call_user_func = function (cb) {
   var func;
-
+  
     if (typeof cb === 'string') {
       func = (typeof this[cb] === 'function') ? this[cb] : func = (new Function(null, 'return ' + cb))();
     } else if (Object.prototype.toString.call(cb) === '[object Array]') {
@@ -3394,11 +4825,11 @@ exports.call_user_func = function (cb) {
     } else if (typeof cb === 'function') {
       func = cb;
     }
-
+  
     if (typeof func !== 'function') {
       throw new Error(func + ' is not a valid function');
     }
-
+  
     var parameters = Array.prototype.slice.call(arguments, 1);
     return (typeof cb[0] === 'string') ? func.apply(eval(cb[0]), parameters) : (typeof cb[0] !== 'object') ? func.apply(
       null, parameters) : func.apply(cb[0], parameters);
@@ -3406,7 +4837,7 @@ exports.call_user_func = function (cb) {
 
 exports.call_user_func_array = function (cb, parameters) {
   var func;
-
+  
     if (typeof cb === 'string') {
       func = (typeof this[cb] === 'function') ? this[cb] : func = (new Function(null, 'return ' + cb))();
     } else if (Object.prototype.toString.call(cb) === '[object Array]') {
@@ -3414,11 +4845,11 @@ exports.call_user_func_array = function (cb, parameters) {
     } else if (typeof cb === 'function') {
       func = cb;
     }
-
+  
     if (typeof func !== 'function') {
       throw new Error(func + ' is not a valid function');
     }
-
+  
     return (typeof cb[0] === 'string') ? func.apply(eval(cb[0]), parameters) : (typeof cb[0] !== 'object') ? func.apply(
       null, parameters) : func.apply(cb[0], parameters);
 };
@@ -3443,7 +4874,7 @@ exports.get_defined_functions = function () {
   var i = '',
       arr = [],
       already = {};
-
+  
     for (i in this.window) {
       try {
         if (typeof this.window[i] === 'function') {
@@ -3463,7 +4894,7 @@ exports.get_defined_functions = function () {
         // Some objects in Firefox throw exceptions when their properties are accessed (e.g., sessionStorage)
       }
     }
-
+  
     return arr;
 };
 
@@ -3471,7 +4902,7 @@ exports.i18n_loc_set_default = function (name) {
   // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     // END REDUNDANT
-
+  
     this.php_js.i18nLocales = {
       en_US_POSIX: {
         sorting: function(str1, str2) { // Fix: This one taken from strcmp, but need for other locales; we don't use localeCompare since its locale is not settable
@@ -3479,7 +4910,7 @@ exports.i18n_loc_set_default = function (name) {
         }
       }
     };
-
+  
     this.php_js.i18nLocale = name;
     return true;
 };
@@ -3490,7 +4921,7 @@ exports.assert_options = function (what, value) {
     this.php_js.ini = this.php_js.ini || {};
     this.php_js.assert_values = this.php_js.assert_values || {};
     // END REDUNDANT
-
+  
     var ini, dflt;
     switch (what) {
       case 'ASSERT_ACTIVE':
@@ -3519,7 +4950,7 @@ exports.assert_options = function (what, value) {
     // I presume this is to be the most recent value, instead of the default value
     var originalValue = this.php_js.assert_values[ini] || (this.php_js.ini[ini] && this.php_js.ini[ini].local_value) ||
       dflt;
-
+  
     if (value) {
       this.php_js.assert_values[ini] = value; // We use 'ini' instead of 'what' as key to be more convenient for assert() to test for current value
     }
@@ -3530,7 +4961,7 @@ exports.getenv = function (varname) {
   if (!this.php_js || !this.php_js.ENV || !this.php_js.ENV[varname]) {
       return false;
     }
-
+  
     return this.php_js.ENV[varname];
 };
 
@@ -3547,25 +4978,25 @@ exports.ini_get = function (varname) {
       }
       return this.php_js.ini[varname].local_value;
     }
-
+  
     return '';
 };
 
 exports.ini_set = function (varname, newvalue) {
   var oldval = '';
     var self = this;
-
+  
     try {
       this.php_js = this.php_js || {};
     } catch (e) {
       this.php_js = {};
     }
-
+  
     this.php_js.ini = this.php_js.ini || {};
     this.php_js.ini[varname] = this.php_js.ini[varname] || {};
-
+  
     oldval = this.php_js.ini[varname].local_value;
-
+  
     var _setArr = function(oldval) {
       // Although these are set individually, they are all accumulated
       if (typeof oldval === 'undefined') {
@@ -3573,7 +5004,7 @@ exports.ini_set = function (varname, newvalue) {
       }
       self.php_js.ini[varname].local_value.push(newvalue);
     };
-
+  
     switch (varname) {
       case 'extension':
         if (typeof this.dl === 'function') {
@@ -3586,7 +5017,7 @@ exports.ini_set = function (varname, newvalue) {
         this.php_js.ini[varname].local_value = newvalue;
         break;
     }
-
+  
     return oldval;
 };
 
@@ -3594,7 +5025,7 @@ exports.set_time_limit = function (seconds) {
   // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     // END REDUNDANT
-
+  
     this.window.setTimeout(function() {
       if (!this.php_js.timeoutStatus) {
         this.php_js.timeoutStatus = true;
@@ -3673,7 +5104,7 @@ exports.version_compare = function (v1, v2, operator) {
     if (!operator) {
       return compare;
     }
-
+  
     // Important: operator is CASE-SENSITIVE.
     // "No operator" seems to be treated as "<."
     // Any other values seem to make the function return null.
@@ -3712,7 +5143,7 @@ exports.json_decode = function (str_json) {
       NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
       See http://www.JSON.org/js.html
     */
-
+  
     var json = this.window.JSON;
     if (typeof json === 'object' && typeof json.parse === 'function') {
       try {
@@ -3726,11 +5157,11 @@ exports.json_decode = function (str_json) {
         return null;
       }
     }
-
+  
     var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
     var j;
     var text = str_json;
-
+  
     // Parsing happens in four stages. In the first stage, we replace certain
     // Unicode characters with escape sequences. JavaScript handles many characters
     // incorrectly, either silently deleting them, or treating them as line endings.
@@ -3742,7 +5173,7 @@ exports.json_decode = function (str_json) {
           .slice(-4);
       });
     }
-
+  
     // In the second stage, we run the text against regular expressions that look
     // for non-JSON patterns. We are especially concerned with '()' and 'new'
     // because they can cause invocation, and '=' because it can cause mutation.
@@ -3758,16 +5189,16 @@ exports.json_decode = function (str_json) {
       .test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
         .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
         .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
-
+  
       // In the third stage we use the eval function to compile the text into a
       // JavaScript structure. The '{' operator is subject to a syntactic ambiguity
       // in JavaScript: it can begin a block or an object literal. We wrap the text
       // in parens to eliminate the ambiguity.
       j = eval('(' + text + ')');
-
+  
       return j;
     }
-
+  
     this.php_js = this.php_js || {};
     this.php_js.last_error_json = 4; // usable by json_last_error()
     return null;
@@ -3791,9 +5222,9 @@ exports.json_encode = function (mixed_val) {
         }
         return retVal;
       }
-
+  
       var value = mixed_val;
-
+  
       var quote = function(string) {
         var escapable =
           /[\\\"\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
@@ -3806,7 +5237,7 @@ exports.json_encode = function (mixed_val) {
           '"': '\\"',
           '\\': '\\\\'
         };
-
+  
         escapable.lastIndex = 0;
         return escapable.test(string) ? '"' + string.replace(escapable, function(a) {
           var c = meta[a];
@@ -3815,7 +5246,7 @@ exports.json_encode = function (mixed_val) {
             .slice(-4);
         }) + '"' : '"' + string + '"';
       };
-
+  
       var str = function(key, holder) {
         var gap = '';
         var indent = '    ';
@@ -3826,28 +5257,28 @@ exports.json_encode = function (mixed_val) {
         var mind = gap;
         var partial = [];
         var value = holder[key];
-
+  
         // If the value has a toJSON method, call it to obtain a replacement value.
         if (value && typeof value === 'object' && typeof value.toJSON === 'function') {
           value = value.toJSON(key);
         }
-
+  
         // What happens next depends on the value's type.
         switch (typeof value) {
           case 'string':
             return quote(value);
-
+  
           case 'number':
             // JSON numbers must be finite. Encode non-finite numbers as null.
             return isFinite(value) ? String(value) : 'null';
-
+  
           case 'boolean':
           case 'null':
             // If the value is a boolean or null, convert it to a string. Note:
             // typeof null does not produce 'null'. The case is included here in
             // the remote chance that this gets fixed someday.
             return String(value);
-
+  
           case 'object':
             // If the type is 'object', we might be dealing with an object or an array or
             // null.
@@ -3860,11 +5291,11 @@ exports.json_encode = function (mixed_val) {
               value instanceof window.PHPJS_Resource)) {
               throw new SyntaxError('json_encode');
             }
-
+  
             // Make an array to hold the partial results of stringifying this object value.
             gap += indent;
             partial = [];
-
+  
             // Is the value an array?
             if (Object.prototype.toString.apply(value) === '[object Array]') {
               // The value is an array. Stringify every element. Use null as a placeholder
@@ -3873,7 +5304,7 @@ exports.json_encode = function (mixed_val) {
               for (i = 0; i < length; i += 1) {
                 partial[i] = str(i, value) || 'null';
               }
-
+  
               // Join all of the elements together, separated with commas, and wrap them in
               // brackets.
               v = partial.length === 0 ? '[]' : gap ? '[\n' + gap + partial.join(',\n' + gap) + '\n' + mind +
@@ -3881,7 +5312,7 @@ exports.json_encode = function (mixed_val) {
               gap = mind;
               return v;
             }
-
+  
             // Iterate through all of the keys in the object.
             for (k in value) {
               if (Object.hasOwnProperty.call(value, k)) {
@@ -3891,7 +5322,7 @@ exports.json_encode = function (mixed_val) {
                 }
               }
             }
-
+  
             // Join all of the member texts together, separated with commas,
             // and wrap them in braces.
             v = partial.length === 0 ? '{}' : gap ? '{\n' + gap + partial.join(',\n' + gap) + '\n' + mind + '}' :
@@ -3906,13 +5337,13 @@ exports.json_encode = function (mixed_val) {
             throw new SyntaxError('json_encode');
         }
       };
-
+  
       // Make a fake root object containing our value under the key of ''.
       // Return the result of stringifying the value.
       return str('', {
         '': value
       });
-
+  
     } catch (err) { // Todo: ensure error handling above throws a SyntaxError in all cases where it could
       // (i.e., when the JSON global is not available and there is an error)
       if (!(err instanceof SyntaxError)) {
@@ -4049,7 +5480,7 @@ exports.fmod = function (x, y) {
       pY = 0,
       l = 0.0,
       l2 = 0.0;
-
+  
     tmp = x.toExponential()
       .match(/^.\.?(.*)e(.+)$/);
     p = parseInt(tmp[2], 10) - (tmp[1] + '')
@@ -4058,18 +5489,18 @@ exports.fmod = function (x, y) {
       .match(/^.\.?(.*)e(.+)$/);
     pY = parseInt(tmp[2], 10) - (tmp[1] + '')
       .length;
-
+  
     if (pY > p) {
       p = pY;
     }
-
+  
     tmp2 = (x % y);
-
+  
     if (p < -100 || p > 20) {
       // toFixed will give an out of bound error so we fix it like this:
       l = Math.round(Math.log(tmp2) / Math.log(10));
       l2 = Math.pow(10, l);
-
+  
       return (tmp2 / l2)
         .toFixed(l - p) * l2;
     } else {
@@ -4093,11 +5524,11 @@ exports.hypot = function (x, y) {
 
 exports.is_finite = function (val) {
   var warningType = '';
-
+  
     if (val === Infinity || val === -Infinity) {
       return false;
     }
-
+  
     //Some warnings for maximum PHP compatibility
     if (typeof val === 'object') {
       warningType = (Object.prototype.toString.call(val) === '[object Array]' ? 'array' : 'object');
@@ -4108,17 +5539,17 @@ exports.is_finite = function (val) {
     if (warningType) {
       throw new Error('Warning: is_finite() expects parameter 1 to be double, ' + warningType + ' given');
     }
-
+  
     return true;
 };
 
 exports.is_infinite = function (val) {
   var warningType = '';
-
+  
     if (val === Infinity || val === -Infinity) {
       return true;
     }
-
+  
     //Some warnings for maximum PHP compatibility
     if (typeof val === 'object') {
       warningType = (Object.prototype.toString.call(val) === '[object Array]' ? 'array' : 'object');
@@ -4129,17 +5560,17 @@ exports.is_infinite = function (val) {
     if (warningType) {
       throw new Error('Warning: is_infinite() expects parameter 1 to be double, ' + warningType + ' given');
     }
-
+  
     return false;
 };
 
 exports.is_nan = function (val) {
   var warningType = '';
-
+  
     if (typeof val === 'number' && isNaN(val)) {
       return true;
     }
-
+  
     //Some errors for maximum PHP compatibility
     if (typeof val === 'object') {
       warningType = (Object.prototype.toString.call(val) === '[object Array]' ? 'array' : 'object');
@@ -4150,7 +5581,7 @@ exports.is_nan = function (val) {
     if (warningType) {
       throw new Error('Warning: is_nan() expects parameter 1 to be double, ' + warningType + ' given');
     }
-
+  
     return false;
 };
 
@@ -4211,7 +5642,7 @@ exports.max = function () {
         tmp = 0,
         nl = 0,
         cl = 0;
-
+  
       if (current === next) {
         return 0;
       } else if (typeof current === 'object') {
@@ -4249,7 +5680,7 @@ exports.max = function () {
         }
         return (next > 0 ? 1 : -1);
       }
-
+  
       if (next == current) {
         return 0;
       }
@@ -4269,14 +5700,14 @@ exports.max = function () {
     } else {
       ar = argv;
     }
-
+  
     retVal = ar[0];
     for (i = 1, n = ar.length; i < n; ++i) {
       if (_compare(retVal, ar[i]) == 1) {
         retVal = ar[i];
       }
     }
-
+  
     return retVal;
 };
 
@@ -4303,7 +5734,7 @@ exports.min = function () {
         tmp = 0,
         nl = 0,
         cl = 0;
-
+  
       if (current === next) {
         return 0;
       } else if (typeof current === 'object') {
@@ -4341,7 +5772,7 @@ exports.min = function () {
         }
         return (next > 0 ? 1 : -1);
       }
-
+  
       if (next == current) {
         return 0;
       }
@@ -4361,14 +5792,14 @@ exports.min = function () {
     } else {
       ar = argv;
     }
-
+  
     retVal = ar[0];
     for (i = 1, n = ar.length; i < n; ++i) {
       if (_compare(retVal, ar[i]) == -1) {
         retVal = ar[i];
       }
     }
-
+  
     return retVal;
 };
 
@@ -4417,36 +5848,36 @@ exports.rand = function (min, max) {
       throw new Error('Warning: rand() expects exactly 2 parameters, 1 given');
     }
     return Math.floor(Math.random() * (max - min + 1)) + min;
-
+  
     /*
     // See note above for an explanation of the following alternative code
-
+  
     // +   reimplemented by: Brett Zamir (http://brett-zamir.me)
     // -    depends on: srand
     // %          note 1: This is a very possibly imperfect adaptation from the PHP source code
     var rand_seed, ctx, PHP_RAND_MAX=2147483647; // 0x7fffffff
-
+  
     if (!this.php_js || this.php_js.rand_seed === undefined) {
       this.srand();
     }
     rand_seed = this.php_js.rand_seed;
-
+  
     var argc = arguments.length;
     if (argc === 1) {
       throw new Error('Warning: rand() expects exactly 2 parameters, 1 given');
     }
-
+  
     var do_rand = function (ctx) {
       return ((ctx * 1103515245 + 12345) % (PHP_RAND_MAX + 1));
     };
-
+  
     var php_rand = function (ctxArg) { // php_rand_r
       this.php_js.rand_seed = do_rand(ctxArg);
       return parseInt(this.php_js.rand_seed, 10);
     };
-
+  
     var number = php_rand(rand_seed);
-
+  
     if (argc === 2) {
       number = min + parseInt(parseFloat(parseFloat(max) - min + 1.0) * (number/(PHP_RAND_MAX + 1.0)), 10);
     }
@@ -4462,7 +5893,7 @@ exports.round = function (value, precision, mode) {
     sgn = (value > 0) | -(value < 0); // sign of the number
     isHalf = value % 1 === 0.5 * sgn;
     f = Math.floor(value);
-
+  
     if (isHalf) {
       switch (mode) {
         case 'PHP_ROUND_HALF_DOWN':
@@ -4478,7 +5909,7 @@ exports.round = function (value, precision, mode) {
           value = f + (sgn > 0); // rounds .5 away from zero
       }
     }
-
+  
     return (isHalf ? value : Math.round(value)) / m;
 };
 
@@ -4510,11 +5941,11 @@ exports.pack = function (format) {
       i = 0,
       r = [],
       instruction, quantifier, word, precisionBits, exponentBits, extraNullCount;
-
+  
     // vars used by float encoding
     var bias, minExp, maxExp, minUnnormExp, status, exp, len, bin, signal, n, intPart, floatPart, lastBit, rounded, j,
       k, tmpResult;
-
+  
     while (formatPointer < format.length) {
       instruction = format.charAt(formatPointer);
       quantifier = '';
@@ -4527,7 +5958,7 @@ exports.pack = function (format) {
       if (quantifier === '') {
         quantifier = '1';
       }
-
+  
       // Now pack variables: 'quantifier' times 'instruction'
       switch (instruction) {
         case 'a':
@@ -4570,7 +6001,7 @@ exports.pack = function (format) {
           if (quantifier > argument.length) {
             throw new Error('Warning: pack() Type ' + instruction + ': not enough characters in string');
           }
-
+  
           for (i = 0; i < quantifier; i += 2) {
             // Always get per 2 bytes...
             word = argument[i];
@@ -4587,7 +6018,7 @@ exports.pack = function (format) {
           }
           argumentPointer++;
           break;
-
+  
         case 'c':
           // signed char
         case 'C':
@@ -4599,13 +6030,13 @@ exports.pack = function (format) {
           if (quantifier > (arguments.length - argumentPointer)) {
             throw new Error('Warning:  pack() Type ' + instruction + ': too few arguments');
           }
-
+  
           for (i = 0; i < quantifier; i++) {
             result += String.fromCharCode(arguments[argumentPointer]);
             argumentPointer++;
           }
           break;
-
+  
         case 's':
           // signed short (always 16 bit, machine byte order)
         case 'S':
@@ -4618,14 +6049,14 @@ exports.pack = function (format) {
           if (quantifier > (arguments.length - argumentPointer)) {
             throw new Error('Warning:  pack() Type ' + instruction + ': too few arguments');
           }
-
+  
           for (i = 0; i < quantifier; i++) {
             result += String.fromCharCode(arguments[argumentPointer] & 0xFF);
             result += String.fromCharCode(arguments[argumentPointer] >> 8 & 0xFF);
             argumentPointer++;
           }
           break;
-
+  
         case 'n':
           // unsigned short (always 16 bit, big endian byte order)
           if (quantifier === '*') {
@@ -4634,13 +6065,13 @@ exports.pack = function (format) {
           if (quantifier > (arguments.length - argumentPointer)) {
             throw new Error('Warning: pack() Type ' + instruction + ': too few arguments');
           }
-
+  
           for (i = 0; i < quantifier; i++) {
             result += String.fromCharCode(arguments[argumentPointer] & 0xFF);
             argumentPointer++;
           }
           break;
-
+  
         case 'i':
           // signed integer (machine dependent size and byte order)
         case 'I':
@@ -4657,7 +6088,7 @@ exports.pack = function (format) {
           if (quantifier > (arguments.length - argumentPointer)) {
             throw new Error('Warning:  pack() Type ' + instruction + ': too few arguments');
           }
-
+  
           for (i = 0; i < quantifier; i++) {
             result += String.fromCharCode(arguments[argumentPointer] & 0xFF);
             result += String.fromCharCode(arguments[argumentPointer] >> 8 & 0xFF);
@@ -4665,7 +6096,7 @@ exports.pack = function (format) {
             result += String.fromCharCode(arguments[argumentPointer] >> 24 & 0xFF);
             argumentPointer++;
           }
-
+  
           break;
         case 'N':
           // unsigned long (always 32 bit, big endian byte order)
@@ -4675,7 +6106,7 @@ exports.pack = function (format) {
           if (quantifier > (arguments.length - argumentPointer)) {
             throw new Error('Warning:  pack() Type ' + instruction + ': too few arguments');
           }
-
+  
           for (i = 0; i < quantifier; i++) {
             result += String.fromCharCode(arguments[argumentPointer] >> 24 & 0xFF);
             result += String.fromCharCode(arguments[argumentPointer] >> 16 & 0xFF);
@@ -4684,7 +6115,7 @@ exports.pack = function (format) {
             argumentPointer++;
           }
           break;
-
+  
         case 'f':
           // float (machine dependent size and representation)
         case 'd':
@@ -4696,7 +6127,7 @@ exports.pack = function (format) {
             precisionBits = 52;
             exponentBits = 11;
           }
-
+  
           if (quantifier === '*') {
             quantifier = arguments.length - argumentPointer;
           }
@@ -4717,7 +6148,7 @@ exports.pack = function (format) {
             n = Math.abs(n);
             intPart = Math.floor(n);
             floatPart = n - intPart;
-
+  
             for (k = len; k;) {
               bin[--k] = 0;
             }
@@ -4729,7 +6160,7 @@ exports.pack = function (format) {
               (bin[++k] = ((floatPart *= 2) >= 1) - 0);
             }
             for (k = -1; ++k < len && !bin[k];) {}
-
+  
             if (bin[(lastBit = precisionBits - 1 + (k = (exp = bias + 1 - k) >= minExp && exp <= maxExp ? k + 1 :
               bias + 1 - (exp = minExp - 1))) + 1]) {
               if (!(rounded = bin[lastBit])) {
@@ -4738,9 +6169,9 @@ exports.pack = function (format) {
               for (j = lastBit + 1; rounded && --j >= 0;
                 (bin[j] = !bin[j] - 0) && (rounded = 0)) {}
             }
-
+  
             for (k = k - 2 < 0 ? -1 : k - 3; ++k < len && !bin[k];) {}
-
+  
             if ((exp = bias + 1 - k) >= minExp && exp <= maxExp) {
               ++k;
             } else {
@@ -4749,7 +6180,7 @@ exports.pack = function (format) {
                 k = bias + 1 - (exp = minExp - 1);
               }
             }
-
+  
             if (intPart || status !== 0) {
               exp = maxExp + 1;
               k = bias + 2;
@@ -4759,22 +6190,22 @@ exports.pack = function (format) {
                 bin[k] = 1;
               }
             }
-
+  
             n = Math.abs(exp + bias);
             tmpResult = '';
-
+  
             for (j = exponentBits + 1; --j;) {
               tmpResult = (n % 2) + tmpResult;
               n = n >>= 1;
             }
-
+  
             n = 0;
             j = 0;
             k = (tmpResult = (signal ? '1' : '0') + tmpResult + bin.slice(k, k + precisionBits)
               .join(''))
               .length;
             r = [];
-
+  
             for (; k;) {
               n += (1 << j) * tmpResult.charAt(--k);
               if (j === 7) {
@@ -4783,13 +6214,13 @@ exports.pack = function (format) {
               }
               j = (j + 1) % 8;
             }
-
+  
             r[r.length] = n ? String.fromCharCode(n) : '';
             result += r.join('');
             argumentPointer++;
           }
           break;
-
+  
         case 'x':
           // NUL byte
           if (quantifier === '*') {
@@ -4799,7 +6230,7 @@ exports.pack = function (format) {
             result += String.fromCharCode(0);
           }
           break;
-
+  
         case 'X':
           // Back up one byte
           if (quantifier === '*') {
@@ -4813,7 +6244,7 @@ exports.pack = function (format) {
             }
           }
           break;
-
+  
         case '@':
           // NUL-fill to absolute position
           if (quantifier === '*') {
@@ -4829,7 +6260,7 @@ exports.pack = function (format) {
             result = result.substring(0, quantifier);
           }
           break;
-
+  
         default:
           throw new Error('Warning:  pack() Type ' + instruction + ': unknown format code');
       }
@@ -4837,7 +6268,7 @@ exports.pack = function (format) {
     if (argumentPointer < arguments.length) {
       throw new Error('Warning: pack(): ' + (arguments.length - argumentPointer) + ' arguments unused');
     }
-
+  
     return result;
 };
 
@@ -4850,7 +6281,7 @@ exports.uniqid = function (prefix, more_entropy) {
   if (typeof prefix === 'undefined') {
       prefix = '';
     }
-
+  
     var retId;
     var formatSeed = function(seed, reqWidth) {
       seed = parseInt(seed, 10)
@@ -4864,7 +6295,7 @@ exports.uniqid = function (prefix, more_entropy) {
       }
       return seed;
     };
-
+  
     // BEGIN REDUNDANT
     if (!this.php_js) {
       this.php_js = {};
@@ -4874,7 +6305,7 @@ exports.uniqid = function (prefix, more_entropy) {
       this.php_js.uniqidSeed = Math.floor(Math.random() * 0x75bcd15);
     }
     this.php_js.uniqidSeed++;
-
+  
     retId = prefix; // start with prefix, add current milliseconds hex string
     retId += formatSeed(parseInt(new Date()
       .getTime() / 1000, 10), 8);
@@ -4885,7 +6316,7 @@ exports.uniqid = function (prefix, more_entropy) {
         .toFixed(8)
         .toString();
     }
-
+  
     return retId;
 };
 
@@ -4906,15 +6337,15 @@ exports.gopher_parsedir = function (dirent) {
      * i = informational message
      * s = Audio file format, primarily a WAV file
      */
-
+  
     var entryPattern = /^(.)(.*?)\t(.*?)\t(.*?)\t(.*?)\u000d\u000a$/;
     var entry = dirent.match(entryPattern);
-
+  
     if (entry === null) {
       throw 'Could not parse the directory entry';
       // return false;
     }
-
+  
     var type = entry[1];
     switch (type) {
       case 'i':
@@ -5051,7 +6482,7 @@ exports.ip2long = function (IP) {
 exports.long2ip = function (ip) {
   if (!isFinite(ip))
       return false;
-
+  
     return [ip >>> 24, ip >>> 16 & 0xFF, ip >>> 8 & 0xFF, ip & 0xFF].join('.');
 };
 
@@ -5060,14 +6491,14 @@ exports.setrawcookie = function (name, value, expires, path, domain, secure) {
       .test(expires)) {
       expires = parseInt(expires, 10);
     }
-
+  
     if (expires instanceof Date) {
       expires = expires.toGMTString();
     } else if (typeof expires === 'number') {
       expires = (new Date(expires * 1e3))
         .toGMTString();
     }
-
+  
     var r = [name + '=' + value],
       s = {},
       i = '';
@@ -5081,7 +6512,7 @@ exports.setrawcookie = function (name, value, expires, path, domain, secure) {
         s[i] && r.push(i + '=' + s[i]);
       }
     }
-
+  
     return secure && r.push('secure'), this.window.document.cookie = r.join(';'), true;
 };
 
@@ -5089,11 +6520,11 @@ exports.preg_grep = function (pattern, input, flags) {
   var p = '';
     var retObj = {};
     var invert = (flags === 1 || flags === 'PREG_GREP_INVERT'); // Todo: put flags as number and do bitwise checks (at least if other flags allowable); see pathinfo()
-
+  
     if (typeof pattern === 'string') {
       pattern = eval(pattern);
     }
-
+  
     if (invert) {
       for (p in input) {
         if ((input[p] + '')
@@ -5109,7 +6540,7 @@ exports.preg_grep = function (pattern, input, flags) {
         }
       }
     }
-
+  
     return retObj;
 };
 
@@ -5144,7 +6575,7 @@ exports.addcslashes = function (str, charlist) {
       }
       return n;
     };
-
+  
     for (i = 0; i < charlist.length; i++) {
       c = charlist.charAt(i);
       next = charlist.charAt(i + 1);
@@ -5206,7 +6637,7 @@ exports.addcslashes = function (str, charlist) {
         chrs.push(c);
       }
     }
-
+  
     for (i = 0; i < str.length; i++) {
       c = str.charAt(i);
       if (chrs.indexOf(c) !== -1) {
@@ -5238,7 +6669,7 @@ exports.addcslashes = function (str, charlist) {
             default:
               //target += _pad(cca.toString(8), 3);break; // Sufficient for UTF-16
               encoded = encodeURIComponent(c);
-
+  
               // 3-length-padded UTF-8 octets
               if ((escHexGrp = percentHex.exec(encoded)) !== null) {
                 target += _pad(parseInt(escHexGrp[1], 16)
@@ -5269,15 +6700,15 @@ exports.addslashes = function (str) {
 exports.bin2hex = function (s) {
   var i, l, o = '',
       n;
-
+  
     s += '';
-
+  
     for (i = 0, l = s.length; i < l; i++) {
       n = s.charCodeAt(i)
         .toString(16);
       o += n.length < 2 ? '0' + n : n;
     }
-
+  
     return o;
 };
 
@@ -5295,11 +6726,11 @@ exports.chr = function (codePt) {
 exports.chunk_split = function (body, chunklen, end) {
   chunklen = parseInt(chunklen, 10) || 76;
     end = end || '\r\n';
-
+  
     if (chunklen < 1) {
       return false;
     }
-
+  
     return body.match(new RegExp('.{0,' + chunklen + '}', 'g'))
       .join(end);
 };
@@ -5400,12 +6831,12 @@ exports.convert_cyr_string = function (str, from, to) {
         136, 137, 138, 139, 140, 141, 142, 143, 159, 144, 145, 146, 147, 134, 130, 156, 155, 135, 152, 157, 153,
         151, 154
       ];
-
+  
     var from_table = null,
       to_table = null,
       tmp, i = 0,
       retStr = '';
-
+  
     switch (from.toUpperCase()) {
       case 'W':
         from_table = _cyr_win1251;
@@ -5425,7 +6856,7 @@ exports.convert_cyr_string = function (str, from, to) {
       default:
         throw 'Unknown source charset: ' + from; // warning
     }
-
+  
     switch (to.toUpperCase()) {
       case 'W':
         to_table = _cyr_win1251;
@@ -5445,11 +6876,11 @@ exports.convert_cyr_string = function (str, from, to) {
       default:
         throw 'Unknown destination charset: ' + to; // fix: make a warning
     }
-
+  
     if (!str) {
       return str;
     }
-
+  
     for (i = 0; i < str.length; i++) {
       tmp = (from_table === null) ? str.charAt(i) : String.fromCharCode(from_table[str.charAt(i)
         .charCodeAt(0)]);
@@ -5462,45 +6893,45 @@ exports.count_chars = function (str, mode) {
   var result = {},
       resultArr = [],
       i;
-
+  
     str = ('' + str)
       .split('')
       .sort()
       .join('')
       .match(/(.)\1*/g);
-
+  
     if ((mode & 1) == 0) {
       for (i = 0; i != 256; i++) {
         result[i] = 0;
       }
     }
-
+  
     if (mode === 2 || mode === 4) {
-
+  
       for (i = 0; i != str.length; i += 1) {
         delete result[str[i].charCodeAt(0)];
       }
       for (i in result) {
         result[i] = (mode === 4) ? String.fromCharCode(i) : 0;
       }
-
+  
     } else if (mode === 3) {
-
+  
       for (i = 0; i != str.length; i += 1) {
         result[i] = str[i].slice(0, 1);
       }
-
+  
     } else {
-
+  
       for (i = 0; i != str.length; i += 1) {
         result[str[i].charCodeAt(0)] = str[i].length;
       }
-
+  
     }
     if (mode < 3) {
       return result;
     }
-
+  
     for (i in result) {
       resultArr.push(result[i]);
     }
@@ -5517,18 +6948,18 @@ exports.explode = function (delimiter, string, limit) {
       };
     }
     if (delimiter === true) delimiter = '1';
-
+  
     // Here we go...
     delimiter += '';
     string += '';
-
+  
     var s = string.split(delimiter);
-
+  
     if (typeof limit === 'undefined') return s;
-
+  
     // Support for limit
     if (limit === 0) limit = 1;
-
+  
     // Positive limit
     if (limit > 0) {
       if (limit >= s.length) return s;
@@ -5537,10 +6968,10 @@ exports.explode = function (delimiter, string, limit) {
           .join(delimiter)
         ]);
     }
-
+  
     // Negative limit
     if (-limit >= s.length) return [];
-
+  
     s.splice(s.length + limit);
     return s;
 };
@@ -5553,23 +6984,23 @@ exports.get_html_translation_table = function (table, quote_style) {
       constMappingQuoteStyle = {};
     var useTable = {},
       useQuoteStyle = {};
-
+  
     // Translate arguments
     constMappingTable[0] = 'HTML_SPECIALCHARS';
     constMappingTable[1] = 'HTML_ENTITIES';
     constMappingQuoteStyle[0] = 'ENT_NOQUOTES';
     constMappingQuoteStyle[2] = 'ENT_COMPAT';
     constMappingQuoteStyle[3] = 'ENT_QUOTES';
-
+  
     useTable = !isNaN(table) ? constMappingTable[table] : table ? table.toUpperCase() : 'HTML_SPECIALCHARS';
     useQuoteStyle = !isNaN(quote_style) ? constMappingQuoteStyle[quote_style] : quote_style ? quote_style.toUpperCase() :
       'ENT_COMPAT';
-
+  
     if (useTable !== 'HTML_SPECIALCHARS' && useTable !== 'HTML_ENTITIES') {
       throw new Error('Table: ' + useTable + ' not supported');
       // return false;
     }
-
+  
     entities['38'] = '&amp;';
     if (useTable === 'HTML_ENTITIES') {
       entities['160'] = '&nbsp;';
@@ -5669,7 +7100,7 @@ exports.get_html_translation_table = function (table, quote_style) {
       entities['254'] = '&thorn;';
       entities['255'] = '&yuml;';
     }
-
+  
     if (useQuoteStyle !== 'ENT_NOQUOTES') {
       entities['34'] = '&quot;';
     }
@@ -5678,14 +7109,14 @@ exports.get_html_translation_table = function (table, quote_style) {
     }
     entities['60'] = '&lt;';
     entities['62'] = '&gt;';
-
+  
     // ascii decimals to real symbols
     for (decimal in entities) {
       if (entities.hasOwnProperty(decimal)) {
         hash_map[String.fromCharCode(decimal)] = entities[decimal];
       }
     }
-
+  
     return hash_map;
 };
 
@@ -5695,7 +7126,7 @@ exports.echo = function () {
       var args = Array.prototype.slice.call(arguments);
       return console.log(args.join(' '));
     }
-
+  
     var arg = '',
       argc = arguments.length,
       argv = arguments,
@@ -5770,7 +7201,7 @@ exports.echo = function () {
       return false;
       // throw 'Your browser does not support DOM parsing as required by echo()';
     };
-
+  
     var ieFix = function(node) {
       if (node.nodeType === 1) {
         var newNode = d.createElement(node.nodeName);
@@ -5790,7 +7221,7 @@ exports.echo = function () {
         return d.createTextNode(node.nodeValue);
       }
     };
-
+  
     var replacer = function(s, m1, m2) {
       // We assume for now that embedded variables do not have dollar sign; to add a dollar sign, you currently must use {$$var} (We might change this, however.)
       // Doesn't cover all cases yet: see http://php.net/manual/en/language.types.string.php#language.types.string.syntax.double
@@ -5800,7 +7231,7 @@ exports.echo = function () {
         return s;
       }
     };
-
+  
     this.php_js = this.php_js || {};
     var phpjs = this.php_js,
       ini = phpjs.ini,
@@ -5810,12 +7241,12 @@ exports.echo = function () {
       if (ini && ini['phpjs.echo_embedded_vars']) {
         arg = arg.replace(/(.?)\{?\$(\w*?\}|\w*)/g, replacer);
       }
-
+  
       if (!phpjs.flushing && obs && obs.length) { // If flushing we output, but otherwise presence of a buffer means caching output
         obs[obs.length - 1].buffer += arg;
         continue;
       }
-
+  
       if (d.appendChild) {
         if (d.body) {
           if (win.navigator.appName === 'Microsoft Internet Explorer') { // We unfortunately cannot use feature detection, since this is an IE bug with cloneNode nodes being appended
@@ -5852,7 +7283,7 @@ exports.htmlspecialchars = function (string, quote_style, charset, double_encode
     }
     string = string.replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
-
+  
     var OPTS = {
       'ENT_NOQUOTES': 0,
       'ENT_HTML_QUOTE_SINGLE': 1,
@@ -5882,7 +7313,7 @@ exports.htmlspecialchars = function (string, quote_style, charset, double_encode
     if (!noquotes) {
       string = string.replace(/"/g, '&quot;');
     }
-
+  
     return string;
 };
 
@@ -5928,7 +7359,7 @@ exports.htmlspecialchars_decode = function (string, quote_style) {
     }
     // Put this in last place to avoid escape being double-decoded
     string = string.replace(/&amp;/g, '&');
-
+  
     return string;
 };
 
@@ -5964,7 +7395,7 @@ exports.levenshtein = function (s1, s2) {
   if (s1 == s2) {
       return 0;
     }
-
+  
     var s1_len = s1.length;
     var s2_len = s2.length;
     if (s1_len === 0) {
@@ -5973,7 +7404,7 @@ exports.levenshtein = function (s1, s2) {
     if (s2_len === 0) {
       return s1_len;
     }
-
+  
     // BEGIN STATIC
     var split = false;
     try {
@@ -5986,10 +7417,10 @@ exports.levenshtein = function (s1, s2) {
       s1 = s1.split('');
       s2 = s2.split('');
     }
-
+  
     var v0 = new Array(s1_len + 1);
     var v1 = new Array(s1_len + 1);
-
+  
     var s1_idx = 0,
       s2_idx = 0,
       cost = 0;
@@ -6001,7 +7432,7 @@ exports.levenshtein = function (s1, s2) {
     for (s2_idx = 1; s2_idx <= s2_len; s2_idx++) {
       v1[0] = s2_idx;
       char_s2 = s2[s2_idx - 1];
-
+  
       for (s1_idx = 0; s1_idx < s1_len; s1_idx++) {
         char_s1 = s1[s1_idx];
         cost = (char_s1 == char_s2) ? 0 : 1;
@@ -6033,11 +7464,11 @@ exports.ltrim = function (str, charlist) {
 
 exports.metaphone = function (word, max_phonemes) {
   var type = typeof word;
-
+  
     if (type === 'undefined' || type === 'object' && word !== null) {
       return null; // weird!
     }
-
+  
     // infinity and NaN values are treated as strings
     if (type === 'number') {
       if (isNaN(word)) {
@@ -6046,13 +7477,13 @@ exports.metaphone = function (word, max_phonemes) {
         word = 'INF';
       }
     }
-
+  
     if (max_phonemes < 0) {
       return false;
     }
-
+  
     max_phonemes = Math.floor(+max_phonemes) || 0;
-
+  
     // alpha depends on locale, so this var might need an update
     // or should be turned into a regex
     // for now assuming pure a-z
@@ -6060,19 +7491,19 @@ exports.metaphone = function (word, max_phonemes) {
       vowel = 'AEIOU',
       soft = 'EIY',
       leadingNonAlpha = new RegExp('^[^' + alpha + ']+');
-
+  
     word = typeof word === 'string' ? word : '';
     word = word.toUpperCase()
       .replace(leadingNonAlpha, '');
-
+  
     if (!word) {
       return '';
     }
-
+  
     var is = function(p, c) {
       return c !== '' && p.indexOf(c) !== -1;
     };
-
+  
     var i = 0,
       cc = word.charAt(0), // current char. Short name, because it's used all over the function
       nc = word.charAt(1), // next char
@@ -6083,7 +7514,7 @@ exports.metaphone = function (word, max_phonemes) {
       // traditional is an internal param that could be exposed
       // for now let it be a local var
       traditional = true;
-
+  
     switch (cc) {
       case 'A':
         meta += nc === 'E' ? nc : cc;
@@ -6118,17 +7549,17 @@ exports.metaphone = function (word, max_phonemes) {
         i++;
         break;
     }
-
+  
     for (; i < l && (max_phonemes === 0 || meta.length < max_phonemes); i += 1) {
       cc = word.charAt(i);
       nc = word.charAt(i + 1);
       pc = word.charAt(i - 1);
       nnc = word.charAt(i + 2);
-
+  
       if (cc === pc && cc !== 'C') {
         continue;
       }
-
+  
       switch (cc) {
         case 'B':
           if (pc !== 'M') {
@@ -6237,9 +7668,9 @@ exports.metaphone = function (word, max_phonemes) {
           break;
       }
     }
-
+  
     return meta;
-
+  
     /*
     "    abc", "ABK", // skip leading whitespace
     "1234.678!@abc", "ABK", // skip leading non-alpha chars
@@ -6362,7 +7793,7 @@ exports.metaphone = function (word, max_phonemes) {
 
 exports.nl2br = function (str, is_xhtml) {
   var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br ' + '/>' : '<br>'; // Adjust comment to avoid issue on phpjs.org display
-
+  
     return (str + '')
       .replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
 };
@@ -6425,16 +7856,16 @@ exports.parse_str = function (str, array) {
       fixStr = function(str) {
         return decodeURIComponent(str.replace(/\+/g, '%20'));
       };
-
+  
     if (!array) {
       array = this.window;
     }
-
+  
     for (i = 0; i < sal; i++) {
       tmp = strArr[i].split('=');
       key = fixStr(tmp[0]);
       value = (tmp.length < 2) ? '' : fixStr(tmp[1]);
-
+  
       while (key.charAt(0) === ' ') {
         key = key.slice(1);
       }
@@ -6472,7 +7903,7 @@ exports.parse_str = function (str, array) {
             break;
           }
         }
-
+  
         obj = array;
         for (j = 0, keysLen = keys.length; j < keysLen; j++) {
           key = keys[j].replace(/^['"]/, '')
@@ -6559,19 +7990,19 @@ exports.similar_text = function (first, second, percent) {
   if (first === null || second === null || typeof first === 'undefined' || typeof second === 'undefined') {
       return 0;
     }
-
+  
     first += '';
     second += '';
-
+  
     var pos1 = 0,
       pos2 = 0,
       max = 0,
       firstLength = first.length,
       secondLength = second.length,
       p, q, l, sum;
-
+  
     max = 0;
-
+  
     for (p = 0; p < firstLength; p++) {
       for (q = 0; q < secondLength; q++) {
         for (l = 0;
@@ -6584,20 +8015,20 @@ exports.similar_text = function (first, second, percent) {
         }
       }
     }
-
+  
     sum = max;
-
+  
     if (sum) {
       if (pos1 && pos2) {
         sum += this.similar_text(first.substr(0, pos1), second.substr(0, pos2));
       }
-
+  
       if ((pos1 + max < firstLength) && (pos2 + max < secondLength)) {
         sum += this.similar_text(first.substr(pos1 + max, firstLength - pos1 - max), second.substr(pos2 + max,
           secondLength - pos2 - max));
       }
     }
-
+  
     if (!percent) {
       return sum;
     } else {
@@ -6635,7 +8066,7 @@ exports.soundex = function (str) {
       i = 0,
       j, s = 0,
       c, p;
-
+  
     while ((c = str.charAt(i++)) && s < 4) {
       if (j = m[c]) {
         if (j !== p) {
@@ -6646,7 +8077,7 @@ exports.soundex = function (str) {
         p = 0;
       }
     }
-
+  
     sdx[0] = str.charAt(0);
     return sdx.join('');
 };
@@ -6656,7 +8087,7 @@ exports.sprintf = function () {
     var a = arguments;
     var i = 0;
     var format = a[i++];
-
+  
     // pad()
     var pad = function(str, len, chr, leftJustify) {
       if (!chr) {
@@ -6666,7 +8097,7 @@ exports.sprintf = function () {
         .join(chr);
       return leftJustify ? str + padding : padding + str;
     };
-
+  
     // justify()
     var justify = function(value, prefix, leftJustify, minWidth, zeroPad, customPadChar) {
       var diff = minWidth - value.length;
@@ -6679,7 +8110,7 @@ exports.sprintf = function () {
       }
       return value;
     };
-
+  
     // formatBaseX()
     var formatBaseX = function(value, base, prefix, leftJustify, minWidth, precision, zeroPad) {
       // Note: casts negative numbers to positive ones
@@ -6692,7 +8123,7 @@ exports.sprintf = function () {
       value = prefix + pad(number.toString(base), precision || 0, '0', false);
       return justify(value, prefix, leftJustify, minWidth, zeroPad);
     };
-
+  
     // formatString()
     var formatString = function(value, leftJustify, minWidth, precision, zeroPad, customPadChar) {
       if (precision != null) {
@@ -6700,15 +8131,15 @@ exports.sprintf = function () {
       }
       return justify(value, '', leftJustify, minWidth, zeroPad, customPadChar);
     };
-
+  
     // doFormat()
     var doFormat = function(substring, valueIndex, flags, minWidth, _, precision, type) {
       var number, prefix, method, textTransform, value;
-
+  
       if (substring === '%%') {
         return '%';
       }
-
+  
       // parse flags
       var leftJustify = false;
       var positivePrefix = '';
@@ -6739,7 +8170,7 @@ exports.sprintf = function () {
             break;
         }
       }
-
+  
       // parameters may be null, undefined, empty-string or real valued
       // we want to ignore null, undefined and empty-string values
       if (!minWidth) {
@@ -6751,17 +8182,17 @@ exports.sprintf = function () {
       } else {
         minWidth = +minWidth;
       }
-
+  
       // Note: undocumented perl feature:
       if (minWidth < 0) {
         minWidth = -minWidth;
         leftJustify = true;
       }
-
+  
       if (!isFinite(minWidth)) {
         throw new Error('sprintf: (minimum-)width must be finite');
       }
-
+  
       if (!precision) {
         precision = 'fFeE'.indexOf(type) > -1 ? 6 : (type === 'd') ? 0 : undefined;
       } else if (precision === '*') {
@@ -6771,10 +8202,10 @@ exports.sprintf = function () {
       } else {
         precision = +precision;
       }
-
+  
       // grab value using valueIndex if required?
       value = valueIndex ? a[valueIndex.slice(0, -1)] : a[i++];
-
+  
       switch (type) {
         case 's':
           return formatString(String(value), leftJustify, minWidth, precision, zeroPad, customPadChar);
@@ -6814,7 +8245,7 @@ exports.sprintf = function () {
           return substring;
       }
     };
-
+  
     return format.replace(regex, doFormat);
 };
 
@@ -6826,7 +8257,7 @@ exports.sscanf = function (str, format) {
       args = arguments,
       that = this,
       digit;
-
+  
     var _setExtraConversionSpecs = function(offset) {
       // Since a mismatched character sets us off track from future legitimate finds, we just scan
       // to the end for any other conversion specifications (besides a percent literal), setting them to null
@@ -6843,7 +8274,7 @@ exports.sscanf = function (str, format) {
       }
       return _finish();
     };
-
+  
     var _finish = function() {
       if (args.length === 2) {
         return retArr;
@@ -6853,7 +8284,7 @@ exports.sscanf = function (str, format) {
       }
       return i;
     };
-
+  
     var _addNext = function(j, regex, cb) {
       if (assign) {
         var remaining = str.slice(j);
@@ -6868,17 +8299,17 @@ exports.sscanf = function (str, format) {
       }
       return j;
     };
-
+  
     if (arguments.length < 2) {
       throw 'Not enough arguments passed to sscanf';
     }
-
+  
     // PROCESS
     for (var i = 0, j = 0; i < format.length; i++) {
-
+  
       var width = 0,
         assign = true;
-
+  
       if (format.charAt(i) === '%') {
         if (format.charAt(i + 1) === '%') {
           if (str.charAt(j) === '%') { // a matched percent literal
@@ -6888,24 +8319,24 @@ exports.sscanf = function (str, format) {
           // Format indicated a percent literal, but not actually present
           return _setExtraConversionSpecs(i + 2);
         }
-
+  
         // CHARACTER FOLLOWING PERCENT IS NOT A PERCENT
-
+  
         var prePattern = new RegExp('^(?:(\\d+)\\$)?(\\*)?(\\d*)([hlL]?)', 'g'); // We need 'g' set to get lastIndex
-
+  
         var preConvs = prePattern.exec(format.slice(i + 1));
-
+  
         var tmpDigit = digit;
         if (tmpDigit && preConvs[1] === undefined) {
           throw 'All groups in sscanf() must be expressed as numeric if any have already been used';
         }
         digit = preConvs[1] ? parseInt(preConvs[1], 10) - 1 : undefined;
-
+  
         assign = !preConvs[2];
         width = parseInt(preConvs[3], 10);
         var sizeCode = preConvs[4];
         i += prePattern.lastIndex;
-
+  
         // Fix: Does PHP do anything with these? Seems not to matter
         if (sizeCode) { // This would need to be processed later
           switch (sizeCode) {
@@ -7047,7 +8478,7 @@ exports.sscanf = function (str, format) {
         j++;
       }
     }
-
+  
     // POST-PROCESSING
     return _finish();
 };
@@ -7057,16 +8488,16 @@ exports.str_getcsv = function (input, delimiter, enclosure, escape) {
     /*
       str_getcsv('"row2""cell1",row2cell2,row2cell3', null, null, '"');
       ['row2"cell1', 'row2cell2', 'row2cell3']
-
+  
       str_getcsv('row1cell1,"row1,cell2",row1cell3', null, null, '"');
       ['row1cell1', 'row1,cell2', 'row1cell3']
-
+  
       str_getcsv('"row2""cell1",row2cell2,"row2""""cell3"');
       ['row2"cell1', 'row2cell2', 'row2""cell3']
-
+  
       str_getcsv('row1cell1,"row1,cell2","row1"",""cell3"', null, null, '"');
       ['row1cell1', 'row1,cell2', 'row1","cell3'];
-
+  
       Should also test newlines within
   */
     var i, inpLen, output = [];
@@ -7080,27 +8511,27 @@ exports.str_getcsv = function (input, delimiter, enclosure, escape) {
       return String(str)
         .replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!<\>\|\:])/g, '\\$1');
     };
-
+  
     delimiter = delimiter || ',';
     enclosure = enclosure || '"';
     escape = escape || '\\';
     var pqEnc = pq(enclosure);
     var pqEsc = pq(escape);
-
+  
     input = input.replace(new RegExp('^\\s*' + pqEnc), '')
       .replace(new RegExp(pqEnc + '\\s*$'), '');
-
+  
     // PHP behavior may differ by including whitespace even outside of the enclosure
     input = backwards(input)
       .split(new RegExp(pqEnc + '\\s*' + pq(delimiter) + '\\s*' + pqEnc + '(?!' + pqEsc + ')',
         'g'))
       .reverse();
-
+  
     for (i = 0, inpLen = input.length; i < inpLen; i++) {
       output.push(backwards(input[i])
         .replace(new RegExp(pqEsc + pqEnc, 'g'), enclosure));
     }
-
+  
     return output;
 };
 
@@ -7108,11 +8539,11 @@ exports.str_ireplace = function (search, replace, subject) {
   var i, k = '';
     var searchl = 0;
     var reg;
-
+  
     var escapeRegex = function(s) {
       return s.replace(/([\\\^\$*+\[\]?{}.=!:(|)])/g, '\\$1');
     };
-
+  
     search += '';
     searchl = search.length;
     if (Object.prototype.toString.call(replace) !== '[object Array]') {
@@ -7125,7 +8556,7 @@ exports.str_ireplace = function (search, replace, subject) {
         }
       }
     }
-
+  
     if (Object.prototype.toString.call(search) !== '[object Array]') {
       search = [search];
     }
@@ -7134,7 +8565,7 @@ exports.str_ireplace = function (search, replace, subject) {
       // then an empty string is used for the rest of replacement values
       replace[replace.length] = '';
     }
-
+  
     if (Object.prototype.toString.call(subject) === '[object Array]') {
       // If subject is an array, then the search and replace is performed
       // with every entry of subject , and the return value is an array as well.
@@ -7145,35 +8576,35 @@ exports.str_ireplace = function (search, replace, subject) {
       }
       return subject;
     }
-
+  
     searchl = search.length;
     for (i = 0; i < searchl; i++) {
       reg = new RegExp(escapeRegex(search[i]), 'gi');
       subject = subject.replace(reg, replace[i]);
     }
-
+  
     return subject;
 };
 
 exports.str_pad = function (input, pad_length, pad_string, pad_type) {
   var half = '',
       pad_to_go;
-
+  
     var str_pad_repeater = function(s, len) {
       var collect = '',
         i;
-
+  
       while (collect.length < len) {
         collect += s;
       }
       collect = collect.substr(0, len);
-
+  
       return collect;
     };
-
+  
     input += '';
     pad_string = pad_string !== undefined ? pad_string : ' ';
-
+  
     if (pad_type !== 'STR_PAD_LEFT' && pad_type !== 'STR_PAD_RIGHT' && pad_type !== 'STR_PAD_BOTH') {
       pad_type = 'STR_PAD_RIGHT';
     }
@@ -7188,7 +8619,7 @@ exports.str_pad = function (input, pad_length, pad_string, pad_type) {
         input = input.substr(0, pad_length);
       }
     }
-
+  
     return input;
 };
 
@@ -7224,7 +8655,7 @@ exports.str_replace = function (search, replace, subject, count) {
     if (count) {
       this.window[count] = 0;
     }
-
+  
     for (i = 0, sl = s.length; i < sl; i++) {
       if (s[i] === '') {
         continue;
@@ -7254,23 +8685,23 @@ exports.str_shuffle = function (str) {
   if (arguments.length === 0) {
       throw 'Wrong parameter count for str_shuffle()';
     }
-
+  
     if (str == null) {
       return '';
     }
-
+  
     str += '';
-
+  
     var newStr = '',
       rand, i = str.length;
-
+  
     while (i) {
       rand = Math.floor(Math.random() * i);
       newStr += str.charAt(rand);
       str = str.substring(0, rand) + str.substr(rand + 1);
       i--;
     }
-
+  
     return newStr;
 };
 
@@ -7288,7 +8719,7 @@ exports.str_split = function (string, split_length) {
     while (pos < len) {
       chunks.push(string.slice(pos, pos += split_length));
     }
-
+  
     return chunks;
 };
 
@@ -7297,13 +8728,13 @@ exports.strcasecmp = function (f_string1, f_string2) {
       .toLowerCase();
     var string2 = (f_string2 + '')
       .toLowerCase();
-
+  
     if (string1 > string2) {
       return 1;
     } else if (string1 == string2) {
       return 0;
     }
-
+  
     return -1;
 };
 
@@ -7322,7 +8753,7 @@ exports.strcspn = function (str, mask, start, length) {
         }
       }++lgth;
     }
-
+  
     return lgth;
 };
 
@@ -7345,7 +8776,7 @@ exports.stripos = function (f_haystack, f_needle, f_offset) {
     var needle = (f_needle + '')
       .toLowerCase();
     var index = 0;
-
+  
     if ((index = haystack.indexOf(needle, f_offset)) !== -1) {
       return index;
     }
@@ -7370,7 +8801,7 @@ exports.stripslashes = function (str) {
 
 exports.stristr = function (haystack, needle, bool) {
   var pos = 0;
-
+  
     haystack += '';
     pos = haystack.toLowerCase()
       .indexOf((needle + '')
@@ -7391,12 +8822,12 @@ exports.strlen = function (string) {
     var i = 0,
       chr = '',
       lgth = 0;
-
+  
     if (!this.php_js || !this.php_js.ini || !this.php_js.ini['unicode.semantics'] || this.php_js.ini[
       'unicode.semantics'].local_value.toLowerCase() !== 'on') {
       return string.length;
     }
-
+  
     var getWholeChar = function(str, i) {
       var code = str.charCodeAt(i);
       var next = '',
@@ -7422,7 +8853,7 @@ exports.strlen = function (string) {
       }
       return str.charAt(i);
     };
-
+  
     for (i = 0, lgth = 0; i < str.length; i++) {
       if ((chr = getWholeChar(str, i)) === false) {
         continue;
@@ -7437,24 +8868,24 @@ exports.strnatcasecmp = function (str1, str2) {
       .toLowerCase();
     var b = (str2 + '')
       .toLowerCase();
-
+  
     var isWhitespaceChar = function(a) {
       return a.charCodeAt(0) <= 32;
     };
-
+  
     var isDigitChar = function(a) {
       var charCode = a.charCodeAt(0);
       return (charCode >= 48 && charCode <= 57);
     };
-
+  
     var compareRight = function(a, b) {
       var bias = 0;
       var ia = 0;
       var ib = 0;
-
+  
       var ca;
       var cb;
-
+  
       // The longest run of digits wins.  That aside, the greatest
       // value wins, but we can't know that it will until we've scanned
       // both numbers to know that they have the same magnitude, so we
@@ -7462,7 +8893,7 @@ exports.strnatcasecmp = function (str1, str2) {
       for (var cnt = 0; true; ia++, ib++) {
         ca = a.charAt(ia);
         cb = b.charAt(ib);
-
+  
         if (!isDigitChar(ca) && !isDigitChar(cb)) {
           return bias;
         } else if (!isDigitChar(ca)) {
@@ -7482,21 +8913,21 @@ exports.strnatcasecmp = function (str1, str2) {
         }
       }
     };
-
+  
     var ia = 0,
       ib = 0;
     var nza = 0,
       nzb = 0;
     var ca, cb;
     var result;
-
+  
     while (true) {
       // only count the number of zeroes leading the last number compared
       nza = nzb = 0;
-
+  
       ca = a.charAt(ia);
       cb = b.charAt(ib);
-
+  
       // skip over leading spaces or zeros
       while (isWhitespaceChar(ca) || ca === '0') {
         if (ca === '0') {
@@ -7505,10 +8936,10 @@ exports.strnatcasecmp = function (str1, str2) {
           // only count consecutive zeroes
           nza = 0;
         }
-
+  
         ca = a.charAt(++ia);
       }
-
+  
       while (isWhitespaceChar(cb) || cb === '0') {
         if (cb === '0') {
           nzb++;
@@ -7516,32 +8947,32 @@ exports.strnatcasecmp = function (str1, str2) {
           // only count consecutive zeroes
           nzb = 0;
         }
-
+  
         cb = b.charAt(++ib);
       }
-
+  
       // process run of digits
       if (isDigitChar(ca) && isDigitChar(cb)) {
         if ((result = compareRight(a.substring(ia), b.substring(ib))) !== 0) {
           return result;
         }
       }
-
+  
       if (ca === '0' && cb === '0') {
         // The strings compare the same.  Perhaps the caller
         // will want to call strcmp to break the tie.
         return nza - nzb;
       }
-
+  
       if (ca < cb) {
         return -1;
       } else if (ca > cb) {
         return +1;
       }
-
+  
       // prevent possible infinite loop
       if (ia >= a.length && ib >= b.length) return 0;
-
+  
       ++ia;
       ++ib;
     }
@@ -7555,7 +8986,7 @@ exports.strncasecmp = function (argStr1, argStr2, len) {
     var str2 = (argStr2 + '')
       .toLowerCase()
       .substr(0, len);
-
+  
     if (str1.length !== str2.length) {
       if (str1.length < str2.length) {
         len = str1.length;
@@ -7573,14 +9004,14 @@ exports.strncasecmp = function (argStr1, argStr2, len) {
       // Avoids trying to get a char that does not exist
       len = str1.length;
     }
-
+  
     for (diff = 0, i = 0; i < len; i++) {
       diff = str1.charCodeAt(i) - str2.charCodeAt(i);
       if (diff !== 0) {
         return diff;
       }
     }
-
+  
     return 0;
 };
 
@@ -7589,7 +9020,7 @@ exports.strncmp = function (str1, str2, lgth) {
       .substr(0, lgth);
     var s2 = (str2 + '')
       .substr(0, lgth);
-
+  
     return ((s1 == s2) ? 0 : ((s1 > s2) ? 1 : -1));
 };
 
@@ -7610,7 +9041,7 @@ exports.strpos = function (haystack, needle, offset) {
 
 exports.strrchr = function (haystack, needle) {
   var pos = 0;
-
+  
     if (typeof needle !== 'string') {
       needle = String.fromCharCode(parseInt(needle, 10));
     }
@@ -7619,13 +9050,13 @@ exports.strrchr = function (haystack, needle) {
     if (pos === -1) {
       return false;
     }
-
+  
     return haystack.substr(pos);
 };
 
 exports.strrev = function (string) {
   string = string + '';
-
+  
     // Performance will be enhanced with the next two lines of code commented
     //      out if you don't care about combining characters
     // Keep Unicode combining characters together with the character preceding
@@ -7646,7 +9077,7 @@ exports.strripos = function (haystack, needle, offset) {
       .toLowerCase();
     needle = (needle + '')
       .toLowerCase();
-
+  
     var i = -1;
     if (offset) {
       i = (haystack + '')
@@ -7686,11 +9117,11 @@ exports.strspn = function (str1, str2, start, lgth) {
     var strj;
     var j = 0;
     var i = 0;
-
+  
     start = start ? (start < 0 ? (str1.length + start) : start) : 0;
     lgth = lgth ? ((lgth < 0) ? (str1.length + lgth - start) : lgth) : str1.length - start;
     str1 = str1.substr(start, lgth);
-
+  
     for (i = 0; i < str1.length; i++) {
       found = 0;
       stri = str1.substring(i, i + 1);
@@ -7705,13 +9136,13 @@ exports.strspn = function (str1, str2, start, lgth) {
         return i;
       }
     }
-
+  
     return i;
 };
 
 exports.strstr = function (haystack, needle, bool) {
   var pos = 0;
-
+  
     haystack += '';
     pos = haystack.indexOf(needle);
     if (pos == -1) {
@@ -7766,7 +9197,7 @@ exports.substr = function (str, start, len) {
       ret = '';
     str += '';
     var end = str.length;
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.php_js.ini = this.php_js.ini || {};
@@ -7781,7 +9212,7 @@ exports.substr = function (str, start, len) {
             break;
           }
         }
-
+  
         if (!allBMP) {
           if (start < 0) {
             for (i = end - 1, es = (start += end); i >= es; i--) {
@@ -7801,7 +9232,7 @@ exports.substr = function (str, start, len) {
               }
             }
           }
-
+  
           if (start >= end || start < 0) {
             return false;
           }
@@ -7850,16 +9281,16 @@ exports.substr_compare = function (main_str, str, offset, length, case_insensiti
   if (!offset && offset !== 0) {
       throw 'Missing offset for substr_compare()';
     }
-
+  
     if (offset < 0) {
       offset = main_str.length + offset;
     }
-
+  
     if (length && length > (main_str.length - offset)) {
       return false;
     }
     length = length || main_str.length - offset;
-
+  
     main_str = main_str.substr(offset, length);
     str = str.substr(0, length); // Should only compare up to the desired length
     if (case_insensitivity) { // Works as strcasecmp
@@ -7878,7 +9309,7 @@ exports.substr_compare = function (main_str, str, offset, length, case_insensiti
 
 exports.substr_count = function (haystack, needle, offset, length) {
   var cnt = 0;
-
+  
     haystack += '';
     needle += '';
     if (isNaN(offset)) {
@@ -7891,14 +9322,14 @@ exports.substr_count = function (haystack, needle, offset, length) {
       return false;
     }
     offset--;
-
+  
     while ((offset = haystack.indexOf(needle, offset + 1)) != -1) {
       if (length > 0 && (offset + needle.length) > length) {
         return false;
       }
       cnt++;
     }
-
+  
     return cnt;
 };
 
@@ -7910,7 +9341,7 @@ exports.substr_replace = function (str, replace, start, length) {
     if (length < 0) {
       length = length + str.length - start;
     }
-
+  
     return str.slice(0, start) + replace.substr(0, length) + replace.slice(length) + str.slice(start + length);
 };
 
@@ -7918,7 +9349,7 @@ exports.trim = function (str, charlist) {
   var whitespace, l = 0,
       i = 0;
     str += '';
-
+  
     if (!charlist) {
       // default list
       whitespace =
@@ -7928,7 +9359,7 @@ exports.trim = function (str, charlist) {
       charlist += '';
       whitespace = charlist.replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '$1');
     }
-
+  
     l = str.length;
     for (i = 0; i < l; i++) {
       if (whitespace.indexOf(str.charAt(i)) === -1) {
@@ -7936,7 +9367,7 @@ exports.trim = function (str, charlist) {
         break;
       }
     }
-
+  
     l = str.length;
     for (i = l - 1; i >= 0; i--) {
       if (whitespace.indexOf(str.charAt(i)) === -1) {
@@ -7944,7 +9375,7 @@ exports.trim = function (str, charlist) {
         break;
       }
     }
-
+  
     return whitespace.indexOf(str.charAt(0)) === -1 ? str : '';
 };
 
@@ -7966,15 +9397,15 @@ exports.wordwrap = function (str, int_width, str_break, cut) {
   var m = ((arguments.length >= 2) ? arguments[1] : 75);
     var b = ((arguments.length >= 3) ? arguments[2] : '\n');
     var c = ((arguments.length >= 4) ? arguments[3] : false);
-
+  
     var i, j, l, s, r;
-
+  
     str += '';
-
+  
     if (m < 1) {
       return str;
     }
-
+  
     for (i = -1, l = (r = str.split(/\r\n|\n|\r/))
       .length; ++i < l; r[i] += s) {
       for (s = r[i], r[i] = ''; s.length > m; r[i] += s.slice(0, j) + ((s = s.slice(j))
@@ -7985,7 +9416,7 @@ exports.wordwrap = function (str, int_width, str_break, cut) {
           .match(/^\S*/))[0].length;
       }
     }
-
+  
     return r.join('\n');
 };
 
@@ -7995,25 +9426,25 @@ exports.base64_decode = function (data) {
       ac = 0,
       dec = '',
       tmp_arr = [];
-
+  
     if (!data) {
       return data;
     }
-
+  
     data += '';
-
+  
     do { // unpack four hexets into three octets using index points in b64
       h1 = b64.indexOf(data.charAt(i++));
       h2 = b64.indexOf(data.charAt(i++));
       h3 = b64.indexOf(data.charAt(i++));
       h4 = b64.indexOf(data.charAt(i++));
-
+  
       bits = h1 << 18 | h2 << 12 | h3 << 6 | h4;
-
+  
       o1 = bits >> 16 & 0xff;
       o2 = bits >> 8 & 0xff;
       o3 = bits & 0xff;
-
+  
       if (h3 == 64) {
         tmp_arr[ac++] = String.fromCharCode(o1);
       } else if (h4 == 64) {
@@ -8022,9 +9453,9 @@ exports.base64_decode = function (data) {
         tmp_arr[ac++] = String.fromCharCode(o1, o2, o3);
       }
     } while (i < data.length);
-
+  
     dec = tmp_arr.join('');
-
+  
     return decodeURIComponent(escape(dec.replace(/\0+$/, '')));
 };
 
@@ -8034,33 +9465,33 @@ exports.base64_encode = function (data) {
       ac = 0,
       enc = '',
       tmp_arr = [];
-
+  
     if (!data) {
       return data;
     }
-
+  
     data = unescape(encodeURIComponent(data))
-
+  
     do { // pack three octets into four hexets
       o1 = data.charCodeAt(i++);
       o2 = data.charCodeAt(i++);
       o3 = data.charCodeAt(i++);
-
+  
       bits = o1 << 16 | o2 << 8 | o3;
-
+  
       h1 = bits >> 18 & 0x3f;
       h2 = bits >> 12 & 0x3f;
       h3 = bits >> 6 & 0x3f;
       h4 = bits & 0x3f;
-
+  
       // use hexets to index into b64, and append result to encoded string
       tmp_arr[ac++] = b64.charAt(h1) + b64.charAt(h2) + b64.charAt(h3) + b64.charAt(h4);
     } while (i < data.length);
-
+  
     enc = tmp_arr.join('');
-
+  
     var r = data.length % 3;
-
+  
     return (r ? enc.slice(0, r - 3) : enc) + '==='.slice(r || 3);
 };
 
@@ -8076,7 +9507,7 @@ exports.parse_url = function (str, component) {
         strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
         loose: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/\/?)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/ // Added one optional slash to post-scheme to catch file:/// (should restrict this)
       };
-
+  
     var m = parser[mode].exec(str),
       uri = {},
       i = 14;
@@ -8085,7 +9516,7 @@ exports.parse_url = function (str, component) {
         uri[key[i]] = m[i];
       }
     }
-
+  
     if (component) {
       return uri[component.replace('PHP_URL_', '')
         .toLowerCase()];
@@ -8117,7 +9548,7 @@ exports.rawurldecode = function (str) {
 exports.rawurlencode = function (str) {
   str = (str + '')
       .toString();
-
+  
     // Tilde should be allowed unescaped in future versions of PHP (as reflected below), but if you want to reflect current
     // PHP behavior, you would need to add ".replace(/~/g, '%7E');" to the following.
     return encodeURIComponent(str)
@@ -8141,7 +9572,7 @@ exports.urldecode = function (str) {
 exports.urlencode = function (str) {
   str = (str + '')
       .toString();
-
+  
     // Tilde should be allowed unescaped in future versions of PHP (as reflected below), but if you want to reflect current
     // PHP behavior, you would need to add ".replace(/~/g, '%7E');" to the following.
     return encodeURIComponent(str)
@@ -8157,13 +9588,13 @@ exports.urlencode = function (str) {
 exports.empty = function (mixed_var) {
   var undef, key, i, len;
     var emptyValues = [undef, null, false, 0, '', '0'];
-
+  
     for (i = 0, len = emptyValues.length; i < len; i++) {
       if (mixed_var === emptyValues[i]) {
         return true;
       }
     }
-
+  
     if (typeof mixed_var === 'object') {
       for (key in mixed_var) {
         // TODO: should we check for own properties only?
@@ -8173,7 +9604,7 @@ exports.empty = function (mixed_var) {
       }
       return true;
     }
-
+  
     return false;
 };
 
@@ -8183,9 +9614,9 @@ exports.floatval = function (mixed_var) {
 
 exports.intval = function (mixed_var, base) {
   var tmp;
-
+  
     var type = typeof mixed_var;
-
+  
     if (type === 'boolean') {
       return +mixed_var;
     } else if (type === 'string') {
@@ -8233,18 +9664,18 @@ exports.is_array = function (mixed_var) {
       delete mixed_var[mixed_var.length];
       return false;
     };
-
+  
     if (!mixed_var || typeof mixed_var !== 'object') {
       return false;
     }
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.php_js.ini = this.php_js.ini || {};
     // END REDUNDANT
-
+  
     ini = this.php_js.ini['phpjs.objectsAsArrays'];
-
+  
     return _isArray(mixed_var) ||
     // Allow returning true unless user has called
     // ini_set('phpjs.objectsAsArrays', 0) to disallow objects as arrays
@@ -8355,7 +9786,7 @@ exports.is_unicode = function (vr) {
   if (typeof vr !== 'string') {
       return false;
     }
-
+  
     // If surrogates occur outside of high-low pairs, then this is not Unicode
     var arr = [],
       any = '([\s\S])',
@@ -8365,7 +9796,7 @@ exports.is_unicode = function (vr) {
       lowSurrogateAfterAny = new RegExp(any + lowSurrogate, 'g'),
       singleLowSurrogate = new RegExp('^' + lowSurrogate + '$'),
       singleHighSurrogate = new RegExp('^' + highSurrogate + '$');
-
+  
     while ((arr = highSurrogateBeforeAny.exec(vr)) !== null) {
       if (!arr[1] || !arr[1].match(singleLowSurrogate)) { // If high not followed by low surrogate
         return false;
@@ -8384,11 +9815,11 @@ exports.isset = function () {
       l = a.length,
       i = 0,
       undef;
-
+  
     if (l === 0) {
       throw new Error('Empty isset');
     }
-
+  
     while (i !== l) {
       if (a[i] === undef || a[i] === null) {
         return false;
@@ -8422,7 +9853,7 @@ exports.serialize = function (mixed_value) {
       };
     _getType = function(inp) {
       var match, key, cons, types, type = typeof inp;
-
+  
       if (type === 'object' && !inp) {
         return 'null';
       }
@@ -8446,7 +9877,7 @@ exports.serialize = function (mixed_value) {
       return type;
     };
     type = _getType(mixed_value);
-
+  
     switch (type) {
       case 'function':
         val = '';
@@ -8473,14 +9904,14 @@ exports.serialize = function (mixed_value) {
             val = 'O' + objname[1].substring(1, objname[1].length - 1);
           }
           */
-
+  
         for (key in mixed_value) {
           if (mixed_value.hasOwnProperty(key)) {
             ktype = _getType(mixed_value[key]);
             if (ktype === 'function') {
               continue;
             }
-
+  
             okey = (key.match(/^[0-9]+$/) ? parseInt(key, 10) : key);
             vals += this.serialize(okey) + this.serialize(mixed_value[key]);
             count++;
@@ -8508,7 +9939,7 @@ exports.settype = function (vr, type) {
     };
     var v, mtch, i, obj;
     v = this[vr] ? this[vr] : vr;
-
+  
     try {
       switch (type) {
         case 'boolean':
@@ -8545,7 +9976,7 @@ exports.settype = function (vr, type) {
           } else if (typeof v === 'object') {
             this[vr] = 1;
           }
-
+  
           break;
         case 'float':
           if (typeof v === 'string') {
@@ -8629,7 +10060,7 @@ exports.unserialize = function (data) {
       var i = 2,
         buf = [],
         chr = data.slice(offset, offset + 1);
-
+  
       while (chr != stopchr) {
         if ((i + offset) > data.length) {
           error('Error', 'Invalid');
@@ -8642,7 +10073,7 @@ exports.unserialize = function (data) {
     };
     read_chrs = function(data, offset, length) {
       var i, chr, buf;
-
+  
       buf = [];
       for (i = 0; i < length; i++) {
         chr = data.slice(offset + (i - 1), offset + i);
@@ -8659,15 +10090,15 @@ exports.unserialize = function (data) {
         typeconvert = function(x) {
           return x;
         };
-
+  
       if (!offset) {
         offset = 0;
       }
       dtype = (data.slice(offset, offset + 1))
         .toLowerCase();
-
+  
       dataoffset = offset + 2;
-
+  
       switch (dtype) {
         case 'i':
           typeconvert = function(x) {
@@ -8704,7 +10135,7 @@ exports.unserialize = function (data) {
           chrs = ccount[0];
           stringlength = ccount[1];
           dataoffset += chrs + 2;
-
+  
           readData = read_chrs(data, dataoffset + 1, parseInt(stringlength, 10));
           chrs = readData[0];
           readdata = readData[1];
@@ -8715,39 +10146,39 @@ exports.unserialize = function (data) {
           break;
         case 'a':
           readdata = {};
-
+  
           keyandchrs = read_until(data, dataoffset, ':');
           chrs = keyandchrs[0];
           keys = keyandchrs[1];
           dataoffset += chrs + 2;
-
+  
           length = parseInt(keys, 10);
           contig = true;
-
+  
           for (i = 0; i < length; i++) {
             kprops = _unserialize(data, dataoffset);
             kchrs = kprops[1];
             key = kprops[2];
             dataoffset += kchrs;
-
+  
             vprops = _unserialize(data, dataoffset);
             vchrs = vprops[1];
             value = vprops[2];
             dataoffset += vchrs;
-
+  
             if (key !== i)
               contig = false;
-
+  
             readdata[key] = value;
           }
-
+  
           if (contig) {
             array = new Array(length);
             for (i = 0; i < length; i++)
               array[i] = readdata[i];
             readdata = array;
           }
-
+  
           dataoffset += 1;
           break;
         default:
@@ -8756,13 +10187,13 @@ exports.unserialize = function (data) {
       }
       return [dtype, dataoffset - offset, typeconvert(readdata)];
     };
-
+  
     return _unserialize((data + ''), 0)[2];
 };
 
 exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal) {
   // (This code was done by Imgen Tata; I have only reformatted for use in php.js)
-
+  
     // See http://en.wikipedia.org/wiki/Diff#Unified_format
     var i = 0,
       j = 0,
@@ -8790,7 +10221,7 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
         if (typeof text !== 'string') {
           throw new Error('String parameter required');
         }
-
+  
         return text.replace(/(^\s*)|(\s*$)/g, '');
       },
       /**
@@ -8804,35 +10235,35 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
         if (type_of_type !== 'string' && type_of_type !== 'function') {
           throw new Error('Bad type parameter');
         }
-
+  
         if (args_len < 2) {
           throw new Error('Too few arguments');
         }
-
+  
         if (type_of_type === 'string') {
           type = trim(type);
-
+  
           if (type === '') {
             throw new Error('Bad type parameter');
           }
-
+  
           for (j = 0; j < basic_types.length; j++) {
             basic_type = basic_types[j];
-
+  
             if (basic_type == type) {
               for (i = 1; i < args_len; i++) {
                 if (typeof args[i] !== type) {
                   throw new Error('Bad type');
                 }
               }
-
+  
               return;
             }
           }
-
+  
           throw new Error('Bad type parameter');
         }
-
+  
         // Not basic type. we need to use instanceof operator
         for (i = 1; i < args_len; i++) {
           if (!(args[i] instanceof type)) {
@@ -8846,13 +10277,13 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
       has_value = function(array, value) {
         var i;
         verify_type(Array, array);
-
+  
         for (i = 0; i < array.length; i++) {
           if (array[i] === value) {
             return true;
           }
         }
-
+  
         return false;
       },
       /**
@@ -8868,42 +10299,42 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
         if (type_of_type !== 'string' && type_of_type !== 'function') {
           throw new Error('Bad type parameter');
         }
-
+  
         if (args_len < 2) {
           throw new Error('Too few arguments');
         }
-
+  
         if (type_of_type === 'string') {
           type = trim(type);
-
+  
           if (type === '') {
             return false;
           }
-
+  
           for (j = 0; j < basic_types.length; j++) {
             basic_type = basic_types[j];
-
+  
             if (basic_type == type) {
               for (i = 1; i < args_len; i++) {
                 if (typeof args[i] != type) {
                   return false;
                 }
               }
-
+  
               return true;
             }
           }
-
+  
           throw new Error('Bad type parameter');
         }
-
+  
         // Not basic type. we need to use instanceof operator
         for (i = 1; i < args_len; i++) {
           if (!(args[i] instanceof type)) {
             return false;
           }
         }
-
+  
         return true;
       },
       /*
@@ -8913,11 +10344,11 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
         var array = [],
           i;
         verify_type('number', array_size);
-
+  
         for (i = 0; i < array_size; i++) {
           array.push(init_value);
         }
-
+  
         return array;
       },
       /**
@@ -8925,7 +10356,7 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
        */
       split_into_lines = function(text) {
         verify_type('string', text);
-
+  
         if (text === '') {
           return [];
         }
@@ -8942,17 +10373,17 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
         if (!are_type_of(Array, seq1, seq2)) {
           throw new Error('Array parameters are required');
         }
-
+  
         // Deal with edge case
         if (is_empty_array(seq1) || is_empty_array(seq2)) {
           return [];
         }
-
+  
         // Function to calculate lcs lengths
         var lcs_lens = function(xs, ys) {
           var i, j, prev,
             curr = get_initialized_array(ys.length + 1, 0);
-
+  
           for (i = 0; i < xs.length; i++) {
             prev = curr.slice(0);
             for (j = 0; j < ys.length; j++) {
@@ -8963,7 +10394,7 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
               }
             }
           }
-
+  
           return curr;
         },
           // Function to find lcs and fill in the array to indicate the optimal longest common sequence
@@ -8971,7 +10402,7 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
             var i, xb, xe, ll_b, ll_e, pivot, max, yb, ye,
               nx = xs.length,
               ny = ys.length;
-
+  
             if (nx === 0) {
               return [];
             }
@@ -8989,7 +10420,7 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
             ll_e = lcs_lens(xe.slice(0)
               .reverse(), ys.slice(0)
               .reverse());
-
+  
             pivot = 0;
             max = 0;
             for (j = 0; j <= ny; j++) {
@@ -9003,26 +10434,26 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
             return find_lcs(xb, xidx, xs_is_in, yb)
               .concat(find_lcs(xe, xidx + i, xs_is_in, ye));
           };
-
+  
         // Fill in seq1_is_in_lcs to find the optimal longest common subsequence of first sequence
         find_lcs(seq1, 0, seq1_is_in_lcs, seq2);
         // Fill in seq2_is_in_lcs to find the optimal longest common subsequence of second sequence and return the result
         return find_lcs(seq2, 0, seq2_is_in_lcs, seq1);
       };
-
+  
     // First, check the parameters
     if (are_type_of('string', old_data, new_data) === false) {
       return false;
     }
-
+  
     if (old_data == new_data) {
       return '';
     }
-
+  
     if (typeof context_lines !== 'number' || context_lines > MAX_CONTEXT_LINES || context_lines < MIN_CONTEXT_LINES) {
       context_lines = DEFAULT_CONTEXT_LINES;
     }
-
+  
     ori_lines = split_into_lines(old_data);
     new_lines = split_into_lines(new_data);
     var ori_len = ori_lines.length,
@@ -9032,71 +10463,71 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
       lcs_len = find_longest_common_sequence(ori_lines, new_lines, ori_is_in_lcs, new_is_in_lcs)
         .length,
       unidiff = '';
-
+  
     if (lcs_len === 0) { // No common sequence
       unidiff = HEADER_PREFIX + ORIGINAL_INDICATOR + (ori_len > 0 ? '1' : '0') + RANGE_SEPARATOR + ori_len + ' ' +
         NEW_INDICATOR + (new_len > 0 ? '1' : '0') + RANGE_SEPARATOR + new_len + HEADER_SUFFIX;
-
+  
       for (i = 0; i < ori_len; i++) {
         unidiff += NEW_LINE + DELETION_INDICATOR + ori_lines[i];
       }
-
+  
       for (j = 0; j < new_len; j++) {
         unidiff += NEW_LINE + ADDITION_INDICATOR + new_lines[j];
       }
-
+  
       return unidiff;
     }
-
+  
     var leading_context = [],
       trailing_context = [],
       actual_leading_context = [],
       actual_trailing_context = [],
-
+  
       // Regularize leading context by the context_lines parameter
       regularize_leading_context = function(context) {
         if (context.length === 0 || context_lines === 0) {
           return [];
         }
-
+  
         var context_start_pos = Math.max(context.length - context_lines, 0);
-
+  
         return context.slice(context_start_pos);
       },
-
+  
       // Regularize trailing context by the context_lines parameter
       regularize_trailing_context = function(context) {
         if (context.length === 0 || context_lines === 0) {
           return [];
         }
-
+  
         return context.slice(0, Math.min(context_lines, context.length));
       };
-
+  
     // Skip common lines in the beginning
     while (i < ori_len && ori_is_in_lcs[i] === true && new_is_in_lcs[i] === true) {
       leading_context.push(ori_lines[i]);
       i++;
     }
-
+  
     j = i;
     k = i; // The index in the longest common sequence
     ori_hunk_start = i;
     new_hunk_start = j;
     ori_hunk_end = i;
     new_hunk_end = j;
-
+  
     while (i < ori_len || j < new_len) {
       while (i < ori_len && ori_is_in_lcs[i] === false) {
         i++;
       }
       ori_hunk_end = i;
-
+  
       while (j < new_len && new_is_in_lcs[j] === false) {
         j++;
       }
       new_hunk_end = j;
-
+  
       // Find the trailing context
       trailing_context = [];
       while (i < ori_len && ori_is_in_lcs[i] === true && j < new_len && new_is_in_lcs[j] === true) {
@@ -9105,41 +10536,41 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
         i++;
         j++;
       }
-
+  
       if (k >= lcs_len || // No more in longest common lines
         trailing_context.length >= 2 * context_lines) { // Context break found
         if (trailing_context.length < 2 * context_lines) { // It must be last block of common lines but not a context break
           trailing_context = [];
-
+  
           // Force break out
           i = ori_len;
           j = new_len;
-
+  
           // Update hunk ends to force output to the end
           ori_hunk_end = ori_len;
           new_hunk_end = new_len;
         }
-
+  
         // Output the diff hunk
-
+  
         // Trim the leading and trailing context block
         actual_leading_context = regularize_leading_context(leading_context);
         actual_trailing_context = regularize_trailing_context(trailing_context);
-
+  
         ori_hunk_start -= actual_leading_context.length;
         new_hunk_start -= actual_leading_context.length;
         ori_hunk_end += actual_trailing_context.length;
         new_hunk_end += actual_trailing_context.length;
-
+  
         ori_hunk_line_no = ori_hunk_start + 1;
         new_hunk_line_no = new_hunk_start + 1;
         ori_hunk_size = ori_hunk_end - ori_hunk_start;
         new_hunk_size = new_hunk_end - new_hunk_start;
-
+  
         // Build header
         unidiff += HEADER_PREFIX + ORIGINAL_INDICATOR + ori_hunk_line_no + RANGE_SEPARATOR + ori_hunk_size + ' ' +
           NEW_INDICATOR + new_hunk_line_no + RANGE_SEPARATOR + new_hunk_size + HEADER_SUFFIX + NEW_LINE;
-
+  
         // Build the diff hunk content
         while (ori_hunk_start < ori_hunk_end || new_hunk_start < new_hunk_end) {
           if (ori_hunk_start < ori_hunk_end && ori_is_in_lcs[ori_hunk_start] === true && new_is_in_lcs[
@@ -9155,19 +10586,19 @@ exports.xdiff_string_diff = function (old_data, new_data, context_lines, minimal
             new_hunk_start++;
           }
         }
-
+  
         // Update hunk position and leading context
         ori_hunk_start = i;
         new_hunk_start = j;
         leading_context = trailing_context;
       }
     }
-
+  
     // Trim the trailing new line if it exists
     if (unidiff.length > 0 && unidiff.charAt(unidiff.length) === NEW_LINE) {
       unidiff = unidiff.slice(0, -1);
     }
-
+  
     return unidiff;
 };
 
@@ -9191,7 +10622,7 @@ exports.xdiff_string_patch = function (originalStr, patch, flags, error) {
           output = [],
           lastLastIndex = 0,
           match, lastLength, limit = Infinity,
-
+  
           // This is required if not `s.global`, and it avoids needing to set `s.lastIndex` to zero
           // and restore it to its original value when we're done using the regex
           x = sep._xregexp,
@@ -9202,28 +10633,28 @@ exports.xdiff_string_patch = function (originalStr, patch, flags, error) {
             captureNames: x.captureNames ? x.captureNames.slice(0) : null
           };
         }
-
+  
         while ((match = s.exec(str))) { // Run the altered `exec` (required for `lastIndex` fix, etc.)
           if (s.lastIndex > lastLastIndex) {
             output.push(str.slice(lastLastIndex, match.index));
-
+  
             if (match.length > 1 && match.index < str.length) {
               Array.prototype.push.apply(output, match.slice(1));
             }
-
+  
             lastLength = match[0].length;
             lastLastIndex = s.lastIndex;
-
+  
             if (output.length >= limit) {
               break;
             }
           }
-
+  
           if (s.lastIndex === match.index) {
             s.lastIndex++;
           }
         }
-
+  
         if (lastLastIndex === str.length) {
           if (!s.test('') || lastLength) {
             output.push('');
@@ -9231,7 +10662,7 @@ exports.xdiff_string_patch = function (originalStr, patch, flags, error) {
         } else {
           output.push(str.slice(lastLastIndex));
         }
-
+  
         return output.length > limit ? output.slice(0, limit) : output;
       },
       i = 0,
@@ -9253,7 +10684,7 @@ exports.xdiff_string_patch = function (originalStr, patch, flags, error) {
         'XDIFF_PATCH_REVERSE': 2,
         'XDIFF_PATCH_IGNORESPACE': 4
       };
-
+  
     // Input defaulting & sanitation
     if (typeof originalStr !== 'string' || !patch) {
       return false;
@@ -9261,7 +10692,7 @@ exports.xdiff_string_patch = function (originalStr, patch, flags, error) {
     if (!flags) {
       flags = 'XDIFF_PATCH_NORMAL';
     }
-
+  
     if (typeof flags !== 'number') { // Allow for a single string or an array of string flags
       flags = [].concat(flags);
       for (i = 0; i < flags.length; i++) {
@@ -9272,7 +10703,7 @@ exports.xdiff_string_patch = function (originalStr, patch, flags, error) {
       }
       flags = optTemp;
     }
-
+  
     if (flags & OPTS.XDIFF_PATCH_NORMAL) {
       for (i = 0, ll = lines.length; i < ll; i++) {
         ranges = lines[i].match(rangeExp);
@@ -9354,9 +10785,9 @@ exports.utf8_decode = function (str_data) {
       c2 = 0,
       c3 = 0,
       c4 = 0;
-
+  
     str_data += '';
-
+  
     while (i < str_data.length) {
       c1 = str_data.charCodeAt(i);
       if (c1 <= 191) {
@@ -9383,7 +10814,7 @@ exports.utf8_decode = function (str_data) {
         i += 4;
       }
     }
-
+  
     return tmp_arr.join('');
 };
 
@@ -9391,17 +10822,17 @@ exports.utf8_encode = function (argString) {
   if (argString === null || typeof argString === 'undefined') {
       return '';
     }
-
+  
     var string = (argString + ''); // .replace(/\r\n/g, "\n").replace(/\r/g, "\n");
     var utftext = '',
       start, end, stringl = 0;
-
+  
     start = end = 0;
     stringl = string.length;
     for (var n = 0; n < stringl; n++) {
       var c1 = string.charCodeAt(n);
       var enc = null;
-
+  
       if (c1 < 128) {
         end++;
       } else if (c1 > 127 && c1 < 2048) {
@@ -9433,35 +10864,35 @@ exports.utf8_encode = function (argString) {
         start = end = n + 1;
       }
     }
-
+  
     if (end > start) {
       utftext += string.slice(start, stringl);
     }
-
+  
     return utftext;
 };
 
 exports.array_flip = function (trans) {
   var key, tmp_ar = {};
-
+  
     // Duck-type check for our own array()-created PHPJS_Array
     if (trans && typeof trans === 'object' && trans.change_key_case) {
       return trans.flip();
     }
-
+  
     for (key in trans) {
       if (!trans.hasOwnProperty(key)) {
         continue;
       }
       tmp_ar[trans[key]] = key;
     }
-
+  
     return tmp_ar;
 };
 
 exports.array_merge_recursive = function (arr1, arr2) {
   var idx = '';
-
+  
     if (arr1 && Object.prototype.toString.call(arr1) === '[object Array]' &&
       arr2 && Object.prototype.toString.call(arr2) === '[object Array]') {
       for (idx in arr2) {
@@ -9480,14 +10911,14 @@ exports.array_merge_recursive = function (arr1, arr2) {
         }
       }
     }
-
+  
     return arr1;
 };
 
 exports.array_search = function (needle, haystack, argStrict) {
   var strict = !! argStrict,
       key = '';
-
+  
     if (haystack && typeof haystack === 'object' && haystack.change_key_case) { // Duck-type check for our own array()-created PHPJS_Array
       return haystack.search(needle, argStrict);
     }
@@ -9505,13 +10936,13 @@ exports.array_search = function (needle, haystack, argStrict) {
       }
       return false;
     }
-
+  
     for (key in haystack) {
       if ((strict && haystack[key] === needle) || (!strict && haystack[key] == needle)) {
         return key;
       }
     }
-
+  
     return false;
 };
 
@@ -9521,9 +10952,9 @@ exports.array_slice = function (arr, offst, lgth, preserve_keys) {
       arr = Array.prototype.slice.call(arr);
     }
     */
-
+  
     var key = '';
-
+  
     if (Object.prototype.toString.call(arr) !== '[object Array]' ||
       (preserve_keys && offst !== 0)) { // Assoc. array as input or if required as output
       var lgt = 0,
@@ -9535,10 +10966,10 @@ exports.array_slice = function (arr, offst, lgth, preserve_keys) {
         //}
       }
       arr = newAssoc;
-
+  
       offst = (offst < 0) ? lgt + offst : offst;
       lgth = lgth === undefined ? lgt : (lgth < 0) ? lgt + lgth - offst : lgth;
-
+  
       var assoc = {};
       var start = false,
         it = -1,
@@ -9564,7 +10995,7 @@ exports.array_slice = function (arr, offst, lgth, preserve_keys) {
       //assoc.length = arrlgth; // Make as array-like object (though length will not be dynamic)
       return assoc;
     }
-
+  
     if (lgth === undefined) {
       return arr.slice(offst);
     } else if (lgth >= 0) {
@@ -9590,7 +11021,7 @@ exports.array_splice = function (arr, offst, lgth, replacement) {
       }
       return ct;
     };
-
+  
     if (replacement && typeof replacement !== 'object') {
       replacement = [replacement];
     }
@@ -9599,7 +11030,7 @@ exports.array_splice = function (arr, offst, lgth, replacement) {
     } else if (lgth < 0) {
       lgth = (offst >= 0 ? arr.length - offst : -offst) + lgth;
     }
-
+  
     if (Object.prototype.toString.call(arr) !== '[object Array]') {
       /*if (arr.length !== undefined) { // Deal with array-like objects as input
       delete arr.length;
@@ -9652,7 +11083,7 @@ exports.array_splice = function (arr, offst, lgth, replacement) {
       // arr.length = lgt - rmvd_lgth + (replacement ? replacement.length : 0); // Make (back) into an array-like object
       return returnArr ? rmvd : rmvdObj;
     }
-
+  
     if (replacement) {
       replacement.unshift(offst, lgth);
       return Array.prototype.splice.apply(arr, replacement);
@@ -9662,7 +11093,7 @@ exports.array_splice = function (arr, offst, lgth, replacement) {
 
 exports.array_walk = function (array, funcname, userdata) {
   var key, value, ini;
-
+  
     if (!array || typeof array !== 'object') {
       return false;
     }
@@ -9673,7 +11104,7 @@ exports.array_walk = function (array, funcname, userdata) {
         return array.walk(funcname);
       }
     }
-
+  
     try {
       if (typeof funcname === 'function') {
         for (key in array) {
@@ -9729,7 +11160,7 @@ exports.array_walk = function (array, funcname, userdata) {
     } catch (e) {
       return false;
     }
-
+  
     return true;
 };
 
@@ -9738,7 +11169,7 @@ exports.natcasesort = function (inputArr) {
       k, i, ret, that = this,
       strictForIn = false,
       populateArr = {};
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.php_js.ini = this.php_js.ini || {};
@@ -9746,7 +11177,7 @@ exports.natcasesort = function (inputArr) {
     strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js
       .ini['phpjs.strictForIn'].local_value !== 'off';
     populateArr = strictForIn ? inputArr : populateArr;
-
+  
     // Get key and value arrays
     for (k in inputArr) {
       if (inputArr.hasOwnProperty(k)) {
@@ -9759,12 +11190,12 @@ exports.natcasesort = function (inputArr) {
     valArr.sort(function(a, b) {
       return that.strnatcasecmp(a[1], b[1]);
     });
-
+  
     // Repopulate the old array
     for (i = 0; i < valArr.length; i++) {
       populateArr[valArr[i][0]] = valArr[i][1];
     }
-
+  
     return strictForIn || populateArr;
 };
 
@@ -9778,43 +11209,43 @@ exports.sizeof = function (mixed_var, mode) {
 
 exports.bcadd = function (left_operand, right_operand, scale) {
   var libbcmath = this._phpjs_shared_bc();
-
+  
     var first, second, result;
-
+  
     if (typeof scale === 'undefined') {
       scale = libbcmath.scale;
     }
     scale = ((scale < 0) ? 0 : scale);
-
+  
     // create objects
     first = libbcmath.bc_init_num();
     second = libbcmath.bc_init_num();
     result = libbcmath.bc_init_num();
-
+  
     first = libbcmath.php_str2num(left_operand.toString());
     second = libbcmath.php_str2num(right_operand.toString());
-
+  
     result = libbcmath.bc_add(first, second, scale);
-
+  
     if (result.n_scale > scale) {
       result.n_scale = scale;
     }
-
+  
     return result.toString();
 };
 
 exports.bccomp = function (left_operand, right_operand, scale) {
   var libbcmath = this._phpjs_shared_bc();
-
+  
     var first, second; //bc_num
     if (typeof scale === 'undefined') {
       scale = libbcmath.scale;
     }
     scale = ((scale < 0) ? 0 : scale);
-
+  
     first = libbcmath.bc_init_num();
     second = libbcmath.bc_init_num();
-
+  
     first = libbcmath.bc_str2num(left_operand.toString(), scale); // note bc_ not php_str2num
     second = libbcmath.bc_str2num(right_operand.toString(), scale); // note bc_ not php_str2num
     return libbcmath.bc_compare(first, second, scale);
@@ -9822,22 +11253,22 @@ exports.bccomp = function (left_operand, right_operand, scale) {
 
 exports.bcdiv = function (left_operand, right_operand, scale) {
   var libbcmath = this._phpjs_shared_bc();
-
+  
     var first, second, result;
-
+  
     if (typeof scale === 'undefined') {
       scale = libbcmath.scale;
     }
     scale = ((scale < 0) ? 0 : scale);
-
+  
     // create objects
     first = libbcmath.bc_init_num();
     second = libbcmath.bc_init_num();
     result = libbcmath.bc_init_num();
-
+  
     first = libbcmath.php_str2num(left_operand.toString());
     second = libbcmath.php_str2num(right_operand.toString());
-
+  
     result = libbcmath.bc_divide(first, second, scale);
     if (result === -1) {
       // error
@@ -9851,24 +11282,24 @@ exports.bcdiv = function (left_operand, right_operand, scale) {
 
 exports.bcmul = function (left_operand, right_operand, scale) {
   var libbcmath = this._phpjs_shared_bc();
-
+  
     var first, second, result;
-
+  
     if (typeof scale === 'undefined') {
       scale = libbcmath.scale;
     }
     scale = ((scale < 0) ? 0 : scale);
-
+  
     // create objects
     first = libbcmath.bc_init_num();
     second = libbcmath.bc_init_num();
     result = libbcmath.bc_init_num();
-
+  
     first = libbcmath.php_str2num(left_operand.toString());
     second = libbcmath.php_str2num(right_operand.toString());
-
+  
     result = libbcmath.bc_multiply(first, second, scale);
-
+  
     if (result.n_scale > scale) {
       result.n_scale = scale;
     }
@@ -9877,14 +11308,14 @@ exports.bcmul = function (left_operand, right_operand, scale) {
 
 exports.bcround = function (val, precision) {
   var libbcmath = this._phpjs_shared_bc();
-
+  
     var temp, result, digit;
     var right_operand;
-
+  
     // create number
     temp = libbcmath.bc_init_num();
     temp = libbcmath.php_str2num(val.toString());
-
+  
     // check if any rounding needs
     if (precision >= temp.n_scale) {
       // nothing to round, just add the zeros.
@@ -9894,14 +11325,14 @@ exports.bcround = function (val, precision) {
       }
       return temp.toString();
     }
-
+  
     // get the digit we are checking (1 after the precision)
     // loop through digits after the precision marker
     digit = temp.n_value[temp.n_len + precision];
-
+  
     right_operand = libbcmath.bc_init_num();
     right_operand = libbcmath.bc_new_num(1, precision);
-
+  
     if (digit >= 5) {
       //round away from zero by adding 1 (or -1) at the "precision".. ie 1.44999 @ 3dp = (1.44999 + 0.001).toString().substr(0,5)
       right_operand.n_value[right_operand.n_len + right_operand.n_scale - 1] = 1;
@@ -9914,7 +11345,7 @@ exports.bcround = function (val, precision) {
       // leave-as-is.. just truncate it.
       result = temp;
     }
-
+  
     if (result.n_scale > precision) {
       result.n_scale = precision;
     }
@@ -9923,7 +11354,7 @@ exports.bcround = function (val, precision) {
 
 exports.bcscale = function (scale) {
   var libbcmath = this._phpjs_shared_bc();
-
+  
     scale = parseInt(scale, 10);
     if (isNaN(scale)) {
       return false;
@@ -9937,28 +11368,28 @@ exports.bcscale = function (scale) {
 
 exports.bcsub = function (left_operand, right_operand, scale) {
   var libbcmath = this._phpjs_shared_bc();
-
+  
     var first, second, result;
-
+  
     if (typeof scale === 'undefined') {
       scale = libbcmath.scale;
     }
     scale = ((scale < 0) ? 0 : scale);
-
+  
     // create objects
     first = libbcmath.bc_init_num();
     second = libbcmath.bc_init_num();
     result = libbcmath.bc_init_num();
-
+  
     first = libbcmath.php_str2num(left_operand.toString());
     second = libbcmath.php_str2num(right_operand.toString());
-
+  
     result = libbcmath.bc_sub(first, second, scale);
-
+  
     if (result.n_scale > scale) {
       result.n_scale = scale;
     }
-
+  
     return result.toString();
 };
 
@@ -9966,11 +11397,11 @@ exports.date_parse = function (date) {
   // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     // END REDUNDANT
-
+  
     var ts,
       warningsOffset = this.php_js.warnings ? this.php_js.warnings.length : null,
       errorsOffset = this.php_js.errors ? this.php_js.errors.length : null;
-
+  
     try {
       this.php_js.date_parse_state = true; // Allow strtotime to return a decimal (which it normally does not)
       ts = this.strtotime(date);
@@ -9980,9 +11411,9 @@ exports.date_parse = function (date) {
         return false;
       }
     }
-
+  
     var dt = new Date(ts * 1000);
-
+  
     var retObj = { // Grab any new warnings or errors added (not implemented yet in strtotime()); throwing warnings, notices, or errors could also be easily monitored by using 'watch' on this.php_js.latestWarning, etc. and/or calling any defined error handlers
       warning_count: warningsOffset !== null ? this.php_js.warnings.slice(warningsOffset)
         .length : 0,
@@ -9999,7 +11430,7 @@ exports.date_parse = function (date) {
     retObj.second = dt.getSeconds();
     retObj.fraction = parseFloat('0.' + dt.getMilliseconds());
     retObj.is_localtime = dt.getTimezoneOffset() !== 0;
-
+  
     return retObj;
 };
 
@@ -10022,7 +11453,7 @@ exports.pathinfo = function (path, options) {
     var have_basename = false,
       have_extension = false,
       have_filename = false;
-
+  
     // Input defaulting & sanitation
     if (!path) {
       return false;
@@ -10030,7 +11461,7 @@ exports.pathinfo = function (path, options) {
     if (!options) {
       options = 'PATHINFO_ALL';
     }
-
+  
     // Initialize binary arguments. Both the string & integer (constant) input is
     // allowed
     var OPTS = {
@@ -10054,28 +11485,28 @@ exports.pathinfo = function (path, options) {
       }
       options = optTemp;
     }
-
+  
     // Internal Functions
     var __getExt = function(path) {
       var str = path + '';
       var dotP = str.lastIndexOf('.') + 1;
       return !dotP ? false : dotP !== str.length ? str.substr(dotP) : '';
     };
-
+  
     // Gather path infos
     if (options & OPTS.PATHINFO_DIRNAME) {
       var dirName = path.replace(/\\/g, '/')
         .replace(/\/[^\/]*\/?$/, ''); // dirname
       tmp_arr.dirname = dirName === path ? '.' : dirName;
     }
-
+  
     if (options & OPTS.PATHINFO_BASENAME) {
       if (false === have_basename) {
         have_basename = this.basename(path);
       }
       tmp_arr.basename = have_basename;
     }
-
+  
     if (options & OPTS.PATHINFO_EXTENSION) {
       if (false === have_basename) {
         have_basename = this.basename(path);
@@ -10087,7 +11518,7 @@ exports.pathinfo = function (path, options) {
         tmp_arr.extension = have_extension;
       }
     }
-
+  
     if (options & OPTS.PATHINFO_FILENAME) {
       if (false === have_basename) {
         have_basename = this.basename(path);
@@ -10099,10 +11530,10 @@ exports.pathinfo = function (path, options) {
         have_filename = have_basename.slice(0, have_basename.length - (have_extension ? have_extension.length + 1 :
           have_extension === false ? 0 : 1));
       }
-
+  
       tmp_arr.filename = have_filename;
     }
-
+  
     // If array contains only 1 element: return string
     cnt = 0;
     for (opt in tmp_arr) {
@@ -10111,7 +11542,7 @@ exports.pathinfo = function (path, options) {
     if (cnt == 1) {
       return tmp_arr[opt];
     }
-
+  
     // Return full-blown array
     return tmp_arr;
 };
@@ -10122,7 +11553,7 @@ exports.i18n_loc_get_default = function () {
     } catch (e) {
       this.php_js = {};
     }
-
+  
     // Ensure defaults are set up
     return this.php_js.i18nLocale || (i18n_loc_set_default('en_US_POSIX'), 'en_US_POSIX');
 };
@@ -10139,13 +11570,13 @@ exports.convert_uuencode = function (str) {
   var chr = function(c) {
       return String.fromCharCode(c);
     };
-
+  
     if (!str || str === '') {
       return chr(0);
     } else if (!this.is_scalar(str)) {
       return false;
     }
-
+  
     var c = 0,
       u = 0,
       i = 0,
@@ -10154,7 +11585,7 @@ exports.convert_uuencode = function (str) {
       tmp1 = '',
       tmp2 = '',
       bytes = {};
-
+  
     // divide string into chunks of 45 characters
     var chunk = function() {
       bytes = str.substr(u, 45);
@@ -10167,14 +11598,14 @@ exports.convert_uuencode = function (str) {
         return 0;
       }
     };
-
+  
     while (chunk() !== 0) {
       c = chunk();
       u += 45;
-
+  
       // New line encoded data starts with number of bytes encoded.
       encoded += chr(c + 32);
-
+  
       // Convert each char in bytes[] to a byte
       for (i in bytes) {
         tmp1 = bytes[i].charCodeAt(0)
@@ -10184,11 +11615,11 @@ exports.convert_uuencode = function (str) {
         }
         tmp2 += tmp1;
       }
-
+  
       while (tmp2.length % 6) {
         tmp2 = tmp2 + '0';
       }
-
+  
       for (i = 0; i <= (tmp2.length / 6) - 1; i++) {
         tmp1 = tmp2.substr(a, 6);
         if (tmp1 == '000000') {
@@ -10202,10 +11633,10 @@ exports.convert_uuencode = function (str) {
       tmp2 = '';
       encoded += '\n';
     }
-
+  
     // Add termination characters
     encoded += chr(96) + '\n';
-
+  
     return encoded;
 };
 
@@ -10213,18 +11644,18 @@ exports.crc32 = function (str) {
   str = this.utf8_encode(str);
     var table =
       '00000000 77073096 EE0E612C 990951BA 076DC419 706AF48F E963A535 9E6495A3 0EDB8832 79DCB8A4 E0D5E91E 97D2D988 09B64C2B 7EB17CBD E7B82D07 90BF1D91 1DB71064 6AB020F2 F3B97148 84BE41DE 1ADAD47D 6DDDE4EB F4D4B551 83D385C7 136C9856 646BA8C0 FD62F97A 8A65C9EC 14015C4F 63066CD9 FA0F3D63 8D080DF5 3B6E20C8 4C69105E D56041E4 A2677172 3C03E4D1 4B04D447 D20D85FD A50AB56B 35B5A8FA 42B2986C DBBBC9D6 ACBCF940 32D86CE3 45DF5C75 DCD60DCF ABD13D59 26D930AC 51DE003A C8D75180 BFD06116 21B4F4B5 56B3C423 CFBA9599 B8BDA50F 2802B89E 5F058808 C60CD9B2 B10BE924 2F6F7C87 58684C11 C1611DAB B6662D3D 76DC4190 01DB7106 98D220BC EFD5102A 71B18589 06B6B51F 9FBFE4A5 E8B8D433 7807C9A2 0F00F934 9609A88E E10E9818 7F6A0DBB 086D3D2D 91646C97 E6635C01 6B6B51F4 1C6C6162 856530D8 F262004E 6C0695ED 1B01A57B 8208F4C1 F50FC457 65B0D9C6 12B7E950 8BBEB8EA FCB9887C 62DD1DDF 15DA2D49 8CD37CF3 FBD44C65 4DB26158 3AB551CE A3BC0074 D4BB30E2 4ADFA541 3DD895D7 A4D1C46D D3D6F4FB 4369E96A 346ED9FC AD678846 DA60B8D0 44042D73 33031DE5 AA0A4C5F DD0D7CC9 5005713C 270241AA BE0B1010 C90C2086 5768B525 206F85B3 B966D409 CE61E49F 5EDEF90E 29D9C998 B0D09822 C7D7A8B4 59B33D17 2EB40D81 B7BD5C3B C0BA6CAD EDB88320 9ABFB3B6 03B6E20C 74B1D29A EAD54739 9DD277AF 04DB2615 73DC1683 E3630B12 94643B84 0D6D6A3E 7A6A5AA8 E40ECF0B 9309FF9D 0A00AE27 7D079EB1 F00F9344 8708A3D2 1E01F268 6906C2FE F762575D 806567CB 196C3671 6E6B06E7 FED41B76 89D32BE0 10DA7A5A 67DD4ACC F9B9DF6F 8EBEEFF9 17B7BE43 60B08ED5 D6D6A3E8 A1D1937E 38D8C2C4 4FDFF252 D1BB67F1 A6BC5767 3FB506DD 48B2364B D80D2BDA AF0A1B4C 36034AF6 41047A60 DF60EFC3 A867DF55 316E8EEF 4669BE79 CB61B38C BC66831A 256FD2A0 5268E236 CC0C7795 BB0B4703 220216B9 5505262F C5BA3BBE B2BD0B28 2BB45A92 5CB36A04 C2D7FFA7 B5D0CF31 2CD99E8B 5BDEAE1D 9B64C2B0 EC63F226 756AA39C 026D930A 9C0906A9 EB0E363F 72076785 05005713 95BF4A82 E2B87A14 7BB12BAE 0CB61B38 92D28E9B E5D5BE0D 7CDCEFB7 0BDBDF21 86D3D2D4 F1D4E242 68DDB3F8 1FDA836E 81BE16CD F6B9265B 6FB077E1 18B74777 88085AE6 FF0F6A70 66063BCA 11010B5C 8F659EFF F862AE69 616BFFD3 166CCF45 A00AE278 D70DD2EE 4E048354 3903B3C2 A7672661 D06016F7 4969474D 3E6E77DB AED16A4A D9D65ADC 40DF0B66 37D83BF0 A9BCAE53 DEBB9EC5 47B2CF7F 30B5FFE9 BDBDF21C CABAC28A 53B39330 24B4A3A6 BAD03605 CDD70693 54DE5729 23D967BF B3667A2E C4614AB8 5D681B02 2A6F2B94 B40BBE37 C30C8EA1 5A05DF1B 2D02EF8D';
-
+  
     var crc = 0;
     var x = 0;
     var y = 0;
-
+  
     crc = crc ^ (-1);
     for (var i = 0, iTop = str.length; i < iTop; i++) {
       y = (crc ^ str.charCodeAt(i)) & 0xFF;
       x = '0x' + table.substr(y * 9, 8);
       crc = (crc >>> 8) ^ x;
     }
-
+  
     return crc ^ (-1);
 };
 
@@ -10234,16 +11665,16 @@ exports.html_entity_decode = function (string, quote_style) {
       tmp_str = '',
       entity = '';
     tmp_str = string.toString();
-
+  
     if (false === (hash_map = this.get_html_translation_table('HTML_ENTITIES', quote_style))) {
       return false;
     }
-
+  
     // fix &amp; problem
     // http://phpjs.org/functions/get_html_translation_table:416#comment_97660
     delete(hash_map['&']);
     hash_map['&'] = '&amp;';
-
+  
     for (symbol in hash_map) {
       entity = hash_map[symbol];
       tmp_str = tmp_str.split(entity)
@@ -10251,7 +11682,7 @@ exports.html_entity_decode = function (string, quote_style) {
     }
     tmp_str = tmp_str.split('&#039;')
       .join("'");
-
+  
     return tmp_str;
 };
 
@@ -10259,15 +11690,15 @@ exports.htmlentities = function (string, quote_style, charset, double_encode) {
   var hash_map = this.get_html_translation_table('HTML_ENTITIES', quote_style),
       symbol = '';
     string = string == null ? '' : string + '';
-
+  
     if (!hash_map) {
       return false;
     }
-
+  
     if (quote_style && quote_style === 'ENT_QUOTES') {
       hash_map["'"] = '&#039;';
     }
-
+  
     if ( !! double_encode || double_encode == null) {
       for (symbol in hash_map) {
         if (hash_map.hasOwnProperty(symbol)) {
@@ -10283,11 +11714,11 @@ exports.htmlentities = function (string, quote_style, charset, double_encode) {
               .join(hash_map[symbol]);
           }
         }
-
+  
         return text + entity;
       });
     }
-
+  
     return string;
 };
 
@@ -10297,11 +11728,11 @@ exports.join = function (glue, pieces) {
 
 exports.md5 = function (str) {
   var xl;
-
+  
     var rotateLeft = function(lValue, iShiftBits) {
       return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits));
     };
-
+  
     var addUnsigned = function(lX, lY) {
       var lX4, lY4, lX8, lY8, lResult;
       lX8 = (lX & 0x80000000);
@@ -10322,7 +11753,7 @@ exports.md5 = function (str) {
         return (lResult ^ lX8 ^ lY8);
       }
     };
-
+  
     var _F = function(x, y, z) {
       return (x & y) | ((~x) & z);
     };
@@ -10335,27 +11766,27 @@ exports.md5 = function (str) {
     var _I = function(x, y, z) {
       return (y ^ (x | (~z)));
     };
-
+  
     var _FF = function(a, b, c, d, x, s, ac) {
       a = addUnsigned(a, addUnsigned(addUnsigned(_F(b, c, d), x), ac));
       return addUnsigned(rotateLeft(a, s), b);
     };
-
+  
     var _GG = function(a, b, c, d, x, s, ac) {
       a = addUnsigned(a, addUnsigned(addUnsigned(_G(b, c, d), x), ac));
       return addUnsigned(rotateLeft(a, s), b);
     };
-
+  
     var _HH = function(a, b, c, d, x, s, ac) {
       a = addUnsigned(a, addUnsigned(addUnsigned(_H(b, c, d), x), ac));
       return addUnsigned(rotateLeft(a, s), b);
     };
-
+  
     var _II = function(a, b, c, d, x, s, ac) {
       a = addUnsigned(a, addUnsigned(addUnsigned(_I(b, c, d), x), ac));
       return addUnsigned(rotateLeft(a, s), b);
     };
-
+  
     var convertToWordArray = function(str) {
       var lWordCount;
       var lMessageLength = str.length;
@@ -10378,7 +11809,7 @@ exports.md5 = function (str) {
       lWordArray[lNumberOfWords - 1] = lMessageLength >>> 29;
       return lWordArray;
     };
-
+  
     var wordToHex = function(lValue) {
       var wordToHexValue = '',
         wordToHexValue_temp = '',
@@ -10390,7 +11821,7 @@ exports.md5 = function (str) {
       }
       return wordToHexValue;
     };
-
+  
     var x = [],
       k, AA, BB, CC, DD, a, b, c, d, S11 = 7,
       S12 = 12,
@@ -10408,14 +11839,14 @@ exports.md5 = function (str) {
       S42 = 10,
       S43 = 15,
       S44 = 21;
-
+  
     str = this.utf8_encode(str);
     x = convertToWordArray(str);
     a = 0x67452301;
     b = 0xEFCDAB89;
     c = 0x98BADCFE;
     d = 0x10325476;
-
+  
     xl = x.length;
     for (k = 0; k < xl; k += 16) {
       AA = a;
@@ -10491,41 +11922,41 @@ exports.md5 = function (str) {
       c = addUnsigned(c, CC);
       d = addUnsigned(d, DD);
     }
-
+  
     var temp = wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d);
-
+  
     return temp.toLowerCase();
 };
 
 exports.md5_file = function (str_filename) {
   var buf = '';
-
+  
     buf = this.file_get_contents(str_filename);
-
+  
     if (!buf) {
       return false;
     }
-
+  
     return this.md5(buf);
 };
 
 exports.printf = function () {
   var body, elmt, d = this.window.document;
     var ret = '';
-
+  
     var HTMLNS = 'http://www.w3.org/1999/xhtml';
     body = d.getElementsByTagNameNS ? (d.getElementsByTagNameNS(HTMLNS, 'body')[0] ? d.getElementsByTagNameNS(HTMLNS,
       'body')[0] : d.documentElement.lastChild) : d.getElementsByTagName('body')[0];
-
+  
     if (!body) {
       return false;
     }
-
+  
     ret = this.sprintf.apply(this, arguments);
-
+  
     elmt = d.createTextNode(ret);
     body.appendChild(elmt);
-
+  
     return ret.length;
 };
 
@@ -10534,7 +11965,7 @@ exports.setlocale = function (category, locale) {
       cats = [],
       i = 0,
       d = this.window.document;
-
+  
     // BEGIN STATIC
     var _copy = function _copy(orig) {
       if (orig instanceof RegExp) {
@@ -10552,7 +11983,7 @@ exports.setlocale = function (category, locale) {
       }
       return newObj;
     };
-
+  
     // Function usable by a ngettext implementation (apparently not an accessible part of setlocale(), but locale-specific)
     // See http://www.gnu.org/software/gettext/manual/gettext.html#Plural-forms though amended with others from
     // https://developer.mozilla.org/En/Localization_and_Plurals (new categories noted with "MDC" below, though
@@ -10618,19 +12049,19 @@ exports.setlocale = function (category, locale) {
     } catch (e) {
       this.php_js = {};
     }
-
+  
     var phpjs = this.php_js;
-
+  
     // Reconcile Windows vs. *nix locale names?
     // Allow different priority orders of languages, esp. if implement gettext as in
     //     LANGUAGE env. var.? (e.g., show German if French is not available)
     if (!phpjs.locales) {
       // Can add to the locales
       phpjs.locales = {};
-
+  
       phpjs.locales.en = {
         'LC_COLLATE': // For strcoll
-
+  
         function(str1, str2) { // Fix: This one taken from strcmp, but need for other locales; we don't use localeCompare since its locale is not settable
           return (str1 == str2) ? 0 : ((str1 > str2) ? 1 : -1);
         },
@@ -10733,10 +12164,10 @@ exports.setlocale = function (category, locale) {
       phpjs.locales.en_US.LC_MONETARY.mon_grouping = [3, 3];
       phpjs.locales.en_US.LC_NUMERIC.thousands_sep = '';
       phpjs.locales.en_US.LC_NUMERIC.grouping = [];
-
+  
       phpjs.locales.en_GB = _copy(phpjs.locales.en);
       phpjs.locales.en_GB.LC_TIME.r = '%l:%M:%S %P %Z';
-
+  
       phpjs.locales.en_AU = _copy(phpjs.locales.en_GB);
       phpjs.locales.C = _copy(phpjs.locales.en); // Assume C locale is like English (?) (We need C locale for LC_CTYPE)
       phpjs.locales.C.LC_CTYPE.CODESET = 'ANSI_X3.4-1968';
@@ -10767,7 +12198,7 @@ exports.setlocale = function (category, locale) {
       phpjs.locales.C.LC_TIME.X = '%H:%M:%S'; // T_FMT
       phpjs.locales.C.LC_MESSAGES.YESEXPR = '^[yY]';
       phpjs.locales.C.LC_MESSAGES.NOEXPR = '^[nN]';
-
+  
       phpjs.locales.fr = _copy(phpjs.locales.en);
       phpjs.locales.fr.nplurals = _nplurals2b;
       phpjs.locales.fr.LC_TIME.a = ['dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam'];
@@ -10783,7 +12214,7 @@ exports.setlocale = function (category, locale) {
       phpjs.locales.fr.LC_TIME.P = ['', ''];
       phpjs.locales.fr.LC_TIME.x = '%d.%m.%Y';
       phpjs.locales.fr.LC_TIME.X = '%T';
-
+  
       phpjs.locales.fr_CA = _copy(phpjs.locales.fr);
       phpjs.locales.fr_CA.LC_TIME.x = '%Y-%m-%d';
     }
@@ -10809,7 +12240,7 @@ exports.setlocale = function (category, locale) {
         phpjs.locale = phpjs.locale.replace(/_[a-zA-Z]+$/, '');
       }
     }
-
+  
     if (!phpjs.localeCategories) {
       phpjs.localeCategories = {
         'LC_COLLATE': phpjs.locale,
@@ -10840,7 +12271,7 @@ exports.setlocale = function (category, locale) {
         break;
       }
     }
-
+  
     // Just get the locale
     if (locale === '0' || locale === 0) {
       if (category === 'LC_ALL') {
@@ -10851,11 +12282,11 @@ exports.setlocale = function (category, locale) {
       }
       return this.php_js.localeCategories[category];
     }
-
+  
     if (!(locale in this.php_js.locales)) {
       return false; // Locale not found
     }
-
+  
     // Set and get locale
     if (category === 'LC_ALL') {
       for (categ in this.php_js.localeCategories) {
@@ -10872,13 +12303,13 @@ exports.sha1 = function (str) {
       var t4 = (n << s) | (n >>> (32 - s));
       return t4;
     };
-
+  
     /*var lsb_hex = function (val) { // Not in use; needed?
       var str="";
       var i;
       var vh;
       var vl;
-
+  
       for ( i=0; i<=6; i+=2 ) {
         vh = (val>>>(i*4+4))&0x0f;
         vl = (val>>>(i*4))&0x0f;
@@ -10886,19 +12317,19 @@ exports.sha1 = function (str) {
       }
       return str;
     };*/
-
+  
     var cvt_hex = function(val) {
       var str = '';
       var i;
       var v;
-
+  
       for (i = 7; i >= 0; i--) {
         v = (val >>> (i * 4)) & 0x0f;
         str += v.toString(16);
       }
       return str;
     };
-
+  
     var blockstart;
     var i, j;
     var W = new Array(80);
@@ -10909,16 +12340,16 @@ exports.sha1 = function (str) {
     var H4 = 0xC3D2E1F0;
     var A, B, C, D, E;
     var temp;
-
+  
     str = this.utf8_encode(str);
     var str_len = str.length;
-
+  
     var word_array = [];
     for (i = 0; i < str_len - 3; i += 4) {
       j = str.charCodeAt(i) << 24 | str.charCodeAt(i + 1) << 16 | str.charCodeAt(i + 2) << 8 | str.charCodeAt(i + 3);
       word_array.push(j);
     }
-
+  
     switch (str_len % 4) {
       case 0:
         i = 0x080000000;
@@ -10934,16 +12365,16 @@ exports.sha1 = function (str) {
           8 | 0x80;
         break;
     }
-
+  
     word_array.push(i);
-
+  
     while ((word_array.length % 16) != 14) {
       word_array.push(0);
     }
-
+  
     word_array.push(str_len >>> 29);
     word_array.push((str_len << 3) & 0x0ffffffff);
-
+  
     for (blockstart = 0; blockstart < word_array.length; blockstart += 16) {
       for (i = 0; i < 16; i++) {
         W[i] = word_array[blockstart + i];
@@ -10951,13 +12382,13 @@ exports.sha1 = function (str) {
       for (i = 16; i <= 79; i++) {
         W[i] = rotate_left(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
       }
-
+  
       A = H0;
       B = H1;
       C = H2;
       D = H3;
       E = H4;
-
+  
       for (i = 0; i <= 19; i++) {
         temp = (rotate_left(A, 5) + ((B & C) | (~B & D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
         E = D;
@@ -10966,7 +12397,7 @@ exports.sha1 = function (str) {
         B = A;
         A = temp;
       }
-
+  
       for (i = 20; i <= 39; i++) {
         temp = (rotate_left(A, 5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
         E = D;
@@ -10975,7 +12406,7 @@ exports.sha1 = function (str) {
         B = A;
         A = temp;
       }
-
+  
       for (i = 40; i <= 59; i++) {
         temp = (rotate_left(A, 5) + ((B & C) | (B & D) | (C & D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
         E = D;
@@ -10984,7 +12415,7 @@ exports.sha1 = function (str) {
         B = A;
         A = temp;
       }
-
+  
       for (i = 60; i <= 79; i++) {
         temp = (rotate_left(A, 5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
         E = D;
@@ -10993,21 +12424,21 @@ exports.sha1 = function (str) {
         B = A;
         A = temp;
       }
-
+  
       H0 = (H0 + A) & 0x0ffffffff;
       H1 = (H1 + B) & 0x0ffffffff;
       H2 = (H2 + C) & 0x0ffffffff;
       H3 = (H3 + D) & 0x0ffffffff;
       H4 = (H4 + E) & 0x0ffffffff;
     }
-
+  
     temp = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4);
     return temp.toLowerCase();
 };
 
 exports.sha1_file = function (str_filename) {
   var buf = this.file_get_contents(str_filename);
-
+  
     return this.sha1(buf);
 };
 
@@ -11021,20 +12452,20 @@ exports.strchr = function (haystack, needle, bool) {
 
 exports.strnatcmp = function (f_string1, f_string2, f_version) {
   var i = 0;
-
+  
     if (f_version == undefined) {
       f_version = false;
     }
-
+  
     var __strnatcmp_split = function(f_string) {
       var result = [];
       var buffer = '';
       var chr = '';
       var i = 0,
         f_stringl = 0;
-
+  
       var text = true;
-
+  
       f_stringl = f_string.length;
       for (i = 0; i < f_stringl; i++) {
         chr = f_string.substring(i, i + 1);
@@ -11044,7 +12475,7 @@ exports.strnatcmp = function (f_string1, f_string2, f_version) {
               result[result.length] = buffer;
               buffer = '';
             }
-
+  
             text = false;
           }
           buffer += chr;
@@ -11064,7 +12495,7 @@ exports.strnatcmp = function (f_string1, f_string2, f_version) {
           buffer += chr;
         }
       }
-
+  
       if (buffer.length > 0) {
         if (text) {
           result[result.length] = buffer;
@@ -11072,29 +12503,29 @@ exports.strnatcmp = function (f_string1, f_string2, f_version) {
           result[result.length] = parseInt(buffer, 10);
         }
       }
-
+  
       return result;
     };
-
+  
     var array1 = __strnatcmp_split(f_string1 + '');
     var array2 = __strnatcmp_split(f_string2 + '');
-
+  
     var len = array1.length;
     var text = true;
-
+  
     var result = -1;
     var r = 0;
-
+  
     if (len > array2.length) {
       len = array2.length;
       result = 1;
     }
-
+  
     for (i = 0; i < len; i++) {
       if (isNaN(array1[i])) {
         if (isNaN(array2[i])) {
           text = true;
-
+  
           if ((r = this.strcmp(array1[i], array2[i])) != 0) {
             return r;
           }
@@ -11119,11 +12550,11 @@ exports.strnatcmp = function (f_string1, f_string2, f_version) {
             return r;
           }
         }
-
+  
         text = false;
       }
     }
-
+  
     return result;
 };
 
@@ -11131,21 +12562,21 @@ exports.vprintf = function (format, args) {
   var body, elmt;
     var ret = '',
       d = this.window.document;
-
+  
     // .shift() does not work to get first item in bodies
     var HTMLNS = 'http://www.w3.org/1999/xhtml';
     body = d.getElementsByTagNameNS ? (d.getElementsByTagNameNS(HTMLNS, 'body')[0] ? d.getElementsByTagNameNS(HTMLNS,
       'body')[0] : d.documentElement.lastChild) : d.getElementsByTagName('body')[0];
-
+  
     if (!body) {
       return false;
     }
-
+  
     ret = this.sprintf.apply(this, [format].concat(args));
-
+  
     elmt = d.createTextNode(ret);
     body.appendChild(elmt);
-
+  
     return ret.length;
 };
 
@@ -11155,25 +12586,25 @@ exports.vsprintf = function (format, args) {
 
 exports.get_headers = function (url, format) {
   var req = this.window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
-
+  
     if (!req) {
       throw new Error('XMLHttpRequest not supported');
     }
     var tmp, headers, pair, i, j = 0;ß;
     req.open('HEAD', url, false);
     req.send(null);
-
+  
     if (req.readyState < 3) {
       return false;
     }
-
+  
     tmp = req.getAllResponseHeaders();
     tmp = tmp.split('\n');
     tmp = this.array_filter(tmp, function(value) {
       return value.substring(1) !== '';
     });
     headers = format ? {} : [];
-
+  
     for (var i in tmp) {
       if (format) {
         pair = tmp[i].split(':');
@@ -11183,13 +12614,13 @@ exports.get_headers = function (url, format) {
         headers[j++] = tmp[i];
       }
     }
-
+  
     return headers;
 };
 
 exports.get_meta_tags = function (file) {
   var fulltxt = '';
-
+  
     if (false) {
       // Use this for testing instead of the line above:
       fulltxt = '<meta name="author" content="name">' + '<meta name="keywords" content="php documentation">' +
@@ -11199,12 +12630,12 @@ exports.get_meta_tags = function (file) {
       fulltxt = this.file_get_contents(file)
         .match(/^[\s\S]*<\/head>/i); // We have to disallow some character, so we choose a Unicode non-character
     }
-
+  
     var patt = /<meta[^>]*?>/gim;
     var patt1 = /<meta\s+.*?name\s*=\s*(['"]?)(.*?)\1\s+.*?content\s*=\s*(['"]?)(.*?)\3/gim;
     var patt2 = /<meta\s+.*?content\s*=\s*(['"?])(.*?)\1\s+.*?name\s*=\s*(['"]?)(.*?)\3/gim;
     var txt, match, name, arr = {};
-
+  
     while ((txt = patt.exec(fulltxt)) !== null) {
       while ((match = patt1.exec(txt)) !== null) {
         name = match[2].replace(/\W/g, '_')
@@ -11223,7 +12654,7 @@ exports.get_meta_tags = function (file) {
 exports.http_build_query = function (formdata, numeric_prefix, arg_separator) {
   var value, key, tmp = [],
       that = this;
-
+  
     var _http_build_query_helper = function(key, val, arg_separator) {
       var k, tmp = [];
       if (val === true) {
@@ -11248,7 +12679,7 @@ exports.http_build_query = function (formdata, numeric_prefix, arg_separator) {
         return '';
       }
     };
-
+  
     if (!arg_separator) {
       arg_separator = '&';
     }
@@ -11262,7 +12693,7 @@ exports.http_build_query = function (formdata, numeric_prefix, arg_separator) {
         tmp.push(query);
       }
     }
-
+  
     return tmp.join(arg_separator);
 };
 
@@ -11345,11 +12776,11 @@ exports.print_r = function (array, return_val) {
       if (cur_depth > 0) {
         cur_depth++;
       }
-
+  
       var base_pad = repeat_char(pad_val * cur_depth, pad_char);
       var thick_pad = repeat_char(pad_val * (cur_depth + 1), pad_char);
       var str = '';
-
+  
       if (typeof obj === 'object' && obj !== null && obj.constructor && getFuncName(obj.constructor) !==
         'PHPJS_Resource') {
         str += 'Array\n' + base_pad + '(\n';
@@ -11366,12 +12797,12 @@ exports.print_r = function (array, return_val) {
       } else { // for our "resource" class
         str = obj.toString();
       }
-
+  
       return str;
     };
-
+  
     output = formatArray(array, 0, pad_val, pad_char);
-
+  
     if (return_val !== true) {
       if (d.body) {
         this.echo(output);
@@ -11394,7 +12825,7 @@ exports.var_dump = function () {
       pad_val = 4,
       lgth = 0,
       i = 0;
-
+  
     var _getFuncName = function(fn) {
       var name = (/\W*function\s+([\w\$]+)\s*\(/)
         .exec(fn);
@@ -11403,7 +12834,7 @@ exports.var_dump = function () {
       }
       return name[1];
     };
-
+  
     var _repeat_char = function(len, pad_char) {
       var str = '';
       for (var i = 0; i < len; i++) {
@@ -11486,18 +12917,18 @@ exports.var_dump = function () {
       }
       return ret;
     };
-
+  
     var _formatArray = function(obj, cur_depth, pad_val, pad_char) {
       var someProp = '';
       if (cur_depth > 0) {
         cur_depth++;
       }
-
+  
       var base_pad = _repeat_char(pad_val * (cur_depth - 1), pad_char);
       var thick_pad = _repeat_char(pad_val * (cur_depth + 1), pad_char);
       var str = '';
       var val = '';
-
+  
       if (typeof obj === 'object' && obj !== null) {
         if (obj.constructor && _getFuncName(obj.constructor) === 'PHPJS_Resource') {
           return obj.var_dump();
@@ -11524,12 +12955,12 @@ exports.var_dump = function () {
       }
       return str;
     };
-
+  
     output = _formatArray(arguments[0], 0, pad_val, pad_char);
     for (i = 1; i < arguments.length; i++) {
       output += '\n' + _formatArray(arguments[i], 0, pad_val, pad_char);
     }
-
+  
     this.echo(output);
 };
 
@@ -11591,7 +13022,7 @@ exports.var_export = function (mixed_expression, bool_return) {
       return type;
     };
     type = __getType(mixed_expression);
-
+  
     if (type === null) {
       retstr = 'NULL';
     } else if (type === 'array' || type === 'object') {
@@ -11612,7 +13043,7 @@ exports.var_export = function (mixed_expression, bool_return) {
       funcParts = mixed_expression.toString()
         .
       match(/function .*?\((.*?)\) \{([\s\S]*)\}/);
-
+  
       // For lambda functions, var_export() outputs such as the following:
       // '\000lambda_1'. Since it will probably not be a common use to
       // expect this (unhelpful) form, we'll use another PHP-exportable
@@ -11630,12 +13061,12 @@ exports.var_export = function (mixed_expression, bool_return) {
         .
       replace(/\0/g, '\\0') + "'";
     }
-
+  
     if (!bool_return) {
       this.echo(retstr);
       return null;
     }
-
+  
     return retstr;
 };
 
@@ -11645,7 +13076,7 @@ exports.arsort = function (inputArr, sort_flags) {
       k, i, ret, sorter, that = this,
       strictForIn = false,
       populateArr = {};
-
+  
     switch (sort_flags) {
       case 'SORT_STRING':
         // compare items as strings
@@ -11683,7 +13114,7 @@ exports.arsort = function (inputArr, sort_flags) {
         };
         break;
     }
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.php_js.ini = this.php_js.ini || {};
@@ -11691,7 +13122,7 @@ exports.arsort = function (inputArr, sort_flags) {
     strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js
       .ini['phpjs.strictForIn'].local_value !== 'off';
     populateArr = strictForIn ? inputArr : populateArr;
-
+  
     // Get key and value arrays
     for (k in inputArr) {
       if (inputArr.hasOwnProperty(k)) {
@@ -11704,12 +13135,12 @@ exports.arsort = function (inputArr, sort_flags) {
     valArr.sort(function(a, b) {
       return sorter(a[1], b[1]);
     });
-
+  
     // Repopulate the old array
     for (i = 0, valArrLen = valArr.length; i < valArrLen; i++) {
       populateArr[valArr[i][0]] = valArr[i][1];
     }
-
+  
     return strictForIn || populateArr;
 };
 
@@ -11719,7 +13150,7 @@ exports.asort = function (inputArr, sort_flags) {
       k, i, ret, sorter, that = this,
       strictForIn = false,
       populateArr = {};
-
+  
     switch (sort_flags) {
       case 'SORT_STRING':
         // compare items as strings
@@ -11757,7 +13188,7 @@ exports.asort = function (inputArr, sort_flags) {
         };
         break;
     }
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.php_js.ini = this.php_js.ini || {};
@@ -11765,7 +13196,7 @@ exports.asort = function (inputArr, sort_flags) {
     strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js
       .ini['phpjs.strictForIn'].local_value !== 'off';
     populateArr = strictForIn ? inputArr : populateArr;
-
+  
     // Get key and value arrays
     for (k in inputArr) {
       if (inputArr.hasOwnProperty(k)) {
@@ -11775,16 +13206,16 @@ exports.asort = function (inputArr, sort_flags) {
         }
       }
     }
-
+  
     valArr.sort(function(a, b) {
       return sorter(a[1], b[1]);
     });
-
+  
     // Repopulate the old array
     for (i = 0, valArrLen = valArr.length; i < valArrLen; i++) {
       populateArr[valArr[i][0]] = valArr[i][1];
     }
-
+  
     return strictForIn || populateArr;
 };
 
@@ -11794,7 +13225,7 @@ exports.krsort = function (inputArr, sort_flags) {
       sorter, i, k, that = this,
       strictForIn = false,
       populateArr = {};
-
+  
     switch (sort_flags) {
       case 'SORT_STRING':
         // compare items as strings
@@ -11832,7 +13263,7 @@ exports.krsort = function (inputArr, sort_flags) {
         };
         break;
     }
-
+  
     // Make a list of key names
     for (k in inputArr) {
       if (inputArr.hasOwnProperty(k)) {
@@ -11840,7 +13271,7 @@ exports.krsort = function (inputArr, sort_flags) {
       }
     }
     keys.sort(sorter);
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.php_js.ini = this.php_js.ini || {};
@@ -11848,7 +13279,7 @@ exports.krsort = function (inputArr, sort_flags) {
     strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js
       .ini['phpjs.strictForIn'].local_value !== 'off';
     populateArr = strictForIn ? inputArr : populateArr;
-
+  
     // Rebuild array with sorted key names
     for (i = 0; i < keys.length; i++) {
       k = keys[i];
@@ -11862,7 +13293,7 @@ exports.krsort = function (inputArr, sort_flags) {
         populateArr[i] = tmp_arr[i];
       }
     }
-
+  
     return strictForIn || populateArr;
 };
 
@@ -11872,7 +13303,7 @@ exports.ksort = function (inputArr, sort_flags) {
       sorter, i, k, that = this,
       strictForIn = false,
       populateArr = {};
-
+  
     switch (sort_flags) {
       case 'SORT_STRING':
         // compare items as strings
@@ -11909,7 +13340,7 @@ exports.ksort = function (inputArr, sort_flags) {
         };
         break;
     }
-
+  
     // Make a list of key names
     for (k in inputArr) {
       if (inputArr.hasOwnProperty(k)) {
@@ -11917,7 +13348,7 @@ exports.ksort = function (inputArr, sort_flags) {
       }
     }
     keys.sort(sorter);
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.php_js.ini = this.php_js.ini || {};
@@ -11925,7 +13356,7 @@ exports.ksort = function (inputArr, sort_flags) {
     strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js
       .ini['phpjs.strictForIn'].local_value !== 'off';
     populateArr = strictForIn ? inputArr : populateArr;
-
+  
     // Rebuild array with sorted key names
     for (i = 0; i < keys.length; i++) {
       k = keys[i];
@@ -11939,7 +13370,7 @@ exports.ksort = function (inputArr, sort_flags) {
         populateArr[i] = tmp_arr[i];
       }
     }
-
+  
     return strictForIn || populateArr;
 };
 
@@ -11948,7 +13379,7 @@ exports.natsort = function (inputArr) {
       k, i, ret, that = this,
       strictForIn = false,
       populateArr = {};
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.php_js.ini = this.php_js.ini || {};
@@ -11956,7 +13387,7 @@ exports.natsort = function (inputArr) {
     strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js
       .ini['phpjs.strictForIn'].local_value !== 'off';
     populateArr = strictForIn ? inputArr : populateArr;
-
+  
     // Get key and value arrays
     for (k in inputArr) {
       if (inputArr.hasOwnProperty(k)) {
@@ -11969,12 +13400,12 @@ exports.natsort = function (inputArr) {
     valArr.sort(function(a, b) {
       return that.strnatcmp(a[1], b[1]);
     });
-
+  
     // Repopulate the old array
     for (i = 0; i < valArr.length; i++) {
       populateArr[valArr[i][0]] = valArr[i][1];
     }
-
+  
     return strictForIn || populateArr;
 };
 
@@ -11986,7 +13417,7 @@ exports.rsort = function (inputArr, sort_flags) {
       that = this,
       strictForIn = false,
       populateArr = [];
-
+  
     switch (sort_flags) {
       case 'SORT_STRING':
         // compare items as strings
@@ -12024,20 +13455,20 @@ exports.rsort = function (inputArr, sort_flags) {
         };
         break;
     }
-
+  
     // BEGIN REDUNDANT
     try {
       this.php_js = this.php_js || {};
     } catch (e) {
       this.php_js = {};
     }
-
+  
     this.php_js.ini = this.php_js.ini || {};
     // END REDUNDANT
     strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js
       .ini['phpjs.strictForIn'].local_value !== 'off';
     populateArr = strictForIn ? inputArr : populateArr;
-
+  
     for (k in inputArr) { // Get key and value arrays
       if (inputArr.hasOwnProperty(k)) {
         valArr.push(inputArr[k]);
@@ -12046,9 +13477,9 @@ exports.rsort = function (inputArr, sort_flags) {
         }
       }
     }
-
+  
     valArr.sort(sorter);
-
+  
     for (i = 0; i < valArr.length; i++) { // Repopulate the old array
       populateArr[i] = valArr[i];
     }
@@ -12064,7 +13495,7 @@ exports.sort = function (inputArr, sort_flags) {
       that = this,
       strictForIn = false,
       populateArr = [];
-
+  
     switch (sort_flags) {
       case 'SORT_STRING':
         // compare items as strings
@@ -12102,20 +13533,20 @@ exports.sort = function (inputArr, sort_flags) {
         };
         break;
     }
-
+  
     // BEGIN REDUNDANT
     try {
       this.php_js = this.php_js || {};
     } catch (e) {
       this.php_js = {};
     }
-
+  
     this.php_js.ini = this.php_js.ini || {};
     // END REDUNDANT
     strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js
       .ini['phpjs.strictForIn'].local_value !== 'off';
     populateArr = strictForIn ? inputArr : populateArr;
-
+  
     for (k in inputArr) { // Get key and value arrays
       if (inputArr.hasOwnProperty(k)) {
         valArr.push(inputArr[k]);
@@ -12124,9 +13555,9 @@ exports.sort = function (inputArr, sort_flags) {
         }
       }
     }
-
+  
     valArr.sort(sorter);
-
+  
     for (i = 0; i < valArr.length; i++) { // Repopulate the old array
       populateArr[i] = valArr[i];
     }
@@ -12248,7 +13679,7 @@ exports.strftime = function (fmt, timestamp) {
     this.setlocale('LC_ALL', 0); // ensure setup of localization variables takes place
     // END REDUNDANT
     var phpjs = this.php_js;
-
+  
     // BEGIN STATIC
     var _xPad = function(x, pad, r) {
       if (typeof r === 'undefined') {
@@ -12259,11 +13690,11 @@ exports.strftime = function (fmt, timestamp) {
       }
       return x.toString();
     };
-
+  
     var locale = phpjs.localeCategories.LC_TIME;
     var locales = phpjs.locales;
     var lc_time = locales[locale].LC_TIME;
-
+  
     var _formats = {
       a: function(d) {
         return lc_time.a[d.getDay()];
@@ -12289,13 +13720,13 @@ exports.strftime = function (fmt, timestamp) {
         var y = d.getFullYear();
         var V = parseInt(_formats.V(d), 10);
         var W = parseInt(_formats.W(d), 10);
-
+  
         if (W > V) {
           y++;
         } else if (W === 0 && V >= 52) {
           y--;
         }
-
+  
         return y;
       },
       H: ['getHours', '0'],
@@ -12410,12 +13841,12 @@ exports.strftime = function (fmt, timestamp) {
   OW
   Oy
     */
-
+  
     var _date = ((typeof timestamp === 'undefined') ? new Date() : // Not provided
       (typeof timestamp === 'object') ? new Date(timestamp) : // Javascript Date()
       new Date(timestamp * 1000) // PHP API expects UNIX timestamp (auto-convert to int)
     );
-
+  
     var _aggregates = {
       c: 'locale',
       D: '%m/%d/%y',
@@ -12429,7 +13860,7 @@ exports.strftime = function (fmt, timestamp) {
       x: 'locale',
       X: 'locale'
     };
-
+  
     // First replace aggregates (run in a loop because an agg may be made up of other aggs)
     while (fmt.match(/%[cDFhnrRtTxX]/)) {
       fmt = fmt.replace(/%([cDFhnrRtTxX])/g, function(m0, m1) {
@@ -12437,7 +13868,7 @@ exports.strftime = function (fmt, timestamp) {
         return (f === 'locale' ? lc_time[m1] : f);
       });
     }
-
+  
     // Now replace formats - we need a closure so that the date object gets passed through
     var str = fmt.replace(/%([aAbBCdegGHIjklmMpPsSuUVwWyYzZ%])/g, function(m0, m1) {
       var f = _formats[m1];
@@ -12456,9 +13887,9 @@ exports.strftime = function (fmt, timestamp) {
 
 exports.strptime = function (dateStr, format) {
   // tm_isdst is in other docs; why not PHP?
-
+  
     // Needs more thorough testing and examples
-
+  
     var retObj = {
       tm_sec: 0,
       tm_min: 0,
@@ -12496,11 +13927,11 @@ exports.strptime = function (dateStr, format) {
         return _reset(new Date(Date.UTC(o.tm_year + 1900, o.tm_mon, o.tm_mday || 1, o.tm_hour, o.tm_min, o.tm_sec)),
           o.tm_mday);
       };
-
+  
     // BEGIN STATIC
     var _NWS = /\S/,
       _WS = /\s/;
-
+  
     var _aggregates = {
       c: 'locale',
       D: '%m/%d/%y',
@@ -12511,7 +13942,7 @@ exports.strptime = function (dateStr, format) {
       x: 'locale',
       X: 'locale'
     };
-
+  
     /* Fix: Locale alternatives are supported though not documented in PHP; see http://linux.die.net/man/3/strptime
   Ec
   EC
@@ -12535,17 +13966,17 @@ exports.strptime = function (dateStr, format) {
         .replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!<>\|\:])/g, '\\$1');
     };
     // END STATIC
-
+  
     // BEGIN REDUNDANT
     this.php_js = this.php_js || {};
     this.setlocale('LC_ALL', 0); // ensure setup of localization variables takes place
     // END REDUNDANT
-
+  
     var phpjs = this.php_js;
     var locale = phpjs.localeCategories.LC_TIME;
     var locales = phpjs.locales;
     var lc_time = locales[locale].LC_TIME;
-
+  
     // First replace aggregates (run in a loop because an agg may be made up of other aggs)
     while (format.match(/%[cDFhnrRtTxX]/)) {
       format = format.replace(/%([cDFhnrRtTxX])/g, function(m0, m1) {
@@ -12553,7 +13984,7 @@ exports.strptime = function (dateStr, format) {
         return (f === 'locale' ? lc_time[m1] : f);
       });
     }
-
+  
     var _addNext = function(j, regex, cb) {
       if (typeof regex === 'string') {
         regex = new RegExp('^' + regex, 'i');
@@ -12567,12 +13998,12 @@ exports.strptime = function (dateStr, format) {
       }
       return j + match[0].length;
     };
-
+  
     var _addLocalized = function(j, formatChar, category) {
       return _addNext(j, that.array_map(
           _preg_quote, lc_time[formatChar])
         .join('|'), // Could make each parenthesized instead and pass index to callback
-
+  
         function(m) {
           var match = lc_time[formatChar].search(new RegExp('^' + _preg_quote(m) + '$', 'i'));
           if (match) {
@@ -12580,7 +14011,7 @@ exports.strptime = function (dateStr, format) {
           }
         });
     };
-
+  
     // BEGIN PROCESSING CHARACTERS
     for (i = 0, j = 0; i < format.length; i++) {
       if (format.charAt(i) === '%') {
@@ -12618,7 +14049,7 @@ exports.strptime = function (dateStr, format) {
             case 'C':
               // 0+; century (19 for 20th)
               j = _addNext(j, /^\d?\d/, // PHP docs say two-digit, but accepts one-digit (two-digit max)
-
+  
                 function(d) {
                   var year = (parseInt(d, 10) - 19) * 100;
                   retObj.tm_year = year;
@@ -12716,7 +14147,7 @@ exports.strptime = function (dateStr, format) {
             case 'S':
               // 00-59 seconds
               j = _addNext(j, /^[0-5]\d/, // strptime also accepts 60-61 for some reason
-
+  
                 function(d) {
                   var second = parseInt(d, 10);
                   retObj.tm_sec = second;
@@ -12742,7 +14173,7 @@ exports.strptime = function (dateStr, format) {
             case 'y':
               // 69 (or higher) for 1969+, 68 (or lower) for 2068-
               j = _addNext(j, /^\d?\d/, // PHP docs say two-digit, but accepts one-digit (two-digit max)
-
+  
                 function(d) {
                   d = parseInt(d, 10);
                   var year = d >= 69 ? d : d + 100;
@@ -12757,7 +14188,7 @@ exports.strptime = function (dateStr, format) {
             case 'Y':
               // 2010 (4-digit year)
               j = _addNext(j, /^\d{1,4}/, // PHP docs say four-digit, but accepts one-digit (four-digit max)
-
+  
                 function(d) {
                   var year = (parseInt(d, 10)) - 1900;
                   retObj.tm_year = year;
@@ -12785,7 +14216,7 @@ exports.strptime = function (dateStr, format) {
       } else if (format.charAt(i) !== dateStr.charAt(j)) {
         // If extra whitespace at beginning or end of either, or between formats, no problem
         // (just a problem when between % and format specifier)
-
+  
         // If the string has white-space, it is ok to ignore
         if (dateStr.charAt(j)
           .search(_WS) !== -1) {
@@ -12803,7 +14234,7 @@ exports.strptime = function (dateStr, format) {
         j++;
       }
     }
-
+  
     // POST-PROCESSING
     retObj.unparsed = dateStr.slice(j); // Will also get extra whitespace; empty string if none
     return retObj;
@@ -12816,10 +14247,10 @@ exports.sql_regcase = function (str) {
       lower = '',
       pos = 0,
       retStr = '';
-
+  
     upper = this.php_js.locales[this.php_js.localeCategories.LC_CTYPE].LC_CTYPE.upper;
     lower = this.php_js.locales[this.php_js.localeCategories.LC_CTYPE].LC_CTYPE.lower;
-
+  
     for (i = 0; i < str.length; i++) {
       if (((pos = upper.indexOf(str.charAt(i))) !== -1) || ((pos = lower.indexOf(str.charAt(i))) !== -1)) {
         retStr += '[' + upper.charAt(pos) + lower.charAt(pos) + ']';
@@ -12833,7 +14264,7 @@ exports.sql_regcase = function (str) {
 exports.localeconv = function () {
   var arr = {},
       prop = '';
-
+  
     // BEGIN REDUNDANT
     this.setlocale('LC_ALL', 0); // ensure setup of localization variables takes place, if not already
     // END REDUNDANT
@@ -12844,24 +14275,24 @@ exports.localeconv = function () {
     for (prop in this.php_js.locales[this.php_js.localeCategories.LC_MONETARY].LC_MONETARY) {
       arr[prop] = this.php_js.locales[this.php_js.localeCategories.LC_MONETARY].LC_MONETARY[prop];
     }
-
+  
     return arr;
 };
 
 exports.money_format = function (format, number) {
   // Per PHP behavior, there seems to be no extra padding for sign when there is a positive number, though my
     // understanding of the description is that there should be padding; need to revisit examples
-
+  
     // Helpful info at http://ftp.gnu.org/pub/pub/old-gnu/Manuals/glibc-2.2.3/html_chapter/libc_7.html and http://publib.boulder.ibm.com/infocenter/zos/v1r10/index.jsp?topic=/com.ibm.zos.r10.bpxbd00/strfmp.htm
-
+  
     if (typeof number !== 'number') {
       return null;
     }
     var regex = /%((=.|[+^(!-])*?)(\d*?)(#(\d+))?(\.(\d+))?([in%])/g; // 1: flags, 3: width, 5: left, 7: right, 8: conversion
-
+  
     this.setlocale('LC_ALL', 0); // Ensure the locale data we need is set up
     var monetary = this.php_js.locales[this.php_js.localeCategories['LC_MONETARY']]['LC_MONETARY'];
-
+  
     var doReplace = function(n0, flags, n2, width, n4, left, n6, right, conversion) {
       var value = '',
         repl = '';
@@ -12872,21 +14303,21 @@ exports.money_format = function (format, number) {
         .test(flags) ? flags.match(/=(.)/)[1] : ' '; // flag: =f (numeric fill)
       var showCurrSymbol = !flags || flags.indexOf('!') === -1; // flag: ! (suppress currency symbol)
       width = parseInt(width, 10) || 0; // field width: w (minimum field width)
-
+  
       var neg = number < 0;
       number = number + ''; // Convert to string
       number = neg ? number.slice(1) : number; // We don't want negative symbol represented here yet
-
+  
       var decpos = number.indexOf('.');
       var integer = decpos !== -1 ? number.slice(0, decpos) : number; // Get integer portion
       var fraction = decpos !== -1 ? number.slice(decpos + 1) : ''; // Get decimal portion
-
+  
       var _str_splice = function(integerStr, idx, thous_sep) {
         var integerArr = integerStr.split('');
         integerArr.splice(idx, 0, thous_sep);
         return integerArr.join('');
       };
-
+  
       var init_lgth = integer.length;
       left = parseInt(left, 10);
       var filler = init_lgth < left;
@@ -12899,7 +14330,7 @@ exports.money_format = function (format, number) {
         // use grouping characters
         var thous_sep = monetary.mon_thousands_sep; // ','
         var mon_grouping = monetary.mon_grouping; // [3] (every 3 digits in U.S.A. locale)
-
+  
         if (mon_grouping[0] < integer.length) {
           for (var i = 0, idx = integer.length; i < mon_grouping.length; i++) {
             idx -= mon_grouping[i]; // e.g., 3
@@ -12922,7 +14353,7 @@ exports.money_format = function (format, number) {
           }
         }
       }
-
+  
       // left, right
       if (right === '0') { // No decimal or fractional digits
         value = integer;
@@ -12932,7 +14363,7 @@ exports.money_format = function (format, number) {
           right = conversion === 'i' ? monetary.int_frac_digits : monetary.frac_digits;
         }
         right = parseInt(right, 10);
-
+  
         if (right === 0) { // Only remove fractional portion if explicitly set to zero digits
           fraction = '';
           dec_pt = '';
@@ -12948,21 +14379,21 @@ exports.money_format = function (format, number) {
         }
         value = integer + dec_pt + fraction;
       }
-
+  
       var symbol = '';
       if (showCurrSymbol) {
         symbol = conversion === 'i' ? monetary.int_curr_symbol : monetary.currency_symbol; // 'i' vs. 'n' ('USD' vs. '$')
       }
       var sign_posn = neg ? monetary.n_sign_posn : monetary.p_sign_posn;
-
+  
       // 0: no space between curr. symbol and value
       // 1: space sep. them unless symb. and sign are adjacent then space sep. them from value
       // 2: space sep. sign and value unless symb. and sign are adjacent then space separates
       var sep_by_space = neg ? monetary.n_sep_by_space : monetary.p_sep_by_space;
-
+  
       // p_cs_precedes, n_cs_precedes // positive currency symbol follows value = 0; precedes value = 1
       var cs_precedes = neg ? monetary.n_cs_precedes : monetary.p_cs_precedes;
-
+  
       // Assemble symbol/value/sign and possible space as appropriate
       if (flags.indexOf('(') !== -1) { // flag: parenth. for negative
         // Fix: unclear on whether and how sep_by_space, sign_posn, or cs_precedes have
@@ -12985,7 +14416,7 @@ exports.money_format = function (format, number) {
           signPadding = new Array(otherSign.length - sign.length + 1)
             .join(' ');
         }
-
+  
         var valueAndCS = '';
         switch (sign_posn) {
           // 0: parentheses surround value and curr. symbol;
@@ -13020,7 +14451,7 @@ exports.money_format = function (format, number) {
             break;
         }
       }
-
+  
       var padding = width - repl.length;
       if (padding > 0) {
         padding = new Array(padding + 1)
@@ -13034,7 +14465,7 @@ exports.money_format = function (format, number) {
       }
       return repl;
     };
-
+  
     return format.replace(regex, doReplace);
 };
 
@@ -13137,13 +14568,13 @@ exports.strcoll = function (str1, str2) {
 
 exports.strval = function (str) {
   var type = '';
-
+  
     if (str === null) {
       return '';
     }
-
+  
     type = this.gettype(str);
-
+  
     // Comment out the entire switch if you want JS-like
     // behavior instead of PHP behavior
     switch (type) {
@@ -13157,7 +14588,7 @@ exports.strval = function (str) {
       case 'object':
         return 'Object';
     }
-
+  
     return str;
 };
 
@@ -13184,7 +14615,7 @@ exports.str_word_count = function (str, format, charlist) {
       aC = 0,
       reg = '',
       match = false;
-
+  
     // BEGIN STATIC
     var _preg_quote = function(str) {
       return (str + '')
@@ -13227,7 +14658,7 @@ exports.str_word_count = function (str, format, charlist) {
       reg += ')$';
       reg = new RegExp(reg);
     }
-
+  
     for (i = 0; i < len; i++) {
       if ((c = _getWholeChar(str, i)) === false) {
         continue;
@@ -13250,7 +14681,7 @@ exports.str_word_count = function (str, format, charlist) {
         wC++;
       }
     }
-
+  
     if (!format) {
       return wC;
     } else if (format === 1) {
@@ -13258,7 +14689,7 @@ exports.str_word_count = function (str, format, charlist) {
     } else if (format === 2) {
       return assoc;
     }
-
+  
     throw 'You have supplied an incorrect format';
 };
 
@@ -13276,31 +14707,31 @@ exports.strtr = function (str, from, to) {
     var tmpTo = [];
     var ret = '';
     var match = false;
-
+  
     // Received replace_pairs?
     // Convert to normal from->to chars
     if (typeof from === 'object') {
       tmpStrictForIn = this.ini_set('phpjs.strictForIn', false); // Not thread-safe; temporarily set to true
       from = this.krsort(from);
       this.ini_set('phpjs.strictForIn', tmpStrictForIn);
-
+  
       for (fr in from) {
         if (from.hasOwnProperty(fr)) {
           tmpFrom.push(fr);
           tmpTo.push(from[fr]);
         }
       }
-
+  
       from = tmpFrom;
       to = tmpTo;
     }
-
+  
     // Walk through subject and replace chars when needed
     lenStr = str.length;
     lenFrom = from.length;
     fromTypeStr = typeof from === 'string';
     toTypeStr = typeof to === 'string';
-
+  
     for (i = 0; i < lenStr; i++) {
       match = false;
       if (fromTypeStr) {
@@ -13327,12 +14758,12 @@ exports.strtr = function (str, from, to) {
         ret += str.charAt(i);
       }
     }
-
+  
     return ret;
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],3:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 (function (global){
 phpjs = require('./build/npm');
 
@@ -13345,179 +14776,9 @@ phpjs.registerGlobals = function() {
 module.exports = phpjs;
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./build/npm":2}],4:[function(require,module,exports){
-window.cont = new (function(){
-	var _this = this;
-	var it79 = require('iterate79');
-	var php = require('phpjs');
-	var data = {};
-	var broccoli = new Broccoli();
+},{"./build/npm":20}],22:[function(require,module,exports){
+(function(window){
+	window.BroccoliFieldPSD = require('../libs/client.js');
+})(window);
 
-	this.init = function(callback){
-		callback = callback||function(){};
-
-		/**
-		 * initialize
-		 */
-		main.init(function(){
-			it79.fnc(data, [
-				function(it1, data){
-					// Parse Query string parameters
-					data.projectIdx = php.intval($.url(window.location.href).param('projectIdx'));
-					data.layout = php.trim($.url(window.location.href).param('layout'));
-					// console.log( data );
-					it1.next(data);
-				} ,
-				function(it1, data){
-					// getting Project Info
-					main.socket.send(
-						'getProject',
-						{'projectIdx': data.projectIdx},
-						function(pjInfo){
-							data.projectInfo = pjInfo;
-							// console.log(data);
-							it1.next(data);
-						}
-					);
-				} ,
-				function(it1, data){
-					main.previewServerUp(
-						data.projectIdx,
-						{
-							'staticWeb': true,
-							'documentRoot': data.projectInfo.path_homedir + '/themes/broccoli/'
-						},
-						function(serverInfo){
-							console.log('getting callback by previewServerUp();');
-							console.log('Loading Preview Window: ' + serverInfo.scheme+"://"+serverInfo.domain+":"+serverInfo.port+'/'+data.layout+'.html');
-							$('#canvas').attr({
-								"data-broccoli-preview": serverInfo.scheme+"://"+serverInfo.domain+":"+serverInfo.port+'/'+data.layout+'.html'
-							});
-							it1.next(data);
-						}
-					);
-				} ,
-				function(it1, data){
-					// broccoli-html-editor standby.
-					console.log('initialize broccoli...');
-					broccoli.init(
-						{
-							'elmCanvas': document.getElementById('canvas'),
-							'elmModulePalette': document.getElementById('palette'),
-							'contents_area_selector': '[data-px2-contents-theme-editor]',
-							'contents_bowl_name_by': 'data-px2-contents-theme-editor',
-							'customFields': {
-								'table': window.BroccoliHtmlEditorTableField,
-								'image-editor': window.BroccoliFieldImageEditor,
-								'psd': window.BroccoliFieldPSD
-							},
-							'gpiBridge': function(api, options, callback){
-								// GPI(General Purpose Interface) Bridge
-								// broccoliは、バックグラウンドで様々なデータ通信を行います。
-								// GPIは、これらのデータ通信を行うための汎用的なAPIです。
-								main.socket.send(
-									'broccoliBridgeForThemeEditor',
-									{
-										'api': 'gpiBridge' ,
-										'projectIdx': php.intval($.url(window.location.href).param('projectIdx')),
-										'layout': php.trim($.url(window.location.href).param('layout')),
-										'bridge': {
-											'api': api ,
-											'options': options
-										}
-									} ,
-									function(rtn){
-										// console.log(rtn);
-										callback(rtn);
-									}
-								);
-								return;
-							}
-						} ,
-						function(){
-							// 初期化が完了すると呼びだされるコールバック関数です。
-
-							$(window).resize(function(){
-								// このメソッドは、canvasの再描画を行います。
-								// ウィンドウサイズが変更された際に、UIを再描画するよう命令しています。
-								onWindowResized();
-							}).resize();
-
-							it1.next(data);
-						}
-					);
-				} ,
-				function(it1, _data){
-					data = _data;
-					console.log(data);
-					console.log('Started!');
-					callback();
-				}
-			]);
-		});
-		return this;
-	}
-
-	/**
-	 * Window Resize Event
-	 */
-	function onWindowResized(callback){
-		callback = callback||function(){};
-		$('.cont_outline')
-			.css({
-				'width': $(window).innerWidth() ,
-				'height': $(window).innerHeight()
-			})
-		;
-		broccoli.redraw();
-		callback();
-		return;
-	}
-
-	/**
-	 * すべての変更を保存する
-	 * TODO: 未実装です。
-	 * @return {Object} this
-	 */
-	this.save = function(callback){
-		callback = callback||function(){};
-		callback();
-		return this;
-	}
-
-	/**
-	 * プレビューを更新する。
-	 * @param  {Function} callback コールバック関数
-	 * @return {Object}			this
-	 */
-	this.updatePreview = function(callback){
-		callback = callback||function(){};
-		var $iframe = $($('iframe.cont_preview').get(0).contentWindow);
-		var doc = $iframe.get(0).document;
-
-		var html = '';
-		this.save(function(){
-			main.socket.send('moduleEditor',
-				{
-					'fnc': 'generatePreviewHTML' ,
-					'projectIdx': data.projectIdx ,
-					'packageId': data.packageId ,
-					'moduleId': data.moduleId
-				},
-				function(result){
-					console.log( result );
-					doc.write(result.html);
-					doc.close();
-
-					setTimeout(function(){
-						callback();
-					}, 0);
-				}
-			);
-		});
-		return this;
-	}
-
-})();
-
-},{"iterate79":1,"phpjs":3}]},{},[4])
+},{"../libs/client.js":1}]},{},[22])

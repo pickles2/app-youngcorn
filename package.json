@@ -14,6 +14,7 @@
   "dependencies": {
     "baobab-fw": "git://github.com/tomk79/BaobabFW.git",
     "broccoli-html-editor": "git://github.com/pickles2/broccoli-html-editor.git",
+    "broccoli-module-bootstrap3": "git://github.com/misak1/broccoli-module-bootstrap3.git",
     "broccoli-field-image-editor": "git://github.com/pickles2/broccoli-field-image-editor.git",
     "broccoli-field-psd": "git://github.com/pickles2/broccoli-field-psd.git",
     "broccoli-field-table": "git://github.com/pickles2/broccoli-field-table.git",

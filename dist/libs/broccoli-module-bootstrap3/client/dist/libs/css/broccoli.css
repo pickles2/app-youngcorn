@@ -1,0 +1,30 @@
+input[name="glyphicon"] {
+    display: none !important;
+}
+input[name="glyphicon"]:checked + div {
+    border: 1px dotted #00f;
+}
+input[name="btnType"] {
+    display: none !important;
+}
+input[name="btnType"]:checked + div {
+    border: 1px dotted #00f;
+}
+input[name="btnStyle"] {
+    display: none !important;
+}
+input[name="btnStyle"]:checked + div {
+    border: 1px dotted #00f;
+}
+input[name="btnSize"] {
+    display: none !important;
+}
+input[name="btnSize"]:checked + div {
+    border: 1px dotted #00f;
+}
+input[name="btnBlock"] {
+    display: none !important;
+}
+input[name="btnBlock"]:checked + div {
+    border: 1px dotted #00f;
+}

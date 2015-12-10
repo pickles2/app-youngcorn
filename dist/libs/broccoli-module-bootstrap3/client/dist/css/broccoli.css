@@ -1,0 +1,20 @@
+/* glyphicon */
+input[name="glyphicon"] {
+    display: none !important;
+}
+input[name="glyphicon"]:checked + div {
+    border: 2px dotted #00f;
+}
+/* button */
+input[name="btnType"],
+input[name="btnStyle"],
+input[name="btnSize"],
+input[name="btnBlock"] {
+    display: none !important;
+}
+input[name="btnType"]:checked + span,
+input[name="btnStyle"]:checked + span,
+input[name="btnSize"]:checked + span,
+input[name="btnBlock"]:checked + span {
+    border: 2px dotted #00f;
+}

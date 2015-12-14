@@ -74,7 +74,7 @@ module.exports = function( data, callback, main, socket ){
 				{
 					'paths_module_template': {
 						"local": data.documentRoot+'/modules/',
-						'ModBT3': '../modulesBT3/'
+						'ModBT3': data.documentRoot+'/modulesBT3/'
 					} ,
 					'documentRoot': data.documentRoot,
 					'pathHtml': path.resolve('/'+data.layout+'.html'),

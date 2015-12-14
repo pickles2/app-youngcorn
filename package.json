@@ -4,6 +4,7 @@
   "description": "The GUI App for Pickles 2.",
   "main": "index.html",
   "scripts": {
+    "preinstall": "git submodule update -i -r",
     "start": "nw",
     "up": "node ./node_modules/baobab-fw/lib/cmd/server.js",
     "test": "gulp; mocha --ui tdd ./tests/",
@@ -14,10 +15,6 @@
   "dependencies": {
     "baobab-fw": "git://github.com/tomk79/BaobabFW.git",
     "broccoli-html-editor": "git://github.com/pickles2/broccoli-html-editor.git",
-    "broccoli-module-bootstrap3": "git://github.com/misak1/broccoli-module-bootstrap3.git",
-    "broccoli-field-image-editor": "git://github.com/pickles2/broccoli-field-image-editor.git",
-    "broccoli-field-psd": "git://github.com/pickles2/broccoli-field-psd.git",
-    "broccoli-field-table": "git://github.com/pickles2/broccoli-field-table.git",
     "desktop-utils": "git://github.com/tomk79/node-desktop-utils.git",
     "es6-promise": "^3.0.2",
     "express": "^4.13.0",

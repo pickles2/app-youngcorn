@@ -1,7 +1,9 @@
 .DS_Store
 Thumbs.db
-node_modules
 composer.lock
 /cache/
 /build/
 /dist/bower_components/
+/node_modules/*
+!broccoli-module-*
+!broccoli-field-*

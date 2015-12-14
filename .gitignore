@@ -4,6 +4,4 @@ composer.lock
 /cache/
 /build/
 /dist/bower_components/
-/node_modules/*
-!broccoli-module-*
-!broccoli-field-*
+/node_modules/

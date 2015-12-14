@@ -1,12 +1,12 @@
-[submodule "node_modules/broccoli-module-bootstrap3"]
-	path = node_modules/broccoli-module-bootstrap3
+[submodule "submodules/broccoli-module-bootstrap3"]
+	path = submodules/broccoli-module-bootstrap3
 	url = git://github.com/misak1/broccoli-module-bootstrap3.git
-[submodule "node_modules/broccoli-field-image-editor"]
-	path = node_modules/broccoli-field-image-editor
+[submodule "submodules/broccoli-field-image-editor"]
+	path = submodules/broccoli-field-image-editor
 	url = git://github.com/pickles2/broccoli-field-image-editor.git
-[submodule "node_modules/broccoli-field-psd"]
-	path = node_modules/broccoli-field-psd
+[submodule "submodules/broccoli-field-psd"]
+	path = submodules/broccoli-field-psd
 	url = git://github.com/pickles2/broccoli-field-psd.git
-[submodule "node_modules/broccoli-field-table"]
-	path = node_modules/broccoli-field-table
+[submodule "submodules/broccoli-field-table"]
+	path = submodules/broccoli-field-table
 	url = git://github.com/pickles2/broccoli-field-table.git

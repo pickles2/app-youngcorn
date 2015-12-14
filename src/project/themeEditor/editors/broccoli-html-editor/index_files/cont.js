@@ -51,7 +51,9 @@ window.cont = new (function(){
 				} ,
 				function(it1, data){
 					// broccoli-html-editor standby.
+
 					console.log('initialize broccoli...');
+					console.log('window.BroccoliModuleBootstrap3', window.BroccoliModuleBootstrap3);
 					broccoli.init(
 						{
 							'elmCanvas': document.getElementById('canvas'),
@@ -59,7 +61,14 @@ window.cont = new (function(){
 							'contents_area_selector': '[data-px2-contents-theme-editor]',
 							'contents_bowl_name_by': 'data-px2-contents-theme-editor',
 							'customFields': {
-								'table': window.BroccoliHtmlEditorTableField,
+
+								// Bootstrap3
+								'Alert': window.BroccoliModuleBootstrap3.AlertField,
+								'Badge': window.BroccoliModuleBootstrap3.BadgeField,
+								'Button': window.BroccoliModuleBootstrap3.ButtonField,
+								'Glyphicons': window.BroccoliModuleBootstrap3.GlyphiconsField,
+								'Labels': window.BroccoliModuleBootstrap3.LabelsField,
+
 								'image-editor': window.BroccoliFieldImageEditor,
 								'psd': window.BroccoliFieldPSD,
 								'table': window.BroccoliFieldTable

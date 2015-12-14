@@ -4,6 +4,7 @@
   "description": "The GUI App for Pickles 2.",
   "main": "index.html",
   "scripts": {
+    "preinstall": "git submodule update -i -r",
     "start": "nw",
     "up": "node ./node_modules/baobab-fw/lib/cmd/server.js",
     "test": "gulp; mocha --ui tdd ./tests/",
@@ -13,10 +14,11 @@
   "license": "BSD",
   "dependencies": {
     "baobab-fw": "git://github.com/tomk79/BaobabFW.git",
+    "broccoli-field-image-editor": "file:submodules/broccoli-field-image-editor",
+    "broccoli-field-psd": "file:submodules/broccoli-field-psd",
+    "broccoli-field-table": "file:submodules/broccoli-field-table",
     "broccoli-html-editor": "git://github.com/pickles2/broccoli-html-editor.git",
-    "broccoli-field-image-editor": "git://github.com/pickles2/broccoli-field-image-editor.git",
-    "broccoli-field-psd": "git://github.com/pickles2/broccoli-field-psd.git",
-    "broccoli-field-table": "git://github.com/pickles2/broccoli-field-table.git",
+    "broccoli-module-bootstrap3": "file:submodules/broccoli-module-bootstrap3",
     "desktop-utils": "git://github.com/tomk79/node-desktop-utils.git",
     "es6-promise": "^3.0.2",
     "express": "^4.13.0",
@@ -35,6 +37,10 @@
     "twig": "^0.8.2"
   },
   "devDependencies": {
+    "JSONPath": "file:submodules/JSONPath",
+    "br-resouce": "git://github.com/m-prj/br-resouce.git",
+    "filereader": "^0.10.3",
+    "fs-extra": "^0.24.0",
     "gulp": "^3.8.10",
     "gulp-autoprefixer": "^2.3.1",
     "gulp-browserify": "^0.5.1",
@@ -44,11 +50,17 @@
     "gulp-sass": "^2.0.1",
     "gulp-twig": "^0.3.0",
     "gulp-uglify": "^1.2.0",
+    "htmlparser": "^1.7.7",
+    "json": "^9.0.3",
+    "m-log": "0.0.1",
+    "m-util": "*",
     "mocha": "^2.1.0",
     "nw": "^0.12.3",
     "nw-builder": "2.0.*",
     "phantomjs": "^1.9.17",
+    "psd": "^3.1.0",
     "selenium-webdriver": "^2.46.1",
+    "unoconv2": "^1.0.0",
     "zip-folder": "^1.0.0"
   },
   "window": {

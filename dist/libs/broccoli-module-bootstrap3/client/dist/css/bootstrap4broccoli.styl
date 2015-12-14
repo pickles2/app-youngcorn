@@ -1,0 +1,30 @@
+input[name="glyphicon"]
+  display none !important
+
+input[name="glyphicon"]:checked
+  & + div
+    border 2px dotted #00f
+
+input[name="btnType"],
+input[name="btnStyle"],
+input[name="btnSize"],
+input[name="btnBlock"],
+input[name="labelStyle"],
+input[name="alertStyle"]
+  display none !important
+
+input[name="btnType"]:checked + span,
+input[name="btnStyle"]:checked + span,
+input[name="btnSize"]:checked + span,
+input[name="btnBlock"]:checked + span,
+input[name="labelStyle"]:checked + span,
+input[name="alertStyle"]:checked + div
+  border 2px dotted #00f
+
+.bs3-button-field,
+.bs3-labels-field,
+.bs3-alert-field
+  input[type="text"]
+    width 100%
+  textarea
+    width 100%

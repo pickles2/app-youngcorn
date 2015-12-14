@@ -84,6 +84,10 @@ gulp.task(".html.twig", function() {
 
 // broccoli-client (frontend) を処理
 gulp.task("broccoli-client", function() {
+	gulp.src(["node_modules/broccoli-module-bootstrap3/dist/**/*"])
+  	.pipe(gulp.dest("./dist/libs/broccoli-module-bootstrap3/client/dist/"))
+	;
+
 	gulp.src(["node_modules/broccoli-html-editor/client/dist/*"])
 		.pipe(gulp.dest( './dist/libs/broccoli-html-editor/client/dist/' ))
 	;

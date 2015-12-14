@@ -73,7 +73,8 @@ module.exports = function( data, callback, main, socket ){
 			broccoli.init(
 				{
 					'paths_module_template': {
-						"local": data.documentRoot+'/modules/'
+						"local": data.documentRoot+'/modules/',
+						'ModBT3': data.documentRoot+'/modulesBT3/'
 					} ,
 					'documentRoot': data.documentRoot,
 					'pathHtml': path.resolve('/'+data.layout+'.html'),
@@ -83,7 +84,14 @@ module.exports = function( data, callback, main, socket ){
 						'table': require('broccoli-html-editor--table-field'),
 						'image-editor': require('broccoli-field-image-editor'),
 						'psd': require('broccoli-field-psd'),
-						'table': require('broccoli-field-table')
+						'table': require('broccoli-field-table'),
+
+						// Bootstrap3
+						'Alert': require('broccoli-module-bootstrap3').alert,
+						'Badge': require('broccoli-module-bootstrap3').badge,
+						'Button': require('broccoli-module-bootstrap3').button,
+						'Glyphicons': require('broccoli-module-bootstrap3').glyphicons,
+						'Labels': require('broccoli-module-bootstrap3').labels
 					} ,
 					'bindTemplate': function(htmls, callback){
 						var fin = '';

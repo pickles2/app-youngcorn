@@ -89,8 +89,8 @@ module.exports = function( data, callback, main, socket ){
 					'pathResourceDir': '/preview_files/resources/',
 					'realpathDataDir': rtn.moduleRealpath+'/_preview/preview_files/guieditor.ignore/',
 					'customFields': {
-						'table': require('broccoli-html-editor--table-field')
-						// 'psd': require('broccoli-psd-field')
+						'psd': require('broccoli-field-psd'),
+						'table': require('broccoli-field-table')
 					} ,
 					'bindTemplate': function(htmls, callback){
 						var fin = '';

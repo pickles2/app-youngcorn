@@ -81,7 +81,6 @@ module.exports = function( data, callback, main, socket ){
 					'pathResourceDir': data.pathResourceDir,
 					'realpathDataDir': data.realpathDataDir,
 					'customFields': {
-						'table': require('broccoli-html-editor--table-field'),
 						'image-editor': require('broccoli-field-image-editor'),
 						'psd': require('broccoli-field-psd'),
 						'table': require('broccoli-field-table'),

@@ -8,6 +8,7 @@ var plumber = require("gulp-plumber");//コンパイルエラーが起きても 
 var rename = require("gulp-rename");//ファイル名の置き換えを行う
 var twig = require("gulp-twig");//Twigテンプレートエンジン
 var browserify = require("gulp-browserify");//NodeJSのコードをブラウザ向けコードに変換
+var rimraf = require('rimraf');// The UNIX command `rm -rf` for node.
 var packageJson = require(__dirname+'/package.json');
 var _tasks = [
 	'.html',
@@ -84,6 +85,9 @@ gulp.task(".html.twig", function() {
 
 // broccoli-client (frontend) を処理
 gulp.task("broccoli-client", function() {
+	gulp.task('clean', function (cb) {
+	  rimraf('./dist/libs/broccoli-*', cb);
+	});
 	gulp.src(["node_modules/broccoli-module-bootstrap3/dist/**/*"])
   	.pipe(gulp.dest("./dist/libs/broccoli-module-bootstrap3/client/dist/"))
 	;
